@@ -1,0 +1,56 @@
+//
+//  Time-em-Prefix.pch
+//  Time-em
+//
+//  Created by Krishna Mac Mini 2 on 17/05/16.
+//  Copyright © 2016 Krishna_Mac_2. All rights reserved.
+//
+
+#ifndef Time_em_Prefix_pch
+#define Time_em_Prefix_pch
+
+//#define Kwebservices @"http://112.196.24.205:89/api"   //--staging
+//#define Kwebservices @"http://112.196.24.205:88/api"   //--production
+//#define Kwebservices @"http://10.10.10.219:801/api"    //--Live
+//#define Kwebservices @"http://63.255.19.72:801/api"   //--Client
+//#define Kwebservices @"http://69.164.149.164:814/api"  //--Client Production
+#define Kwebservices @"http://69.164.149.164:801/api" //--Client Staging
+
+
+#ifdef __OBJC__
+#import "UITextfieldValidations.h"
+#import "UITextField+HelperTextField.h"
+#import "HelperAlert.h"
+#import "SignUpViewController.h"
+#import "JSON.h"
+#import "SBJson.h"
+#import "cornerRadius.h"
+#import "UILabel+helper.h"
+#endif
+
+#define AlertTitle @"ARA"
+#define OkButtonTitle @"OK"
+
+#define ResultOk 200
+#define ResultFailed 500
+
+#define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define IS_IPHONE (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+#define IS_RETINA ([[UIScreen mainScreen] scale] >= 2.0)
+
+#define SCREEN_WIDTH ([[UIScreen mainScreen] bounds].size.width)
+#define SCREEN_HEIGHT ([[UIScreen mainScreen] bounds].size.height)
+#define SCREEN_MAX_LENGTH (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
+#define SCREEN_MIN_LENGTH (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
+
+#define kappDelegate (AppDelegate *)[[UIApplication sharedApplication] delegate]
+#define IS_IPHONE_4_OR_LESS (IS_IPHONE && SCREEN_MAX_LENGTH < 568.0)
+#define IS_IPHONE_5 (IS_IPHONE && SCREEN_MAX_LENGTH == 568.0)
+#define IS_IPHONE_6 (IS_IPHONE && SCREEN_MAX_LENGTH == 667.0)
+#define IS_IPHONE_6P (IS_IPHONE && SCREEN_MAX_LENGTH == 736.0)
+
+#define IS_IPAD_PRO_1366 (IS_IPAD && MAX(SCREEN_WIDTH,SCREEN_HEIGHT) == 1366.0)
+#define IS_IPAD_PRO_1024 (IS_IPAD && MAX(SCREEN_WIDTH,SCREEN_HEIGHT) == 1024.0)
+
+
+#endif /* Time_em_Prefix_pch */

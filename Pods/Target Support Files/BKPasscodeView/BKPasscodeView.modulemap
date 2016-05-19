@@ -1,0 +1,6 @@
+framework module BKPasscodeView {
+  umbrella header "BKPasscodeView-umbrella.h"
+
+  export *
+  module * { export * }
+}
