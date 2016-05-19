@@ -69,6 +69,11 @@ class ApiRequest: NSObject {
                 print("failed: \(error.localizedDescription)")
             }
             
+            do {
+                try database.executeUpdate("create table assignedTaskList(TaskId text, TaskName text)", values: nil)
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
             
             do {
                 try database.executeUpdate("insert into UserData (userId, userData, loggedInUser) values (?, ?, ?)", values: [currentUsers.LoginId, encodedData, "true"])
@@ -604,7 +609,7 @@ class ApiRequest: NSObject {
         let notificationKey = "com.time-em.getTeamResponse"
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/Task/GetAssignedTaskIList", parameters: ["userId":userId])
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/Task/GetAssignedTaskIList", parameters: ["userId":userId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -625,10 +630,11 @@ class ApiRequest: NSObject {
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
                             
                             let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
-                            NSUserDefaults.standardUserDefaults().setObject(JSON.valueForKey("TimeStamp"), forKey: "teamTimeStamp")
-                            let dict = JSON.valueForKey("AppUserViewModel") as! NSArray
                             
+                            let dict = JSON.valueForKey("ReturnKeyValueViewModel") as! NSArray
                             
+                            let database = databaseFile()
+                            database.insertAssignedListData(dict)
                             
                             
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -652,42 +658,7 @@ class ApiRequest: NSObject {
                 MBProgressHUD.hideHUDForView(view, animated: true)
         }
     }
-    //                        let user = NSUserDefaults.standardUserDefaults()
-    //                        user.setObject("\(JSON.valueForKey("ActivityId") ?? "")", forKey: "ActivityId")
-    //                        user.setObject("\(JSON.valueForKey("Company") ?? "")", forKey: "Company")
-    //                        user.setObject("\(JSON.valueForKey("CompanyId") ?? "")", forKey: "CompanyId")
-    //                        user.setObject("\(JSON.valueForKey("Department") ?? "")", forKey: "Department")
-    //                        user.setObject("\(JSON.valueForKey("DepartmentId") ?? "")", forKey: "DepartmentId")
-    //                        user.setObject("\(JSON.valueForKey("FirstName") ?? "")", forKey: "FirstName")
-    //                        user.setObject("\(JSON.valueForKey("FullName") ?? "")", forKey: "FullName")
-    //                        user.setObject("\(JSON.valueForKey("Id") ?? "")", forKey: "Id")
-    //                        user.setObject("\(JSON.valueForKey("IsSecurityPin") ?? "")", forKey: "IsSecurityPin")
-    //                        user.setObject("\(JSON.valueForKey("IsSignIn") ?? "")", forKey: "IsSignIn")
-    //                        user.setObject("\(JSON.valueForKey("LastName") ?? "")", forKey: "LastName")
-    //                        user.setObject("\(JSON.valueForKey("LoginCode") ?? "")", forKey: "LoginCode")
-    //                        user.setObject("\(JSON.valueForKey("LoginId") ?? "")", forKey: "LoginId")
-    //                        user.setObject("\(JSON.valueForKey("NFCTagId") ?? "")", forKey: "NFCTagId")
-    //                        user.setObject("\(JSON.valueForKey("Password") ?? "")", forKey: "Password")
-    //                        user.setObject("\(JSON.valueForKey("Project") ?? "")", forKey: "Project")
-    //                        user.setObject("\(JSON.valueForKey("ProjectId") ?? "")", forKey: "ProjectId")
-    //                        user.setObject("\(JSON.valueForKey("RefrenceCount") ?? "")", forKey: "RefrenceCount")
-    //                        user.setObject("\(JSON.valueForKey("ReturnMessage") ?? "")", forKey: "ReturnMessage")
-    //                        user.setObject("\(JSON.valueForKey("Supervisor") ?? "")", forKey: "Supervisor")
-    //                        user.setObject("\(JSON.valueForKey("SupervisorId") ?? "")", forKey: "SupervisorId")
-    //                        user.setObject("\(JSON.valueForKey("Token") ?? "")", forKey: "Token")
-    //                        user.setObject("\(JSON.valueForKey("UserType") ?? "")", forKey: "UserType")
-    //                        user.setObject("\(JSON.valueForKey("UserTypeId") ?? "")", forKey: "UserTypeId")
-    //                        user.setObject("\(JSON.valueForKey("Worksite") ?? "")", forKey: "Worksite")
-    //                        user.setObject("\(JSON.valueForKey("WorksiteId") ?? "")", forKey: "WorksiteId")
-    //                        user.setObject("\(JSON.valueForKey("isError") ?? "")", forKey: "isError")
     
-    
-    
-    
-    
-    
-    
-
     
 }
     

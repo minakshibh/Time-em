@@ -43,6 +43,7 @@
 		F95985F81CEDC6E4002582C4 /* DropDownCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F95985F01CEDC6E4002582C4 /* DropDownCell.xib */; };
 		F95985F91CEDC6E4002582C4 /* DropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985F21CEDC6E4002582C4 /* DropDown.swift */; };
 		F95985FA1CEDC6E4002582C4 /* DropDownCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985F31CEDC6E4002582C4 /* DropDownCell.swift */; };
+		F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +99,7 @@
 		F95985F01CEDC6E4002582C4 /* DropDownCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DropDownCell.xib; sourceTree = "<group>"; };
 		F95985F21CEDC6E4002582C4 /* DropDown.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDown.swift; sourceTree = "<group>"; };
 		F95985F31CEDC6E4002582C4 /* DropDownCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDownCell.swift; sourceTree = "<group>"; };
+		F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssignedTasks.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -214,6 +216,7 @@
 				D9AD39161CE5A2B9005D5029 /* User.swift */,
 				D9D378001CEC9201002E24D9 /* databaseFile.swift */,
 				D9D378021CEC92C8002E24D9 /* TaskData.swift */,
+				F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */,
 			);
 			name = "modal classes";
 			sourceTree = "<group>";
@@ -426,6 +429,7 @@
 				D9DA40271CE9B28A00D6B572 /* NSDate+CL.m in Sources */,
 				D9DA402A1CE9B28A00D6B572 /* UIImage+CL.m in Sources */,
 				F95985F61CEDC6E4002582C4 /* DPDKeyboardListener.swift in Sources */,
+				F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */,
 				D970050F1CE31B150036B5EA /* LoginViewController.swift in Sources */,
 				D9D378011CEC9201002E24D9 /* databaseFile.swift in Sources */,
 				D9AD39231CE5F29D005D5029 /* async.swift in Sources */,

@@ -22,14 +22,25 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate{
         super.viewDidLoad()
         uploadBtn.layer.cornerRadius = 5
         
-//        let assignedTasks = ApiRequest()
+        let assignedTasks = ApiRequest()
         
-//        assignedTasks.GetAssignedTaskIList(<#T##userId: String##String#>, view: <#T##UIView#>)
+        let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
         
-        dropDown.dataSource = [
-            "Add New Task"
-        ]
+        assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
+        let databaseFetch = databaseFile()
+        let assignedTasksArray: NSMutableArray = databaseFetch.getAssignedTasks()
         
+//        dropDown.dataSource = [
+//            "Add New Task"
+//        ]
+        
+        for var i = 0; i < assignedTasksArray.count; i += 1 {
+            let taskNameArray:NSMutableDictionary = assignedTasksArray .objectAtIndex(i) as! NSMutableDictionary
+            
+            dropDown.dataSource = [taskNameArray.valueForKey("taskName")! as! String]
+        }
+        
+  
         //~~ Add Value to textfield from dropdown
         dropDown.selectionAction = { [unowned self] (index, item) in
             
