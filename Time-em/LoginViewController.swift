@@ -68,14 +68,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: textfield delegates
     func textFieldDidBeginEditing(textField: UITextField) {    //delegate method
-        if textField == txtUserID {
-            txtUserID.becomeFirstResponder()
-        }else if textField == txtPassword{
-            txtPassword.becomeFirstResponder()
-        }
+//        if textField == txtUserID {
+//            txtUserID.becomeFirstResponder()
+//        }else if textField == txtPassword{
+//            txtPassword.becomeFirstResponder()
+//        }
     }
     func textFieldShouldEndEditing(textField: UITextField) -> Bool {  //delegate method
-        return false
+        return true
     }
     func textFieldShouldReturn(textField: UITextField) -> Bool {   //delegate method
         textField.resignFirstResponder()
