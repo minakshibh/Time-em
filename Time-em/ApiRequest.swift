@@ -32,6 +32,10 @@ class ApiRequest: NSObject {
         if "\(response.result)" == "SUCCESS"{
             let userInfo = ["response" : "SUCCESS"]
             let currentUsers =  User(dict: JSON as! NSMutableDictionary)
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Id)", forKey: "currentUser_id")
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.IsSignIn)", forKey: "currentUser_IsSignIn")
+            
+            
             var dictionary:NSMutableDictionary = [:]
             dictionary = currentUsers.returnDict()
             
@@ -49,9 +53,25 @@ class ApiRequest: NSObject {
             
             do {
                 try database.executeUpdate("create table tasksData(ActivityId text, AttachmentImageFile text, AttachmentVideoFile text ,Comments text, CreatedDate text, EndTime text,Id text, SelectedDate text, SignedInHours text,StartTime text, TaskId text, TaskName text,TimeSpent text, Token text, UserId text)", values: nil)
+                } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+                }
+            
+                do {
                 try database.executeUpdate("create table teamData(ActivityId text, Company text, CompanyId text ,Department text, DepartmentId text, FirstName text,FullName text, Id text, IsNightShift text,IsSecurityPin text, IsSignedIn text, LastName text,LoginCode text, LoginId text, NFCTagId text, Project text ,ProjectId text, SignInAt text, SignOutAt text,SignedInHours text, SupervisorId text, TaskActivityId text,UserTypeId text, Worksite text, WorksiteId text)", values: nil)
+                } catch let error as NSError {
+                    print("failed: \(error.localizedDescription)")
+                }
+            
+            do {
                 try database.executeUpdate("create table userdata(userId text, userData text, loggedInUser text)", values: nil)
-                 try database.executeUpdate("insert into UserData (userId, userData, loggedInUser) values (?, ?, ?)", values: [currentUsers.LoginId, encodedData, "true"])
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
+            
+            
+            do {
+                try database.executeUpdate("insert into UserData (userId, userData, loggedInUser) values (?, ?, ?)", values: [currentUsers.LoginId, encodedData, "true"])
                
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
@@ -102,8 +122,43 @@ class ApiRequest: NSObject {
                     
                     if message.lowercaseString == "success"{
                         
-                        NSUserDefaults.standardUserDefaults().setObject(JSON.valueForKey("TimeStamp"), forKey: "TimeStamp")
+//                        var dictTime:NSMutableDictionary = [:]
+//                        let user = NSUserDefaults.standardUserDefaults()
+//                        if user.valueForKey("dashboardNotificationTimeStamp") != nil{
+//                            let data = user.objectForKey("dashboardNotificationTimeStamp") as? NSData
+//                            var dict:NSMutableDictionary = (NSKeyedUnarchiver.unarchiveObjectWithData(data!) as? NSMutableDictionary)!
+//                            dictTime = dict
+//                            if dict.valueForKey("")
+//                        }
                         let dict = JSON.valueForKey("UserTaskActivityViewModel") as! NSArray
+                        if dict.count > 0 {
+                        //---------
+                        var saveDateDict:NSMutableDictionary = [:]
+                        var user: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+                        if user.valueForKey("taskTimeStamp") != nil {
+                            var data: NSData = (user.valueForKey("taskTimeStamp") as! NSData)
+                            var dictio = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
+                            saveDateDict = dictio
+                            if (saveDateDict.valueForKey("\(dict.valueForKey("UserId")[0])") != nil) {
+                                saveDateDict.removeObjectForKey("\(dict.valueForKey("UserId")[0])")
+                                
+                                saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict.valueForKey("UserId")[0])")
+                            }
+                            else {
+                                
+                                saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict.valueForKey("UserId")[0])")
+                            }
+                        }
+                        else {
+                            saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict.valueForKey("UserId")[0])")
+                            
+                        }
+                        var data1: NSData = NSKeyedArchiver.archivedDataWithRootObject(saveDateDict)
+                        user.setObject(data1,forKey:"taskTimeStamp")
+                        //-------------
+                        }
+                        
+                        
                         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
                         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
                         
@@ -464,7 +519,6 @@ class ApiRequest: NSObject {
     func getTeamDetail(userId:String,TimeStamp:String,view:UIView)  {
         let notificationKey = "com.time-em.getTeamResponse"
         
-        MBProgressHUD.showHUDAddedTo(view, animated: true)
         Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/User/GetAllUsersList", parameters: ["userId":userId,"TimeStamp":TimeStamp])
             .responseJSON { response in
                 print(response.request)  // original URL request
@@ -489,6 +543,8 @@ class ApiRequest: NSObject {
                             NSUserDefaults.standardUserDefaults().setObject(JSON.valueForKey("TimeStamp"), forKey: "teamTimeStamp")
                             let dict = JSON.valueForKey("AppUserViewModel") as! NSArray
                           
+                            let database = databaseFile()
+                            database.insertTeamData(dict)
                             
                             
                             

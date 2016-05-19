@@ -28,7 +28,6 @@
 		D9D378051CECAC6D002E24D9 /* MyTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378041CECAC6D002E24D9 /* MyTeamViewController.swift */; };
 		D9DA40041CE982A600D6B572 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D9DA40031CE982A600D6B572 /* libsqlite3.tbd */; };
 		D9DA400A1CE9871B00D6B572 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9DA40091CE9871B00D6B572 /* AVFoundation.framework */; };
-		D9DA400C1CE9930A00D6B572 /* My-Team.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D9DA400B1CE9930A00D6B572 /* My-Team.jpg */; };
 		D9DA400F1CE9AE4900D6B572 /* myTasksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9DA400E1CE9AE4900D6B572 /* myTasksViewController.swift */; };
 		D9DA40191CE9B27100D6B572 /* DailyCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40161CE9B27100D6B572 /* DailyCalendarView.m */; };
 		D9DA401A1CE9B27100D6B572 /* DayTitleLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40181CE9B27100D6B572 /* DayTitleLabel.m */; };
@@ -69,7 +68,6 @@
 		D9DA40031CE982A600D6B572 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		D9DA40071CE984EB00D6B572 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D9DA40091CE9871B00D6B572 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		D9DA400B1CE9930A00D6B572 /* My-Team.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "My-Team.jpg"; path = "../../../Desktop/Timeem jpeg/My-Team.jpg"; sourceTree = "<group>"; };
 		D9DA400E1CE9AE4900D6B572 /* myTasksViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = myTasksViewController.swift; sourceTree = "<group>"; };
 		D9DA40151CE9B27100D6B572 /* DailyCalendarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DailyCalendarView.h; sourceTree = "<group>"; };
 		D9DA40161CE9B27100D6B572 /* DailyCalendarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DailyCalendarView.m; sourceTree = "<group>"; };
@@ -159,7 +157,6 @@
 				D97005011CE31A1F0036B5EA /* Assets.xcassets */,
 				D97005031CE31A1F0036B5EA /* LaunchScreen.storyboard */,
 				D97005061CE31A1F0036B5EA /* Info.plist */,
-				D9DA400B1CE9930A00D6B572 /* My-Team.jpg */,
 				D97005191CE34D290036B5EA /* Time-em-Bridging-Header.h */,
 				D99C2D281CEB010E007E0A0D /* images */,
 			);
@@ -309,7 +306,6 @@
 				D97005021CE31A1F0036B5EA /* Assets.xcassets in Resources */,
 				D970050D1CE31A4F0036B5EA /* Podfile in Resources */,
 				D9AD39191CE5BAE3005D5029 /* images.xcassets in Resources */,
-				D9DA400C1CE9930A00D6B572 /* My-Team.jpg in Resources */,
 				D97005001CE31A1F0036B5EA /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

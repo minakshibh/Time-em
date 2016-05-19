@@ -11,11 +11,18 @@ import MGSwipeTableCell
 
 class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDelegate {
 
+    @IBOutlet var btnBack: UIButton!
         @IBOutlet var tableView: UITableView!
+    var teamDataArray:NSMutableArray! = []
+    var selectedUser:String!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.fetchTeamDataFromDatabase()
         self.fetchTeamList()
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "commentCellss")
+        tableView.reloadData()
     }
 
     override func didReceiveMemoryWarning() {
@@ -25,7 +32,14 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     
     func fetchTeamList() {
             let api = ApiRequest()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.displayResponse), name: "com.time-em.getTeamResponse", object: nil)
             api.getTeamDetail("2", TimeStamp: "", view: self.view)
+    }
+    func fetchTeamDataFromDatabase() {
+        var databaseFetch = databaseFile()
+        teamDataArray = databaseFetch.getTeamForUserID("2")
+        print(teamDataArray)
+        tableView.reloadData()
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
@@ -34,7 +48,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return teamDataArray.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -51,11 +65,59 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
                 view.removeFromSuperview()
             }
         }
+        let dict:NSMutableDictionary  = teamDataArray[indexPath.row] as! NSMutableDictionary
+
+         if "\(dict["IsSignedIn"]!)" == "0" {
+             cell.imageView?.image = UIImage(named: "inactive")
+         }else{
+            cell.imageView?.image = UIImage(named: "active")
+        }
+        
+        cell.textLabel?.text = "\(dict.valueForKey("FullName")!)"
+        
+        
+        if "\(dict["IsNightShift"]!)" == "0" {
+            let imageView: UIImageView = UIImageView(image: UIImage(named: "sun"))
+            cell.accessoryView = imageView
+        }else{
+            let imageView: UIImageView = UIImageView(image: UIImage(named: "moon"))
+            cell.accessoryView = imageView
+        }
+        
         
         
         return cell
     }
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let dict:NSMutableDictionary  = teamDataArray[indexPath.row] as! NSMutableDictionary
+        selectedUser =  "\(dict["Id"]!)"
+        self.performSegueWithIdentifier("myteam_mytask", sender: self)
+    }
+    
+    @IBAction func btnBack(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: {});
+        
+    }
+    
+    func displayResponse(notification:NSNotification) {
+        
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        var alert :UIAlertController!
+        alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+        fetchTeamDataFromDatabase()
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "myteam_mytask"{
+            let mytask = (segue.destinationViewController as! myTasksViewController)
+            mytask.currentUserID = selectedUser
+            
+            
+        }
     }
 
 }

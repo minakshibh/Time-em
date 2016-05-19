@@ -20,7 +20,7 @@ class databaseFile: NSObject {
         if !database.open() {
             print("Unable to open database")
         }
-        var dataArray:NSMutableArray! = []
+        let dataArray:NSMutableArray! = []
         do {
             let rs = try database.executeQuery("select * from tasksData", values: nil)
             while rs.next() {
@@ -53,8 +53,61 @@ class databaseFile: NSObject {
         return dataArray
     }
     
+    func getTeamForUserID(ID:String) -> NSMutableArray {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        let dataArray:NSMutableArray! = []
+        do {
+            let rs = try database.executeQuery("select * from teamData", values: nil)
+            while rs.next() {
+                let dict: NSMutableDictionary = [:]
+                dict.setObject(rs.stringForColumn("ActivityId"), forKey: "ActivityId")
+                dict.setObject(rs.stringForColumn("Company"), forKey: "Company")
+                dict.setObject(rs.stringForColumn("CompanyId"), forKey: "CompanyId")
+                dict.setObject(rs.stringForColumn("Department"), forKey: "Department")
+                dict.setObject(rs.stringForColumn("DepartmentId"), forKey: "DepartmentId")
+                dict.setObject(rs.stringForColumn("FirstName"), forKey: "FirstName")
+                dict.setObject(rs.stringForColumn("FullName"), forKey: "FullName")
+                dict.setObject(rs.stringForColumn("Id"), forKey: "Id")
+                dict.setObject(rs.stringForColumn("IsNightShift"), forKey: "IsNightShift")
+                dict.setObject(rs.stringForColumn("IsSecurityPin"), forKey: "IsSecurityPin")
+                dict.setObject(rs.stringForColumn("IsSignedIn"), forKey: "IsSignedIn")
+                dict.setObject(rs.stringForColumn("LastName"), forKey: "LastName")
+                dict.setObject(rs.stringForColumn("LoginCode"), forKey: "LoginCode")
+                dict.setObject(rs.stringForColumn("LoginId"), forKey: "LoginId")
+                dict.setObject(rs.stringForColumn("Project"), forKey: "Project")
+                
+                dict.setObject(rs.stringForColumn("SignInAt"), forKey: "SignInAt")
+                dict.setObject(rs.stringForColumn("SignOutAt"), forKey: "SignOutAt")
+                dict.setObject(rs.stringForColumn("SignedInHours"), forKey: "SignedInHours")
+                dict.setObject(rs.stringForColumn("SupervisorId"), forKey: "SupervisorId")
+                dict.setObject(rs.stringForColumn("TaskActivityId"), forKey: "TaskActivityId")
+                
+                dict.setObject(rs.stringForColumn("UserTypeId"), forKey: "UserTypeId")
+                dict.setObject(rs.stringForColumn("Worksite"), forKey: "Worksite")
+                dict.setObject(rs.stringForColumn("WorksiteId"), forKey: "WorksiteId")
+                
+                print(rs.stringForColumn("SupervisorId"))
+                if rs.stringForColumn("SupervisorId") == ID {
+                    dataArray.addObject(dict)
+                }
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+        database.close()
+        return dataArray
+    }
     
-    func insertTeamData(dict:NSMutableDictionary)  {
+    
+    func insertTeamData(dataArr:NSArray)  {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
@@ -65,12 +118,12 @@ class databaseFile: NSObject {
         }
         
         
-        var teamIdsArr:NSMutableArray = []
+        let teamIdsArr:NSMutableArray = []
         do {
             
             let rs = try database.executeQuery("select * from teamData", values: nil)
             while rs.next() {
-                let x = rs.stringForColumn("SupervisorId")
+                let x = rs.stringForColumn("Id")
                 teamIdsArr.addObject(x)
             }
         } catch let error as NSError {
@@ -81,114 +134,115 @@ class databaseFile: NSObject {
         
         
         
-        for (var i = 0; i<dict.count;i+=1){
+        for (var i = 0; i<dataArr.count;i+=1){
+            let dict = dataArr[i]
             
             let  ActivityId:Int!
-            if let field = dict.valueForKey("ActivityId")![i]  {
+            if let field = dict.valueForKey("ActivityId")  {
                 ActivityId = field as! Int
             }else{
                 ActivityId = 0
             }
             
             let  Company:String!
-            if let field = dict.valueForKey("Company")![i]  as? String{
+            if let field = dict.valueForKey("Company") as? String{
                 Company = field as? String ?? ""
             }else{
                 Company = ""
             }
             let  CompanyId:Int!
-            if let field = dict.valueForKey("CompanyId")![i]  {
+            if let field = dict.valueForKey("CompanyId")  {
                 CompanyId = field as! Int
             }else{
                 CompanyId = 0
             }
             
             let  Department:String
-            if let field = dict.valueForKey("Department")![i] as? String {
+            if let field = dict.valueForKey("Department") as? String {
                 Department = field
             }else{
                 Department = ""
             }
             let  DepartmentId:Int!
-            if let field = dict.valueForKey("DepartmentId")![i]  {
+            if let field = dict.valueForKey("DepartmentId")  {
                 DepartmentId = field as! Int
             }else{
                 DepartmentId = 0
             }
             
             let  FirstName:String!
-            if let field = dict.valueForKey("FirstName")![i] as? String {
+            if let field = dict.valueForKey("FirstName") as? String {
                 FirstName = field
             }else{
                 FirstName = ""
             }
             
             let  FullName:String!
-            if let field = dict.valueForKey("FullName")![i] as? String {
+            if let field = dict.valueForKey("FullName") as? String {
                 FullName = field
             }else{
                 FullName = ""
             }
             let  Id:Int!
-            if let field = dict.valueForKey("Id")![i]  {
+            if let field = dict.valueForKey("Id")  {
                 Id = field as! Int
             }else{
                 Id = 0
             }
             let  IsNightShift:Int!
-            if let field = dict.valueForKey("IsNightShift")![i]  {
+            if let field = dict.valueForKey("IsNightShift")  {
                 IsNightShift = field as! Int
             }else{
                 IsNightShift = 0
             }
             let  IsSecurityPin:String!
-            if let field = dict.valueForKey("IsSecurityPin")![i] as? String {
+            if let field = dict.valueForKey("IsSecurityPin") as? String {
                 IsSecurityPin = field
             }else{
                 IsSecurityPin = ""
             }
             let  IsSignedIn:Int!
-            if let field = dict.valueForKey("IsSignedIn")![i]  {
+            if let field = dict.valueForKey("IsSignedIn")  {
                 IsSignedIn = field as! Int
             }else{
                 IsSignedIn = 0
             }
-            let  LoginCode: Int!
-            if let field = dict.valueForKey("LoginCode")![i]  {
-                LoginCode = field as! Int
+            let  LoginCode: String!
+            if let field = dict.valueForKey("LoginCode")  {
+                LoginCode = field as! String
             }else{
-                LoginCode = 0
+                LoginCode = ""
             }
             
             let  LastName:String!
-            if let field = dict.valueForKey("LastName")! [i]  as? String{
+            if let field = dict.valueForKey("LastName")  as? String{
                 LastName = field
             }else{
                 LastName = ""
             }
             let  LoginId:String!
-            if let field = dict.valueForKey("LoginId")! [i]  as? String{
+            if let field = dict.valueForKey("LoginId")  as? String{
                 LoginId = field
             }else{
                 LoginId = ""
             }
 
             let  NFCTagId:String!
-            if let field = dict.valueForKey("NFCTagId")! [i]  as? String{
+            if let field = dict.valueForKey("NFCTagId")  as? String{
                 NFCTagId = field
             }else{
                 NFCTagId = ""
             }
             
             let  Project:String!
-            if let field = dict.valueForKey("Project")![i] as? String  {
+            if let field = dict.valueForKey("Project") as? String  {
                 Project = field
             }else{
                 Project = ""
             }
             
             let  ProjectId:Int!
-            if let field = dict.valueForKey("ProjectId")![i]  {
+            if let field = dict.valueForKey("ProjectId")  {
                 ProjectId = field as! Int
             }else{
                 ProjectId = 0
@@ -196,15 +250,15 @@ class databaseFile: NSObject {
             
             
             let  SignInAt :String!
-            if let field = dict.valueForKey("SignInAt")![i] as? String {
+            if let field = dict.valueForKey("SignInAt") as? String {
                 SignInAt = field
             }else{
                 SignInAt = ""
             }
             
             let  SignOutAt:String!
-            if let field = dict.valueForKey("SignOutAt")![i]  {
-                SignOutAt = field as! String
+            if let field = dict.valueForKey("SignOutAt") as? String{
+                SignOutAt = field 
             }else{
                 SignOutAt = ""
             }
@@ -212,7 +266,7 @@ class databaseFile: NSObject {
             
             
             let  SupervisorId: Int!
-            if let field = dict.valueForKey("SupervisorId")![i]  {
+            if let field = dict.valueForKey("SupervisorId")  {
                 SupervisorId = field as! Int
             }else{
                 SupervisorId = 0
@@ -220,44 +274,44 @@ class databaseFile: NSObject {
             
             
             let  SignedInHours: Int!
-            if let field = dict.valueForKey("SignedInHours")![i]  {
+            if let field = dict.valueForKey("SignedInHours")  {
                 SignedInHours = field as! Int
             }else{
                 SignedInHours = 0
             }
             
             let  TaskActivityId: Int!
-            if let field = dict.valueForKey("TaskActivityId")![i]  {
+            if let field = dict.valueForKey("TaskActivityId")  {
                 TaskActivityId = field as! Int
             }else{
                 TaskActivityId = 0
             }
             
             let  UserTypeId: Int!
-            if let field = dict.valueForKey("UserTypeId")![i]  {
+            if let field = dict.valueForKey("UserTypeId")  {
                 UserTypeId = field as! Int
             }else{
                 UserTypeId = 0
             }
             
             let  WorksiteId: Int!
-            if let field = dict.valueForKey("WorksiteId")![i]  {
+            if let field = dict.valueForKey("WorksiteId")  {
                 WorksiteId = field as! Int
             }else{
                 WorksiteId = 0
             }
             
             let  Worksite:String!
-            if let field = dict.valueForKey("Worksite")![i]  {
+            if let field = dict.valueForKey("Worksite") as? String {
                 Worksite = field as! String
             }else{
                 Worksite = ""
             }
             
             
-            if teamIdsArr.containsObject("\(SupervisorId!)") {
+            if teamIdsArr.containsObject("\(Id!)") {
                 do {
-                    try database.executeUpdate("UPDATE teamData SET ActivityId ?, Company ?, CompanyId ? ,Department ?, DepartmentId ?, FirstName ?,FullName ?, Id ?, IsNightShift ?,IsSecurityPin ?, IsSignedIn ?, LastName ?,LoginCode ?, LoginId ?, NFCTagId ?, Project ? ,ProjectId ?, SignInAt ?, SignOutAt ?,SignedInHours ?,  TaskActivityId ?,UserTypeId ?, Worksite ?, WorksiteId ? WHERE SupervisorId=?", values: [ActivityId , Company , CompanyId ,Department , DepartmentId , FirstName ,FullName , Id , IsNightShift ,IsSecurityPin , IsSignedIn , LastName ,LoginCode , LoginId , NFCTagId , Project  ,ProjectId , SignInAt , SignOutAt ,SignedInHours ,  TaskActivityId ,UserTypeId , Worksite , WorksiteId,SupervisorId])
+                    try database.executeUpdate("UPDATE teamData SET ActivityId ?, Company ?, CompanyId ? ,Department ?, DepartmentId ?, FirstName ?,FullName ?, SupervisorId ?, IsNightShift ?,IsSecurityPin ?, IsSignedIn ?, LastName ?,LoginCode ?, LoginId ?, NFCTagId ?, Project ? ,ProjectId ?, SignInAt ?, SignOutAt ?,SignedInHours ?,  TaskActivityId ?,UserTypeId ?, Worksite ?, WorksiteId ? WHERE Id=?", values: [ActivityId , Company , CompanyId ,Department , DepartmentId , FirstName ,FullName , SupervisorId , IsNightShift ,IsSecurityPin , IsSignedIn , LastName ,LoginCode , LoginId , NFCTagId , Project  ,ProjectId , SignInAt , SignOutAt ,SignedInHours ,  TaskActivityId ,UserTypeId , Worksite , WorksiteId,Id])
                 } catch let error as NSError {
                     print("failed: \(error.localizedDescription)")
                 }
@@ -275,11 +329,6 @@ class databaseFile: NSObject {
             
         }
         database.close()
-        
-        
-        
-        
-        
     }
     
 }

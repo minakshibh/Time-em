@@ -52,7 +52,7 @@ class dashboardViewController: UIViewController {
 //            let userDict:NSMutableDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(decoded) as! NSMutableDictionary
 //            print(userDict)
 //            self.currentUser =  User(dict: userDict.valueForKey(loginID) as! [String : AnyObject])
-            
+        if self.currentUser != nil {
             if self.currentUser.IsSignIn == 0 {
                 
                 self.viewStartWorking.alpha = 0
@@ -70,11 +70,13 @@ class dashboardViewController: UIViewController {
                     }, completion: nil)
             }
         }
+        }
         
     }
     
     func checkActiveInacive() {
         self.getCurrentUser()
+        if self.currentUser != nil {
         if self.currentUser.IsSignIn == 0 {
         self.btnUserInfo.setImage(UIImage(named: "user_inactive"), forState: .Normal)
          imagePersonMenu.image = UIImage(named: "user_inactive")
@@ -83,8 +85,8 @@ class dashboardViewController: UIViewController {
             self.btnUserInfo.setImage(UIImage(named: "user_active"), forState: .Normal)
             imagePersonMenu.image = UIImage(named: "user_active")
             imageSyncMenu.image = UIImage(named: "sync - green")
+            }
         }
-
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -177,8 +179,28 @@ class dashboardViewController: UIViewController {
          } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
+        database.close()
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("DELETE FROM teamData", values: nil )
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+        
+        
+        
         NSUserDefaults.standardUserDefaults().removeObjectForKey("userLoggedIn")
 
+        
+        
+        
+        
         let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")         
         self.presentViewController(loginVC!, animated: true, completion: nil)
         

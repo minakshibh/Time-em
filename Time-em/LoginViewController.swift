@@ -39,11 +39,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         if NSUserDefaults.standardUserDefaults().valueForKey("userLoggedIn") != nil {
             main{
                 self.getCurrentUser()
+                if self.currentUser != nil {
             if self.currentUser.Id != 0 {
                 delay(0.001){
                 self.performSegueWithIdentifier("homeView", sender: self)
+                            }
+                    }
                 }
-            }
             }
         }
         

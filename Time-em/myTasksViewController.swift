@@ -18,14 +18,15 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     var TimeStamp:String!
     var taskDataArray:NSMutableArray! = []
     @IBOutlet var btnBack: UIButton!
+    var currentUserID:String! = nil
     
-    
+    @IBOutlet var btnSignIn: UIButton!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.getDataFromDatabase()
+        
         // Do any additional setup after loading the view.
         
         self.calendarView = CLWeeklyCalendarView(frame: CGRectMake(0, 0,viewCalanderBackground.frame.size.width, viewCalanderBackground.frame.size.height))
@@ -34,7 +35,27 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
          NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.usertasksResponse), name: "com.time-em.usertaskResponse", object: nil)
-        getuserTask("10", createdDate: "12/22/2015")
+        
+        if currentUserID != nil{
+            delay(0.001){
+           let height = self.btnSignIn.frame.size.height
+        self.btnSignIn.hidden = true
+           
+                
+                print(self.viewCalanderBackground.frame)
+            self.viewCalanderBackground.frame = CGRectMake(self.viewCalanderBackground.frame.origin.x, self.viewCalanderBackground.frame.origin.y-height, self.viewCalanderBackground.frame.size.width, self.viewCalanderBackground.frame.size.height)
+                print(self.viewCalanderBackground.frame)
+                 print(self.tableView.frame)
+            self.tableView.frame = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y-height, self.tableView.frame.size.width, self.tableView.frame.size.height+height)
+                print(self.tableView.frame)
+            }
+            
+            self.getDataFromDatabase(currentUserID)
+            getuserTask(currentUserID, createdDate: "12-22-2015")
+        }else{
+        self.getDataFromDatabase("10")
+        getuserTask("10", createdDate: "12-22-2015")
+        }
         
          tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "commentCellss")
         
@@ -57,22 +78,29 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         print(date)
     }
     
-    func getDataFromDatabase () {
-        var databaseFetch = databaseFile()
-      taskDataArray = databaseFetch.getTasksForUserID("10")
-    print(taskDataArray)
+    func getDataFromDatabase (id:String) {
+        let databaseFetch = databaseFile()
+      taskDataArray = databaseFetch.getTasksForUserID(id)
+     print(taskDataArray)
         tableView.reloadData()
     }
     
     
     func getuserTask(userId:String,createdDate:String){
         let apiCall = ApiRequest()
+        if NSUserDefaults.standardUserDefaults().objectForKey("taskTimeStamp") != nil {
+        var data: NSData = (NSUserDefaults.standardUserDefaults().objectForKey("taskTimeStamp") as? NSData)!
+            var dict = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
+            
+            if dict.valueForKey(userId) != nil {
+              TimeStamp = "\(dict.valueForKey(userId)!)"
+            }else{
+                TimeStamp = ""
+            }
+            
 
-
-        if NSUserDefaults.standardUserDefaults().valueForKey("TimeStamp") != nil{
-            TimeStamp = "\(NSUserDefaults.standardUserDefaults().valueForKey("TimeStamp")!)"
         }else{
-            TimeStamp = ""
+             TimeStamp = ""
         }
         
     apiCall.getUserTask(userId, createdDate: createdDate,TimeStamp: TimeStamp, view: self.view)
@@ -96,7 +124,12 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             self.presentViewController(alert, animated: true, completion: nil)
             
         }
-        self.tableView.reloadData()
+        
+        if currentUserID != nil{
+            self.getDataFromDatabase(currentUserID)
+        }else{
+            self.getDataFromDatabase("10")
+        }
     }
 
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
@@ -193,6 +226,8 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     
     @IBAction func btnBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
+    }
+    @IBAction func btnSignIn(sender: AnyObject) {
     }
     
 }
