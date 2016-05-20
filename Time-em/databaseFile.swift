@@ -53,6 +53,32 @@ class databaseFile: NSObject {
         return dataArray
     }
     
+    func getAssignedTasks() -> NSMutableArray {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        let dataArray:NSMutableArray! = []
+        do {
+            let rs = try database.executeQuery("select * from assignedTaskList", values: nil)
+            while rs.next() {
+                let dict: NSMutableDictionary = [:]
+                dict.setObject(rs.stringForColumn("TaskId"), forKey: "taskId")
+                dict.setObject(rs.stringForColumn("TaskName"), forKey: "taskName")
+                dataArray.addObject(dict)
+                }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+        database.close()
+        return dataArray
+    }
+    
     func getTeamForUserID(ID:String) -> NSMutableArray {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
@@ -331,4 +357,65 @@ class databaseFile: NSObject {
         database.close()
     }
     
+    func insertAssignedListData(dataArr:NSArray)  {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        
+        
+        let teamIdsArr:NSMutableArray = []
+        do {
+            
+            let rs = try database.executeQuery("select * from assignedTaskList", values: nil)
+            while rs.next() {
+                let x = rs.stringForColumn("TaskId")
+                teamIdsArr.addObject(x)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+         for i in 0 ..< dataArr.count {
+            let dict = dataArr[i]
+            
+            let  TaskId:Int!
+            if let field = dict.valueForKey("TaskId")  {
+                TaskId = field as! Int
+            }else{
+                TaskId = 0
+            }
+            
+            let  TaskName:String!
+            if let field = dict.valueForKey("TaskName") as? String{
+                TaskName = field as? String ?? ""
+            }else{
+                TaskName = ""
+            }
+            
+            if teamIdsArr.containsObject("\(TaskId!)") {
+                do {
+                    try database.executeUpdate("UPDATE assignedTaskList SET TaskId ?, TaskName ?", values: [TaskId , TaskName])
+                } catch let error as NSError {
+                    print("failed: \(error.localizedDescription)")
+                }
+                
+            }else{
+                
+                do {
+                    //                    try database.executeUpdate("delete * from  tasksData", values: nil)
+                    try database.executeUpdate("insert into assignedTaskList (TaskId , TaskName ) values (?, ?)", values: [TaskId , TaskName])
+                    
+                } catch let error as NSError {
+                    print("failed: \(error.localizedDescription)")
+                }
+            }
+            
+        }
+        database.close()
+    }
 }

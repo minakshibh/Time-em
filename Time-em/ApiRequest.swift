@@ -68,6 +68,11 @@ class ApiRequest: NSObject {
                 print("failed: \(error.localizedDescription)")
             }
             
+            do {
+                try database.executeUpdate("create table assignedTaskList(TaskId text, TaskName text)", values: nil)
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
             
             do {
                 try database.executeUpdate("insert into UserData (userId, userData, loggedInUser) values (?, ?, ?)", values: [currentUsers.LoginId, encodedData, "true"])
@@ -674,8 +679,59 @@ class ApiRequest: NSObject {
     
     
     
-    
-    
+    func GetAssignedTaskIList(userId:String,view:UIView)  {
+        let notificationKey = "com.time-em.getTeamResponse"
+        
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/Task/GetAssignedTaskIList", parameters: ["userId":userId])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
+                            let userInfo = ["response" : "FAILURE"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            return
+                        }
+                        
+                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
+                            
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            
+                            let dict = JSON.valueForKey("ReturnKeyValueViewModel") as! NSArray
+                            
+                            let database = databaseFile()
+                            database.insertAssignedListData(dict)
+                            
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+                        }else{
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+    }
     
     
 }
