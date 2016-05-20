@@ -33,14 +33,14 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate{
 //        dropDown.dataSource = [
 //            "Add New Task"
 //        ]
-        
-        for var i = 0; i < assignedTasksArray.count; i += 1 {
+        var dropdownArray = NSMutableArray()
+        dropdownArray = ["Add New Task"]
+        for i in 0 ..< assignedTasksArray.count {
             let taskNameArray:NSMutableDictionary = assignedTasksArray .objectAtIndex(i) as! NSMutableDictionary
-            
-            dropDown.dataSource = [taskNameArray.valueForKey("taskName")! as! String]
+            dropdownArray.addObject(taskNameArray.valueForKey("taskName")! as! String)
         }
         
-  
+        dropDown.dataSource = dropdownArray.mutableCopy() as! [String]
         //~~ Add Value to textfield from dropdown
         dropDown.selectionAction = { [unowned self] (index, item) in
             
