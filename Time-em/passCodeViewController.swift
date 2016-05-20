@@ -7,16 +7,15 @@
 //
 
 import UIKit
-import BKPasscodeView
 
-class passCodeViewController:BKPasscodeViewController,BKPasscodeViewControllerDelegate {
+class passCodeViewController: UIViewController,UITextFieldDelegate {
 
     @IBOutlet var btnForgotPin: UIButton!
     @IBOutlet var txtFieldone: UITextField!
     @IBOutlet var txtFieldtwo: UITextField!
     @IBOutlet var txtFieldthree: UITextField!
     @IBOutlet var txtFieldFour: UITextField!
-  
+    var timer:NSTimer!
     
     
     override func viewDidLoad() {
@@ -26,20 +25,17 @@ class passCodeViewController:BKPasscodeViewController,BKPasscodeViewControllerDe
         // The output below is limited by 1 KB.
         // Please Sign Up (Free!) to remove this limitation.
         
-        var viewController: BKPasscodeViewController = BKPasscodeViewController(nibName: nil, bundle: nil)
-        viewController.delegate = self
-        viewController.type = BKPasscodeViewControllerNewPasscodeType
-        viewController.passcodeStyle = BKPasscodeInputViewNumericPasscodeStyle
-        viewController.touchIDManager = BKTouchIDManager(keychainServiceName: "sample")
-        viewController.touchIDManager.promptText = "Scan fingerprint to authenticate"
-        // You can set prompt text.
-        var navController: UINavigationController = UINavigationController(rootViewController: viewController)
-        self.presentViewController(navController, animated: true, completion: { _ in })
+        txtFieldone.becomeFirstResponder()
 
 
 
     }
-
+    
+    override func viewDidDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+    }
+    
     func keyPressed(notification:NSNotification){
         
         let userInfo:NSDictionary = notification.userInfo!
@@ -86,69 +82,62 @@ class passCodeViewController:BKPasscodeViewController,BKPasscodeViewControllerDe
         
       let userInfo = ["response" : textField]
         NSNotificationCenter.defaultCenter().postNotificationName("keyPressed", object: nil, userInfo: userInfo)
+        if textField == txtFieldone{
+            main {   self.txtFieldtwo.becomeFirstResponder() }
+        }else if textField == txtFieldtwo{
+            main {    self.txtFieldthree.becomeFirstResponder() }
+        }else if textField == txtFieldthree{
+            main {    self.txtFieldFour.becomeFirstResponder() }
+        }else if textField == txtFieldFour{
+            main {
+                self.timer = NSTimer.scheduledTimerWithTimeInterval(0.8, target: self, selector: #selector(passCodeViewController.callFunction), userInfo: nil, repeats: false)
+ }
+        }
+
         
         return true
+    }
+    
+    func callFunction()  {
+        loginThroughPasscode()
+    }
+    
+    
+    
+    func loginThroughPasscode () {
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(passCodeViewController.displayResponse), name: "com.time-em.passcodeloginResponse", object: nil)
+
+        
+    let password = "\(txtFieldone.text!)\(txtFieldtwo.text!)\(txtFieldthree.text!)\(txtFieldFour.text!)"
+    let currentUser_LoginId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginId") as? String
+        let api = ApiRequest()
+        api.loginThroughPasscode("admin", SecurityPin: password, view: self.view)
     }
     
     func textFieldShouldEndEditing(textField: UITextField) -> Bool {  //delegate method
         print("textFieldShouldEndEditing")
         return true
     }
+    
     func textFieldShouldReturn(textField: UITextField) -> Bool {   //delegate method
-        
         print("textFieldShouldReturn")
         return true
     }
-
-    var passcode:String!
-    var lockUntilDate:NSDate!
-    var failedAttempts:Int!
     
-    func passcodeViewController(aViewController: BKPasscodeViewController!, authenticatePasscode aPasscode: String!, resultHandler aResultHandler: ((Bool) -> Void)!) {
-        if (aPasscode == self.passcode) {
-            self.lockUntilDate = nil
-            self.failedAttempts = 0
-            aResultHandler(true)
-        }
-        else {
-            aResultHandler(false)
-        }
-    }
-
-    func passcodeViewControllerDidFailAttempt(aViewController: BKPasscodeViewController!) {
-        if self.failedAttempts > 5 {
-            var timeInterval: NSTimeInterval = 60
-            if self.failedAttempts > 6 {
-                var multiplier: Int = self.failedAttempts - 6
-                timeInterval = (5 * 60)
-                if timeInterval > 3600 * 24 {
-                    timeInterval = 3600 * 24
-                }
-            }
-            self.lockUntilDate = NSDate(timeIntervalSinceNow: timeInterval)
-        }
-
-    }
-
-    func passcodeViewControllerNumberOfFailedAttempts(aViewController: BKPasscodeViewController!) -> UInt {
-        return 3
-    }
-    
-    func passcodeViewControllerLockUntilDate(aViewController: BKPasscodeViewController) -> NSDate {
-        return self.lockUntilDate
-    }
-    func passcodeViewController(aViewController: BKPasscodeViewController!, didFinishWithPasscode aPasscode: String!) {
-        switch aViewController.type {
-            
-        case BKPasscodeViewControllerNewPasscodeType, BKPasscodeViewControllerChangePasscodeType:
-            self.passcode = aPasscode
-            self.failedAttempts = 0
-            self.lockUntilDate = nil
-        default:
-            break
-        }
+    func displayResponse(notification:NSNotification) {
         
-        aViewController.dismissViewControllerAnimated(true, completion: { _ in })
-
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        var alert :UIAlertController!
+        if status.lowercaseString == "success"{
+            alert = UIAlertController(title: "Time'em", message: "Login Successfull", preferredStyle: UIAlertControllerStyle.Alert)
+            self.performSegueWithIdentifier("passcode_dashboard", sender: self)
+            
+        }else{
+            alert = UIAlertController(title: "Time'em", message: "Login Failed", preferredStyle: UIAlertControllerStyle.Alert)
+        }
+        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 }

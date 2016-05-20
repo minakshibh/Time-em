@@ -12,8 +12,6 @@ import MBProgressHUD
 import FMDB
 
 class ApiRequest: NSObject {
-
-    
     
     func loginApi(loginId:String,password:String,view:UIView) {
         let notificationKey = "com.time-em.loginResponse"
@@ -34,7 +32,8 @@ class ApiRequest: NSObject {
             let currentUsers =  User(dict: JSON as! NSMutableDictionary)
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Id)", forKey: "currentUser_id")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.IsSignIn)", forKey: "currentUser_IsSignIn")
-            
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.ActivityId)", forKey: "currentUser_ActivityId")
+             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginId)", forKey: "currentUser_LoginId")
             
             var dictionary:NSMutableDictionary = [:]
             dictionary = currentUsers.returnDict()
@@ -102,7 +101,81 @@ class ApiRequest: NSObject {
            
         }
     
+     // http://timeemapi.azurewebsites.net/api/User/GetValidateUserByPin?loginId=admin&SecurityPin
+    func loginThroughPasscode(loginId:String,SecurityPin:String,view:UIView) {
+        let notificationKey = "com.time-em.passcodeloginResponse"
+        
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/User/GetValidateUserByPin", parameters: ["loginId":loginId,"SecurityPin":SecurityPin])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        let userInfo = ["response" : "SUCCESS"]
+                        
+                        if "\(JSON.valueForKey("Message")!)" == "Credentials not matched!" {
+                            let userInfo = ["response" : "FAILURE"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            return
+                        }
+                        
+                        let currentUsers =  User(dict: JSON as! NSMutableDictionary)
+                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Id)", forKey: "currentUser_id")
+                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.IsSignIn)", forKey: "currentUser_IsSignIn")
+                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.ActivityId)", forKey: "currentUser_ActivityId")
+                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginId)", forKey: "currentUser_LoginId")
+                        
+                        var dictionary:NSMutableDictionary = [:]
+                        dictionary = currentUsers.returnDict()
+                        
+                        let encodedData = NSKeyedArchiver.archivedDataWithRootObject(dictionary)
+                        
+                        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+                        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+                        
+                        let database = FMDatabase(path: fileURL.path)
+                        
+                        if !database.open() {
+                            print("Unable to open database")
+                            return
+                        }
+
+                        do {
+                            try database.executeUpdate("insert into UserData (userId, userData, loggedInUser) values (?, ?, ?)", values: [currentUsers.LoginId, encodedData, "true"])
+                            
+                        } catch let error as NSError {
+                            print("failed: \(error.localizedDescription)")
+                        }
+                        
+                        database.close()
+                        NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "userLoggedIn")
+                        
+                       
+                        
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+        
+    }
     
+
     func getUserTask(userId:String,createdDate:String,TimeStamp:String,view:UIView) {
         
         let notificationKey = "com.time-em.usertaskResponse"
@@ -122,6 +195,7 @@ class ApiRequest: NSObject {
                     }else{
                         let userInfo = ["response" : "Failure"]
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        return
                     }
                     
                     
@@ -379,7 +453,7 @@ class ApiRequest: NSObject {
                             var encodedData:NSData!
                             var currentUserId:String!
                             do {
-                                
+                                NSUserDefaults.standardUserDefaults().setObject("\(0)", forKey: "currentUser_IsSignIn")
                                 let rs = try database.executeQuery("select * from userdata", values: nil)
                                 while rs.next() {
                                      currentUserId = rs.stringForColumn("userId")
@@ -466,7 +540,7 @@ class ApiRequest: NSObject {
                             var encodedData:NSData!
                             var currentUserId:String!
                             do {
-                                
+                                NSUserDefaults.standardUserDefaults().setObject("\(1)", forKey: "currentUser_IsSignIn")
                                 let rs = try database.executeQuery("select * from userdata", values: nil)
                                 while rs.next() {
                                     currentUserId = rs.stringForColumn("userId")

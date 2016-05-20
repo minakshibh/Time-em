@@ -25,19 +25,28 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         tableView.reloadData()
     }
 
+    override func viewDidDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
     func fetchTeamList() {
+        let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+
             let api = ApiRequest()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.displayResponse), name: "com.time-em.getTeamResponse", object: nil)
-            api.getTeamDetail("2", TimeStamp: "", view: self.view)
+            api.getTeamDetail(logedInUserId!, TimeStamp: "", view: self.view)
     }
     func fetchTeamDataFromDatabase() {
+        let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+
         var databaseFetch = databaseFile()
-        teamDataArray = databaseFetch.getTeamForUserID("2")
+        teamDataArray = databaseFetch.getTeamForUserID(logedInUserId!)
         print(teamDataArray)
         tableView.reloadData()
     }
