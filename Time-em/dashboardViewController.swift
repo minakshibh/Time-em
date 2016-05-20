@@ -30,30 +30,12 @@ class dashboardViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-      
-        
-      
-        main{
-            
-            
-            self.getCurrentUser()
-            
-//            let loginID = NSUserDefaults.standardUserDefaults().valueForKey("currentUser") as! String
-//            let decoded  = NSUserDefaults.standardUserDefaults().objectForKey(loginID) as! NSData
-//            
-////            var database = DBManager()
-////            var data:NSData = database.getUserData(loginID)
-////            
-////            let dictionary:NSDictionary? = NSKeyedUnarchiver.unarchiveObjectWithData(data)! as? NSDictionary
-//            
-//            
-//            
-//            let userDict:NSMutableDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(decoded) as! NSMutableDictionary
-//            print(userDict)
-//            self.currentUser =  User(dict: userDict.valueForKey(loginID) as! [String : AnyObject])
-        if self.currentUser != nil {
-            if self.currentUser.IsSignIn == 0 {
+
+
+            if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
+                
+                
+            if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == 0 {
                 
                 self.viewStartWorking.alpha = 0
                 self.viewStartWorking.hidden = false
@@ -61,23 +43,29 @@ class dashboardViewController: UIViewController {
                     self.viewStartWorking.alpha = 1
                     }, completion: nil)
                 
-            }else{
+                }else{
                 self.viewStartWorking.alpha = 0
                 self.viewStartWorking.hidden = false
                 self.btnSignInOutPOPUP.setTitle("SIGN OUT", forState: .Normal)
                 UIView.animateWithDuration(1.0, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: {
                     self.viewStartWorking.alpha = 1
                     }, completion: nil)
+                }
             }
-        }
-        }
+        
         
     }
-    
+    override func viewDidDisappear(animated: Bool) {
+        btnSetting.backgroundColor = UIColor.clearColor()
+        btnMyTeam.backgroundColor = UIColor.clearColor()
+        btnNotifications.backgroundColor = UIColor.clearColor()
+        btnMyTasks.backgroundColor = UIColor.clearColor()
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     func checkActiveInacive() {
-        self.getCurrentUser()
-        if self.currentUser != nil {
-        if self.currentUser.IsSignIn == 0 {
+        if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
+        if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == 0  {
         self.btnUserInfo.setImage(UIImage(named: "user_inactive"), forState: .Normal)
          imagePersonMenu.image = UIImage(named: "user_inactive")
         imageSyncMenu.image = UIImage(named: "sync- red")
@@ -140,13 +128,19 @@ class dashboardViewController: UIViewController {
         let buttontitle:String = (btnSignInOutPOPUP.titleLabel!.text)!
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dashboardViewController.displayResponse), name: "com.time-em.signInOutResponse", object: nil)
         
+      let ActivityId =  NSUserDefaults.standardUserDefaults().valueForKey("currentUser_ActivityId") as! String
+    let userId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as! String
+     let loginid = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginId") as! String
+        
+        
+        
         if buttontitle.lowercaseString == "sign in" {
             let api = ApiRequest()
-            api.signInUser("\(currentUser.Id)", LoginId: "\(currentUser.LoginId)", view: self.view)
+            api.signInUser(userId, LoginId: loginid, view: self.view)
         }else{
             let api = ApiRequest()
             
-            api.signOutUser("\(currentUser.Id)", LoginId: currentUser.LoginId, ActivityId: "\(currentUser.ActivityId)", view: self.view)
+            api.signOutUser(userId, LoginId: loginid, ActivityId: ActivityId, view: self.view)
         }
         
         
@@ -196,12 +190,12 @@ class dashboardViewController: UIViewController {
         
         
         NSUserDefaults.standardUserDefaults().removeObjectForKey("userLoggedIn")
-
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_id")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_IsSignIn")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_ActivityId")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_LoginId")
         
-        
-        
-        
-        let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")         
+        let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")
         self.presentViewController(loginVC!, animated: true, completion: nil)
         
     }
@@ -263,7 +257,6 @@ class dashboardViewController: UIViewController {
         }
         
         do {
-
             let rs = try database.executeQuery("select * from userdata", values: nil)
             while rs.next() {
                 let x = rs.stringForColumn("userId")

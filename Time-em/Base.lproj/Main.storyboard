@@ -175,6 +175,7 @@
                         <outlet property="txtPassword" destination="XaQ-Xp-OHP" id="5Up-tj-Xqi"/>
                         <outlet property="txtUserID" destination="j9Z-uC-WDP" id="bk4-St-5H4"/>
                         <segue destination="fx4-25-jVh" kind="show" identifier="homeView" id="1Ot-67-owb"/>
+                        <segue destination="wBf-7a-hu7" kind="show" identifier="login_passcode" id="DD1-z0-duf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XR4-OD-xoA" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -245,7 +246,7 @@
                                         <color key="backgroundColor" red="0.12549019610000001" green="0.17254901959999999" blue="0.25882352939999997" alpha="1" colorSpace="calibratedRGB"/>
                                         <color key="textColor" red="0.4823529412" green="0.52156862749999999" blue="0.61176470589999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="17"/>
-                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="decimalPad" returnKeyType="next"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="color" keyPath="_placeholderLabel.textColor">
                                                 <color key="value" red="0.4823529412" green="0.52156862749999999" blue="0.61176470589999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -266,7 +267,7 @@
                                         <color key="backgroundColor" red="0.12549019610000001" green="0.17254901959999999" blue="0.25882352939999997" alpha="1" colorSpace="calibratedRGB"/>
                                         <color key="textColor" red="0.4823529412" green="0.52156862749999999" blue="0.61176470589999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="17"/>
-                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="decimalPad" returnKeyType="next"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="color" keyPath="_placeholderLabel.textColor">
                                                 <color key="value" red="0.4823529412" green="0.52156862749999999" blue="0.61176470589999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -287,7 +288,7 @@
                                         <color key="backgroundColor" red="0.12549019610000001" green="0.17254901959999999" blue="0.25882352939999997" alpha="1" colorSpace="calibratedRGB"/>
                                         <color key="textColor" red="0.4823529412" green="0.52156862749999999" blue="0.61176470589999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" name="Roboto-Regular" family="Roboto" pointSize="17"/>
-                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="decimalPad" returnKeyType="next"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="color" keyPath="_placeholderLabel.textColor">
                                                 <color key="value" red="0.4823529412" green="0.52156862749999999" blue="0.61176470589999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -310,11 +311,12 @@
                         <outlet property="txtFieldone" destination="HQH-uL-Siq" id="MY9-R4-IN3"/>
                         <outlet property="txtFieldthree" destination="dnL-mW-mO6" id="diy-Zo-sba"/>
                         <outlet property="txtFieldtwo" destination="AKS-Hb-Pel" id="xhb-d3-FPX"/>
+                        <segue destination="fx4-25-jVh" kind="show" identifier="passcode_dashboard" id="VHT-wx-fcN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ebY-vB-9P7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="39" y="-905"/>
+            <point key="canvasLocation" x="23" y="-621"/>
         </scene>
         <!--Dashboard View Controller-->
         <scene sceneID="bTW-CZ-9Y8">
@@ -875,7 +877,7 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cbS-Rh-LJl">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sun" translatesAutoresizingMaskIntoConstraints="NO" id="cbS-Rh-LJl">
                                 <rect key="frame" x="20" y="701" width="15" height="15"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="CXW-Ea-wBz"/>
@@ -891,7 +893,7 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="JVV-0I-1bB">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="moon" translatesAutoresizingMaskIntoConstraints="NO" id="JVV-0I-1bB">
                                 <rect key="frame" x="137" y="701" width="15" height="15"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="15" id="R1y-oy-BXb"/>
@@ -1088,9 +1090,11 @@
         <image name="login-envelop" width="15" height="15"/>
         <image name="login-lock" width="15" height="15"/>
         <image name="logo" width="132" height="29"/>
+        <image name="moon" width="14" height="14"/>
         <image name="notification_Dashboard" width="18" height="17"/>
         <image name="previous-icon" width="15" height="15"/>
         <image name="setting" width="18" height="17"/>
+        <image name="sun" width="11" height="11"/>
         <image name="sync- red" width="15" height="15"/>
         <image name="task" width="18" height="17"/>
         <image name="toggle" width="7" height="15"/>
@@ -1100,5 +1104,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="ZMo-2T-2aZ"/>
+        <segue reference="VHT-wx-fcN"/>
     </inferredMetricsTieBreakers>
 </document>

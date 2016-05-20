@@ -36,18 +36,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func viewWillAppear(animated: Bool) {
         print("\(NSUserDefaults.standardUserDefaults().valueForKey("userLoggedIn"))")
         
-        if NSUserDefaults.standardUserDefaults().valueForKey("userLoggedIn") != nil {
-            main{
-                self.getCurrentUser()
-                if self.currentUser != nil {
-            if self.currentUser.Id != 0 {
+        if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
+    if (NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginId") != nil){
                 delay(0.001){
-                self.performSegueWithIdentifier("homeView", sender: self)
+                self.performSegueWithIdentifier("login_passcode", sender: self)
                             }
-                    }
-                }
-            }
         }
+            
+      }
         
     }
     override func didReceiveMemoryWarning() {
@@ -63,7 +59,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBAction func btnForgotPassword(sender: AnyObject) {
     }
 
-    
+    override func viewDidDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+    }
     
     
     

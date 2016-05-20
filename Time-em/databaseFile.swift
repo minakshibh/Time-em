@@ -208,8 +208,8 @@ class databaseFile: NSObject {
                 IsSignedIn = 0
             }
             let  LoginCode: String!
-            if let field = dict.valueForKey("LoginCode")  {
-                LoginCode = field as! String
+            if let field = dict.valueForKey("LoginCode") as? String  {
+                LoginCode = field
             }else{
                 LoginCode = ""
             }

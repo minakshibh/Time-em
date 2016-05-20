@@ -19,14 +19,18 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     var taskDataArray:NSMutableArray! = []
     @IBOutlet var btnBack: UIButton!
     var currentUserID:String! = nil
+    var selectedDate:String!
     
     @IBOutlet var btnSignIn: UIButton!
     
-    
+    override func viewDidDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
+        self.dateConversion(NSDate())
         // Do any additional setup after loading the view.
         
         self.calendarView = CLWeeklyCalendarView(frame: CGRectMake(0, 0,viewCalanderBackground.frame.size.width, viewCalanderBackground.frame.size.height))
@@ -35,33 +39,46 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
          NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.usertasksResponse), name: "com.time-em.usertaskResponse", object: nil)
+        let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+
+        
         
         if currentUserID != nil{
-            delay(0.001){
-           let height = self.btnSignIn.frame.size.height
-        self.btnSignIn.hidden = true
-           
-                
-                print(self.viewCalanderBackground.frame)
-            self.viewCalanderBackground.frame = CGRectMake(self.viewCalanderBackground.frame.origin.x, self.viewCalanderBackground.frame.origin.y-height, self.viewCalanderBackground.frame.size.width, self.viewCalanderBackground.frame.size.height)
-                print(self.viewCalanderBackground.frame)
-                 print(self.tableView.frame)
-            self.tableView.frame = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y-height, self.tableView.frame.size.width, self.tableView.frame.size.height+height)
-                print(self.tableView.frame)
-            }
+            
+//           let height = self.btnSignIn.frame.size.height
+//        self.btnSignIn.hidden = true
+//                print(self.viewCalanderBackground.frame)
+//            self.viewCalanderBackground.frame = CGRectMake(self.viewCalanderBackground.frame.origin.x, self.viewCalanderBackground.frame.origin.y-height, self.viewCalanderBackground.frame.size.width, self.viewCalanderBackground.frame.size.height)
+//                print(self.viewCalanderBackground.frame)
+//                 print(self.tableView.frame)
+//            self.tableView.frame = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y-height, self.tableView.frame.size.width, self.tableView.frame.size.height+height)
+//                print(self.tableView.frame)
+            
             
             self.getDataFromDatabase(currentUserID)
-            getuserTask(currentUserID, createdDate: "12-22-2015")
+            getuserTask(currentUserID, createdDate: selectedDate)
         }else{
-        self.getDataFromDatabase("10")
-        getuserTask("10", createdDate: "12-22-2015")
+        self.getDataFromDatabase(logedInUserId!)
+        getuserTask(logedInUserId!, createdDate: selectedDate)
         }
         
          tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "commentCellss")
         
+       
+        changeSignINButton()
+        
     }
     
-    
+    func changeSignINButton()  {
+        var isCurrentUserSignIn = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")! as? String
+        if isCurrentUserSignIn == "0" {
+            btnSignIn.setTitle("Signin", forState: .Normal)
+            btnSignIn.setImage(UIImage(named: "SignIn"), forState: .Normal)
+        }else{
+            btnSignIn.setTitle("Signout", forState: .Normal)
+            btnSignIn.setImage(UIImage(named: "SignOut"), forState: .Normal)
+        }
+    }
     
     
     override func didReceiveMemoryWarning() {
@@ -76,7 +93,30 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     
     func dailyCalendarViewDidSelect(date: NSDate) {
         print(date)
+        let dateStr = "\(date)".componentsSeparatedByString(" ")[0]
+        let day = dateStr.componentsSeparatedByString("-")[2]
+        let month = dateStr.componentsSeparatedByString("-")[1]
+        let year = dateStr.componentsSeparatedByString("-")[0]
+        selectedDate = "\(month)-\(day)-\(year)"
+        if currentUserID != nil{
+            getuserTask(currentUserID, createdDate: selectedDate)
+        }else{
+         let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+           getuserTask(logedInUserId!, createdDate: selectedDate)
+        }
+
+        //12-22-2015
     }
+    func dateConversion (date:NSDate) {
+        let dateStr = "\(date)".componentsSeparatedByString(" ")[0]
+        let day = dateStr.componentsSeparatedByString("-")[2]
+        let month = dateStr.componentsSeparatedByString("-")[1]
+        let year = dateStr.componentsSeparatedByString("-")[0]
+        
+        selectedDate = "\(month)-\(day)-\(year)"
+        
+    }
+    
     
     func getDataFromDatabase (id:String) {
         let databaseFetch = databaseFile()
@@ -128,9 +168,31 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         if currentUserID != nil{
             self.getDataFromDatabase(currentUserID)
         }else{
-            self.getDataFromDatabase("10")
+             let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+            self.getDataFromDatabase(logedInUserId!)
         }
     }
+    func signInOutResponse(notification:NSNotification) {
+        
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        var alert :UIAlertController!
+        if status.lowercaseString == "success"{
+            
+            
+            
+        }else{
+            
+            alert = UIAlertController(title: "Time'em", message: "\(status)", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            
+        }
+        changeSignINButton()
+        
+    }
+
 
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
@@ -228,6 +290,25 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         self.dismissViewControllerAnimated(true, completion: {});
     }
     @IBAction func btnSignIn(sender: AnyObject) {
+        let buttontitle:String = (btnSignIn.titleLabel!.text)!
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.signInOutResponse), name: "com.time-em.signInOutResponse", object: nil)
+        
+        let ActivityId =  NSUserDefaults.standardUserDefaults().valueForKey("currentUser_ActivityId") as! String
+        let userId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as! String
+        let loginid = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginId") as! String
+        
+        
+        
+        if buttontitle.lowercaseString == "signin" {
+            let api = ApiRequest()
+            api.signInUser(userId, LoginId: loginid, view: self.view)
+        }else{
+            let api = ApiRequest()
+            
+            api.signOutUser(userId, LoginId: loginid, ActivityId: ActivityId, view: self.view)
+        }
+        
+
     }
     
 }
