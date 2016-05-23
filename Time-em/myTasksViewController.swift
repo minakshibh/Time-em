@@ -97,7 +97,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     }
     
     func changeSignINButton()  {
-        var isCurrentUserSignIn = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")! as? String
+        let isCurrentUserSignIn = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")! as? String
         if isCurrentUserSignIn == "0" {
             btnSignIn.setTitle("Signin", forState: .Normal)
             btnSignIn.setImage(UIImage(named: "SignIn"), forState: .Normal)

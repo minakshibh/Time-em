@@ -169,8 +169,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         if segue.identifier == "homeView"{
         
         }else if segue.identifier == "resetPassword"{
-            let destinationVC = segue.destinationViewController as! resetPinAndPassword
-            destinationVC.resetType = "Password"
+            let _nationVC = segue.destinationViewController as! resetPinAndPassword
+            _nationVC.resetType = "Password"
         }
     }
     func getCurrentUser() {

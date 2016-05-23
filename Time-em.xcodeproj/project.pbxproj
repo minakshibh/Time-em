@@ -48,6 +48,7 @@
 		F9F012991CF33495003698C6 /* DropDownCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9F012981CF33495003698C6 /* DropDownCell.xib */; };
 		F9F0129C1CF334A2003698C6 /* DropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F0129A1CF334A2003698C6 /* DropDown.swift */; };
 		F9F0129D1CF334A2003698C6 /* DropDownCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F0129B1CF334A2003698C6 /* DropDownCell.swift */; };
+		F9F0129F1CF33DA5003698C6 /* TaskDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F0129E1CF33DA5003698C6 /* TaskDetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +109,7 @@
 		F9F012981CF33495003698C6 /* DropDownCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = DropDownCell.xib; path = resources/DropDownCell.xib; sourceTree = SOURCE_ROOT; };
 		F9F0129A1CF334A2003698C6 /* DropDown.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DropDown.swift; path = src/DropDown.swift; sourceTree = SOURCE_ROOT; };
 		F9F0129B1CF334A2003698C6 /* DropDownCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DropDownCell.swift; path = src/DropDownCell.swift; sourceTree = SOURCE_ROOT; };
+		F9F0129E1CF33DA5003698C6 /* TaskDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -236,6 +238,7 @@
 		D9DA400D1CE9933C00D6B572 /* my-Tasks */ = {
 			isa = PBXGroup;
 			children = (
+				F9F0129E1CF33DA5003698C6 /* TaskDetailViewController.swift */,
 				D9DA400E1CE9AE4900D6B572 /* myTasksViewController.swift */,
 				D9D378041CECAC6D002E24D9 /* MyTeamViewController.swift */,
 				F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */,
@@ -462,6 +465,7 @@
 				D9AD391F1CE5CD8D005D5029 /* dashboardViewController.swift in Sources */,
 				D9DA40281CE9B28A00D6B572 /* NSDictionary+CL.m in Sources */,
 				D9DA401A1CE9B27100D6B572 /* DayTitleLabel.m in Sources */,
+				F9F0129F1CF33DA5003698C6 /* TaskDetailViewController.swift in Sources */,
 				D97005111CE328340036B5EA /* ApiRequest.swift in Sources */,
 				F9F012971CF33489003698C6 /* DPDUIView+Extension.swift in Sources */,
 				D970052C1CE355560036B5EA /* passCodeViewController.swift in Sources */,
