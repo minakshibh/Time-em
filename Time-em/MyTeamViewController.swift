@@ -15,9 +15,12 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         @IBOutlet var tableView: UITableView!
     var teamDataArray:NSMutableArray! = []
     var selectedUser:String!
+    var selectedUserFullname:String!
     
+    @IBOutlet var btnUserDetail: UIButton!
     
     override func viewDidLoad() {
+
         super.viewDidLoad()
         self.fetchTeamDataFromDatabase()
         self.fetchTeamList()
@@ -25,6 +28,15 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         tableView.reloadData()
     }
 
+    override func viewWillAppear(animated: Bool) {
+        if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0" {
+            btnUserDetail.setImage(UIImage(named: "user_inactive"), forState: .Normal)
+        }else{
+            btnUserDetail.setImage(UIImage(named: "user_active"), forState: .Normal)
+
+        }
+    }
+    
     override func viewDidDisappear(animated: Bool) {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         
@@ -100,6 +112,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let dict:NSMutableDictionary  = teamDataArray[indexPath.row] as! NSMutableDictionary
         selectedUser =  "\(dict["Id"]!)"
+        selectedUserFullname = "\(dict["FullName"]!)"
         self.performSegueWithIdentifier("myteam_mytask", sender: self)
     }
     
@@ -120,11 +133,13 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         fetchTeamDataFromDatabase()
     }
     
+    @IBAction func btnUserDetail(sender: AnyObject) {
+    }
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "myteam_mytask"{
             let mytask = (segue.destinationViewController as! myTasksViewController)
             mytask.currentUserID = selectedUser
-            
+            mytask.currentUserFullName = selectedUserFullname
             
         }
     }

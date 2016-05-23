@@ -18,8 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        window?.backgroundColor = UIColor.blackColor()
         self.createCopyOfDatabaseIfNeeded()
-        
+        UIApplication.sharedApplication().statusBarStyle = .LightContent
         return true
     }
 
@@ -48,23 +49,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func createCopyOfDatabaseIfNeeded() {
         // First, test for existence.
         // NSString *path = [[NSBundle mainBundle] pathForResource:@"shed_db" ofType:@"sqlite"];
-        var fileManager: NSFileManager = NSFileManager.defaultManager()
-        var error: NSError
-        var documentsDir: String = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,.UserDomainMask,true)[0]
-        var dbPath: String = documentsDir.stringByAppendingString("/Time-em.sqlite")
+        let fileManager: NSFileManager = NSFileManager.defaultManager()
+        let error: NSError
+        let documentsDir: String = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,.UserDomainMask,true)[0]
+        let dbPath: String = documentsDir.stringByAppendingString("/Time-em.sqlite")
         NSLog("db path %@", dbPath)
         NSLog("File exist is %hhd", fileManager.fileExistsAtPath(dbPath))
-        var success: Bool = fileManager.fileExistsAtPath(dbPath)
+        let success: Bool = fileManager.fileExistsAtPath(dbPath)
         if !success {
-            var defaultDBPath: String = NSBundle.mainBundle().resourcePath!.stringByAppendingString("/Time-em.sqlite")
+            let defaultDBPath: String = NSBundle.mainBundle().pathForResource("Time-em", ofType: "sqlite")!
+//            resourcePath!.stringByAppendingString("/Time-em.sqlite")
             NSLog("default DB path %@", defaultDBPath)
             //NSLog(@"File exist is %hhd", [fileManager fileExistsAtPath:defaultDBPath]);
             var success:Bool = false
             do {
                 success = true
-                try fileManager.copyItemAtURL(NSURL(string:defaultDBPath)!, toURL:NSURL(string: dbPath)!)
-            } catch _ {
+                try fileManager.copyItemAtURL(NSURL.fileURLWithPath(defaultDBPath), toURL:NSURL.fileURLWithPath(dbPath))
+            } catch let error as NSError {
                 success = false
+                
+                print("failed: \(error.localizedDescription)")
                 print("Couldn't copy file to final location!")
             }
             
@@ -81,5 +85,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
 

@@ -8,6 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		CF8C3A7207A9E1766E908182 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B46B6A6CC4439FFDFDB3D8D0 /* Pods.framework */; };
+		D96FB05E1CEED20500D2AA3A /* DPDConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96FB05B1CEED20500D2AA3A /* DPDConstants.swift */; };
+		D96FB05F1CEED20500D2AA3A /* DPDKeyboardListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96FB05C1CEED20500D2AA3A /* DPDKeyboardListener.swift */; };
+		D96FB0601CEED20500D2AA3A /* DPDUIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96FB05D1CEED20500D2AA3A /* DPDUIView+Extension.swift */; };
+		D96FB0621CEED22D00D2AA3A /* DropDownCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D96FB0611CEED22D00D2AA3A /* DropDownCell.xib */; };
+		D96FB0651CEED26700D2AA3A /* DropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96FB0631CEED26700D2AA3A /* DropDown.swift */; };
+		D96FB0661CEED26700D2AA3A /* DropDownCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96FB0641CEED26700D2AA3A /* DropDownCell.swift */; };
+		D96FB0681CEEE60700D2AA3A /* TaskDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96FB0671CEEE60700D2AA3A /* TaskDetailViewController.swift */; };
+		D96FB06A1CEF0FA400D2AA3A /* DigitField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96FB0691CEF0FA400D2AA3A /* DigitField.swift */; };
+		D96FB06C1CEF2BB000D2AA3A /* Time-em.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = D96FB06B1CEF2BB000D2AA3A /* Time-em.sqlite */; };
 		D97004FB1CE31A1F0036B5EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D97004FA1CE31A1E0036B5EA /* AppDelegate.swift */; };
 		D97005001CE31A1F0036B5EA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D97004FE1CE31A1F0036B5EA /* Main.storyboard */; };
 		D97005021CE31A1F0036B5EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D97005011CE31A1F0036B5EA /* Assets.xcassets */; };
@@ -37,18 +46,21 @@
 		D9DA40291CE9B28A00D6B572 /* UIColor+CL.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40241CE9B28A00D6B572 /* UIColor+CL.m */; };
 		D9DA402A1CE9B28A00D6B572 /* UIImage+CL.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40261CE9B28A00D6B572 /* UIImage+CL.m */; };
 		F95985EA1CEDC022002582C4 /* AddNewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */; };
-		F95985F51CEDC6E4002582C4 /* DPDConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985EC1CEDC6E4002582C4 /* DPDConstants.swift */; };
-		F95985F61CEDC6E4002582C4 /* DPDKeyboardListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985ED1CEDC6E4002582C4 /* DPDKeyboardListener.swift */; };
-		F95985F71CEDC6E4002582C4 /* DPDUIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985EE1CEDC6E4002582C4 /* DPDUIView+Extension.swift */; };
-		F95985F81CEDC6E4002582C4 /* DropDownCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F95985F01CEDC6E4002582C4 /* DropDownCell.xib */; };
-		F95985F91CEDC6E4002582C4 /* DropDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985F21CEDC6E4002582C4 /* DropDown.swift */; };
-		F95985FA1CEDC6E4002582C4 /* DropDownCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985F31CEDC6E4002582C4 /* DropDownCell.swift */; };
 		F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		87F93E81A9465F77B7D4BC43 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		B46B6A6CC4439FFDFDB3D8D0 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D96FB05B1CEED20500D2AA3A /* DPDConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DPDConstants.swift; path = "Time-em/helpers/DPDConstants.swift"; sourceTree = SOURCE_ROOT; };
+		D96FB05C1CEED20500D2AA3A /* DPDKeyboardListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DPDKeyboardListener.swift; path = "Time-em/helpers/DPDKeyboardListener.swift"; sourceTree = SOURCE_ROOT; };
+		D96FB05D1CEED20500D2AA3A /* DPDUIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "DPDUIView+Extension.swift"; path = "Time-em/helpers/DPDUIView+Extension.swift"; sourceTree = SOURCE_ROOT; };
+		D96FB0611CEED22D00D2AA3A /* DropDownCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = DropDownCell.xib; path = "Time-em/resources/DropDownCell.xib"; sourceTree = SOURCE_ROOT; };
+		D96FB0631CEED26700D2AA3A /* DropDown.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DropDown.swift; path = "Time-em/src/DropDown.swift"; sourceTree = SOURCE_ROOT; };
+		D96FB0641CEED26700D2AA3A /* DropDownCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DropDownCell.swift; path = "Time-em/src/DropDownCell.swift"; sourceTree = SOURCE_ROOT; };
+		D96FB0671CEEE60700D2AA3A /* TaskDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskDetailViewController.swift; sourceTree = "<group>"; };
+		D96FB0691CEF0FA400D2AA3A /* DigitField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DigitField.swift; sourceTree = "<group>"; };
+		D96FB06B1CEF2BB000D2AA3A /* Time-em.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Time-em.sqlite"; sourceTree = "<group>"; };
 		D97004F71CE31A1E0036B5EA /* Time-em.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Time-em.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D97004FA1CE31A1E0036B5EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D97004FF1CE31A1F0036B5EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -69,7 +81,6 @@
 		D9AD39181CE5BAE3005D5029 /* images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = images.xcassets; sourceTree = "<group>"; };
 		D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = dashboardViewController.swift; sourceTree = "<group>"; };
 		D9AD39221CE5F29D005D5029 /* async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = async.swift; sourceTree = "<group>"; };
-		D9B0406B1CEB44F600E5CEAF /* Time-em.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Time-em.sqlite"; sourceTree = "<group>"; };
 		D9D378001CEC9201002E24D9 /* databaseFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = databaseFile.swift; sourceTree = "<group>"; };
 		D9D378021CEC92C8002E24D9 /* TaskData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskData.swift; sourceTree = "<group>"; };
 		D9D378041CECAC6D002E24D9 /* MyTeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyTeamViewController.swift; sourceTree = "<group>"; };
@@ -93,12 +104,6 @@
 		D9DA40261CE9B28A00D6B572 /* UIImage+CL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+CL.m"; sourceTree = "<group>"; };
 		D9E9D44030C43EDD49F563DA /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewTaskViewController.swift; sourceTree = "<group>"; };
-		F95985EC1CEDC6E4002582C4 /* DPDConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DPDConstants.swift; sourceTree = "<group>"; };
-		F95985ED1CEDC6E4002582C4 /* DPDKeyboardListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DPDKeyboardListener.swift; sourceTree = "<group>"; };
-		F95985EE1CEDC6E4002582C4 /* DPDUIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DPDUIView+Extension.swift"; sourceTree = "<group>"; };
-		F95985F01CEDC6E4002582C4 /* DropDownCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DropDownCell.xib; sourceTree = "<group>"; };
-		F95985F21CEDC6E4002582C4 /* DropDown.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDown.swift; sourceTree = "<group>"; };
-		F95985F31CEDC6E4002582C4 /* DropDownCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDownCell.swift; sourceTree = "<group>"; };
 		F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssignedTasks.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -143,7 +148,7 @@
 		D97004EE1CE31A1E0036B5EA = {
 			isa = PBXGroup;
 			children = (
-				D9B0406B1CEB44F600E5CEAF /* Time-em.sqlite */,
+				D96FB06B1CEF2BB000D2AA3A /* Time-em.sqlite */,
 				D99C2D231CEAE0A1007E0A0D /* Time-em-Prefix.pch */,
 				D970050C1CE31A4F0036B5EA /* Podfile */,
 				D97004F91CE31A1E0036B5EA /* Time-em */,
@@ -183,6 +188,7 @@
 		D97005121CE3357B0036B5EA /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				D96FB0691CEF0FA400D2AA3A /* DigitField.swift */,
 				D9DA400D1CE9933C00D6B572 /* my-Tasks */,
 				D970052B1CE355560036B5EA /* passCodeViewController.swift */,
 				D970050E1CE31B150036B5EA /* LoginViewController.swift */,
@@ -227,6 +233,7 @@
 				D9DA400E1CE9AE4900D6B572 /* myTasksViewController.swift */,
 				D9D378041CECAC6D002E24D9 /* MyTeamViewController.swift */,
 				F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */,
+				D96FB0671CEEE60700D2AA3A /* TaskDetailViewController.swift */,
 			);
 			name = "my-Tasks";
 			sourceTree = "<group>";
@@ -273,9 +280,9 @@
 		F95985EF1CEDC6E4002582C4 /* helpers */ = {
 			isa = PBXGroup;
 			children = (
-				F95985EC1CEDC6E4002582C4 /* DPDConstants.swift */,
-				F95985ED1CEDC6E4002582C4 /* DPDKeyboardListener.swift */,
-				F95985EE1CEDC6E4002582C4 /* DPDUIView+Extension.swift */,
+				D96FB05B1CEED20500D2AA3A /* DPDConstants.swift */,
+				D96FB05C1CEED20500D2AA3A /* DPDKeyboardListener.swift */,
+				D96FB05D1CEED20500D2AA3A /* DPDUIView+Extension.swift */,
 			);
 			name = helpers;
 			path = "../../Downloads/DropDown-master/DropDown/helpers";
@@ -284,7 +291,7 @@
 		F95985F11CEDC6E4002582C4 /* resources */ = {
 			isa = PBXGroup;
 			children = (
-				F95985F01CEDC6E4002582C4 /* DropDownCell.xib */,
+				D96FB0611CEED22D00D2AA3A /* DropDownCell.xib */,
 			);
 			name = resources;
 			path = "../../Downloads/DropDown-master/DropDown/resources";
@@ -293,8 +300,8 @@
 		F95985F41CEDC6E4002582C4 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				F95985F21CEDC6E4002582C4 /* DropDown.swift */,
-				F95985F31CEDC6E4002582C4 /* DropDownCell.swift */,
+				D96FB0631CEED26700D2AA3A /* DropDown.swift */,
+				D96FB0641CEED26700D2AA3A /* DropDownCell.swift */,
 			);
 			name = src;
 			path = "../../Downloads/DropDown-master/DropDown/src";
@@ -335,6 +342,7 @@
 				TargetAttributes = {
 					D97004F61CE31A1E0036B5EA = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = T5DY39F2BR;
 					};
 				};
 			};
@@ -361,12 +369,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F95985F81CEDC6E4002582C4 /* DropDownCell.xib in Resources */,
+				D96FB0621CEED22D00D2AA3A /* DropDownCell.xib in Resources */,
 				D97005051CE31A1F0036B5EA /* LaunchScreen.storyboard in Resources */,
 				D97005021CE31A1F0036B5EA /* Assets.xcassets in Resources */,
 				D970050D1CE31A4F0036B5EA /* Podfile in Resources */,
 				D9AD39191CE5BAE3005D5029 /* images.xcassets in Resources */,
 				D97005001CE31A1F0036B5EA /* Main.storyboard in Resources */,
+				D96FB06C1CEF2BB000D2AA3A /* Time-em.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,13 +434,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D96FB06A1CEF0FA400D2AA3A /* DigitField.swift in Sources */,
 				D9DA40191CE9B27100D6B572 /* DailyCalendarView.m in Sources */,
+				D96FB0601CEED20500D2AA3A /* DPDUIView+Extension.swift in Sources */,
 				D9DA40271CE9B28A00D6B572 /* NSDate+CL.m in Sources */,
 				D9DA402A1CE9B28A00D6B572 /* UIImage+CL.m in Sources */,
-				F95985F61CEDC6E4002582C4 /* DPDKeyboardListener.swift in Sources */,
 				F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */,
+				D96FB0651CEED26700D2AA3A /* DropDown.swift in Sources */,
+				D96FB0661CEED26700D2AA3A /* DropDownCell.swift in Sources */,
 				D970050F1CE31B150036B5EA /* LoginViewController.swift in Sources */,
 				D9D378011CEC9201002E24D9 /* databaseFile.swift in Sources */,
+				D96FB0681CEEE60700D2AA3A /* TaskDetailViewController.swift in Sources */,
 				D9AD39231CE5F29D005D5029 /* async.swift in Sources */,
 				D9AD391F1CE5CD8D005D5029 /* dashboardViewController.swift in Sources */,
 				D9DA40281CE9B28A00D6B572 /* NSDictionary+CL.m in Sources */,
@@ -439,13 +452,11 @@
 				D97005111CE328340036B5EA /* ApiRequest.swift in Sources */,
 				D970052C1CE355560036B5EA /* passCodeViewController.swift in Sources */,
 				D9AD39171CE5A2B9005D5029 /* User.swift in Sources */,
-				F95985F51CEDC6E4002582C4 /* DPDConstants.swift in Sources */,
-				F95985F91CEDC6E4002582C4 /* DropDown.swift in Sources */,
-				F95985FA1CEDC6E4002582C4 /* DropDownCell.swift in Sources */,
+				D96FB05F1CEED20500D2AA3A /* DPDKeyboardListener.swift in Sources */,
 				D9DA400F1CE9AE4900D6B572 /* myTasksViewController.swift in Sources */,
 				D97004FB1CE31A1F0036B5EA /* AppDelegate.swift in Sources */,
 				D9D378031CEC92C8002E24D9 /* TaskData.swift in Sources */,
-				F95985F71CEDC6E4002582C4 /* DPDUIView+Extension.swift in Sources */,
+				D96FB05E1CEED20500D2AA3A /* DPDConstants.swift in Sources */,
 				D9DA40291CE9B28A00D6B572 /* UIColor+CL.m in Sources */,
 				D9D378051CECAC6D002E24D9 /* MyTeamViewController.swift in Sources */,
 				D9DA401D1CE9B27800D6B572 /* CLWeeklyCalendarView.m in Sources */,
@@ -567,11 +578,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Rocky Uppal (3R7VB3H8QT)";
 				INFOPLIST_FILE = "Time-em/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "653bc855-42f9-4553-9824-4af37b16f30b";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -583,12 +597,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Rocky Uppal (3R7VB3H8QT)";
 				INFOPLIST_FILE = "Time-em/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "653bc855-42f9-4553-9824-4af37b16f30b";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Release;
 		};

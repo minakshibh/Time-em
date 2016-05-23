@@ -27,8 +27,22 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
         
         txtFieldone.becomeFirstResponder()
 
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "goPrevious", name: "deletePressed", object: nil)
 
 
+    }
+    
+    func goPrevious() {
+        if txtFieldtwo.isFirstResponder() {
+            
+            txtFieldone.becomeFirstResponder()
+        } else if txtFieldthree.isFirstResponder() {
+            
+            txtFieldtwo.becomeFirstResponder()
+        } else if txtFieldFour.isFirstResponder() {
+            
+            txtFieldthree.becomeFirstResponder()
+        }
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -36,29 +50,7 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
         
     }
     
-    func keyPressed(notification:NSNotification){
-        
-        let userInfo:NSDictionary = notification.userInfo!
-        let textField: UITextField = (userInfo["response"] as! UITextField)
-        
-        if textField == txtFieldone{
-            
-            txtFieldtwo.becomeFirstResponder()
-            
-            
-        }else if textField == txtFieldtwo{
-            
-            txtFieldthree.becomeFirstResponder()
-            
-        }else if textField == txtFieldthree{
-            
-            txtFieldFour.becomeFirstResponder()
-            
-        }else if textField == txtFieldFour{
-            
-        }
 
-    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -81,19 +73,43 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         
       let userInfo = ["response" : textField]
-        NSNotificationCenter.defaultCenter().postNotificationName("keyPressed", object: nil, userInfo: userInfo)
         if textField == txtFieldone{
-            main {   self.txtFieldtwo.becomeFirstResponder() }
-        }else if textField == txtFieldtwo{
-            main {    self.txtFieldthree.becomeFirstResponder() }
-        }else if textField == txtFieldthree{
-            main {    self.txtFieldFour.becomeFirstResponder() }
-        }else if textField == txtFieldFour{
+            print(txtFieldone.text)
+            if txtFieldone.text?.characters.count > 0 {
+                
+            }else {
             main {
-                self.timer = NSTimer.scheduledTimerWithTimeInterval(0.8, target: self, selector: #selector(passCodeViewController.callFunction), userInfo: nil, repeats: false)
- }
+                self.txtFieldtwo.becomeFirstResponder()
+            }
+           }
+        }else if textField == txtFieldtwo{
+            if txtFieldtwo.text?.characters.count > 0 {
+                
+            }else {
+            main {
+                self.txtFieldthree.becomeFirstResponder()
+            }
+           }
+        }else if textField == txtFieldthree{
+            if txtFieldthree.text?.characters.count > 0 {
+                
+            }else {
+            main {
+                self.txtFieldFour.becomeFirstResponder()
+            }
+           }
+        }else if textField == txtFieldFour{
+            if txtFieldFour.text?.characters.count > 0 {
+                
+            }else {
+            main {
+                self.timer = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(passCodeViewController.callFunction), userInfo: nil, repeats: false)
+                }
+            }
         }
 
+        
+        
         
         return true
     }
@@ -140,4 +156,16 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "passcode_dashboard"{
+            let dashBoard = (segue.destinationViewController as! dashboardViewController)
+            dashBoard.fromPassCodeView = "yes"
+            
+            
+        }
+    }
+    
+    
+
 }
