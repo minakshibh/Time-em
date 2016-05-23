@@ -119,7 +119,7 @@ class ApiRequest: NSObject {
                     if "\(response.result)" == "SUCCESS"{
                         let userInfo = ["response" : "SUCCESS"]
                         
-                        if "\(JSON.valueForKey("Message")!)" == "Credentials not matched!" {
+                        if "\(JSON.valueForKey("isError")!)" != "0" {
                             let userInfo = ["response" : "FAILURE"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             return
@@ -733,16 +733,109 @@ class ApiRequest: NSObject {
         }
     }
     
+    func AddUpdateNewTask(imageData: NSData, ActivityId: String, TaskId: String, UserId: String, TaskName: String, TimeSpent: String, Comments: String, CreatedDate: String, ID:String, view:UIView)
+    {
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        let myUrl = NSURL(string: "http://timeemapi.azurewebsites.net/api/UserTask/AddUpdateUserTaskActivity");
+        
+        let request = NSMutableURLRequest(URL:myUrl!);
+        request.HTTPMethod = "POST";
+        
+        let param = [
+            "ActivityId"    :ActivityId,
+            "TaskId"        :TaskId,
+            "UserId"        :UserId,
+            "TaskName"      :TaskName,
+            "TimeSpent"     :TimeSpent,
+            "Comments"      :Comments,
+            "CreatedDate"   :CreatedDate,
+            "ID"            :ID
+        ]
+        print(param)
+        let boundary = generateBoundaryString()
+        
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        request.HTTPBody = createBodyWithParameters(param, filePathKey: "image", imageDataKey: imageData, boundary: boundary)
+        
+        
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+            data, response, error in
+            
+            if error != nil {
+                print("error=\(error)")
+                return
+            }
+            
+            // You can print out response object
+            print("******* response = \(response)")
+            
+            // Print out reponse body
+            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            print("****** response data = \(responseString!)")
+            delay(0.001){
+              MBProgressHUD.hideHUDForView(view, animated: true)  
+            }
+            
+//            var json = NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers, error: &err) as? NSDictionary
+            
+            /*
+             if let parseJSON = json {
+             var firstNameValue = parseJSON["firstName"] as? String
+             println("firstNameValue: \(firstNameValue)")
+             }
+             */
+            
+        }
+        
+        task.resume()
+        
+    }
     
+    func generateBoundaryString() -> String {
+        return "Boundary-\(NSUUID().UUIDString)"
+    }
+    
+    func createBodyWithParameters(parameters: [String: String]?, filePathKey: String?, imageDataKey: NSData, boundary: String) -> NSData {
+        let body = NSMutableData();
+        
+        if parameters != nil {
+            for (key, value) in parameters! {
+                body.appendString("--\(boundary)\r\n")
+                body.appendString("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n")
+                body.appendString("\(value)\r\n")
+            }
+        }
+        
+        if let image = UIImage(data: imageDataKey) {
+            let filename = "user-profile.jpg"
+            let mimetype = "image/jpg"
+            body.appendString("Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(filename)\"\r\n")
+            body.appendString("Content-Type: \(mimetype)\r\n\r\n")
+            body.appendData(imageDataKey)
+        }
+        
+        body.appendString("--\(boundary)\r\n")
+        body.appendString("\r\n")
+        body.appendString("--\(boundary)--\r\n")
+        
+        return body
+    }
 }
+
+
+extension NSMutableData {
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    func appendString(string: String) {
+        let data = string.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+        appendData(data!)
+    }
+}
+
+
+
+
+
+
+
 
