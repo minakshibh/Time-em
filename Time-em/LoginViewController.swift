@@ -57,6 +57,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func btnForgotPassword(sender: AnyObject) {
+
+//        let resetPinAndPasswordView = resetPinAndPassword()
+//        self.navigationController?.pushViewController(resetPinAndPasswordView, animated: true)
     }
 
     override func viewDidDisappear(animated: Bool) {
@@ -146,6 +149,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "homeView"{
         
+        }else if segue.identifier == "resetPassword"{
+            let destinationVC = segue.destinationViewController as! resetPinAndPassword
+            destinationVC.resetType = "Password"
         }
     }
     func getCurrentUser() {

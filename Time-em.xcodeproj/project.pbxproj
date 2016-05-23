@@ -36,6 +36,7 @@
 		D9DA40281CE9B28A00D6B572 /* NSDictionary+CL.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40221CE9B28A00D6B572 /* NSDictionary+CL.m */; };
 		D9DA40291CE9B28A00D6B572 /* UIColor+CL.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40241CE9B28A00D6B572 /* UIColor+CL.m */; };
 		D9DA402A1CE9B28A00D6B572 /* UIImage+CL.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40261CE9B28A00D6B572 /* UIImage+CL.m */; };
+		F947CF481CF30A03009635B4 /* resetPinAndPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = F947CF471CF30A03009635B4 /* resetPinAndPassword.swift */; };
 		F95985EA1CEDC022002582C4 /* AddNewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */; };
 		F95985F51CEDC6E4002582C4 /* DPDConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985EC1CEDC6E4002582C4 /* DPDConstants.swift */; };
 		F95985F61CEDC6E4002582C4 /* DPDKeyboardListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985ED1CEDC6E4002582C4 /* DPDKeyboardListener.swift */; };
@@ -45,6 +46,8 @@
 		F95985FA1CEDC6E4002582C4 /* DropDownCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985F31CEDC6E4002582C4 /* DropDownCell.swift */; };
 		F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */; };
 		F9EFFDEB1CEEEA710050280D /* closebar.png in Resources */ = {isa = PBXBuildFile; fileRef = F9EFFDEA1CEEEA710050280D /* closebar.png */; };
+		F9F012901CF31D88003698C6 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9F0128E1CF31D88003698C6 /* Lato-Bold.ttf */; };
+		F9F012911CF31D88003698C6 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9F0128F1CF31D88003698C6 /* Lato-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +96,7 @@
 		D9DA40251CE9B28A00D6B572 /* UIImage+CL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+CL.h"; sourceTree = "<group>"; };
 		D9DA40261CE9B28A00D6B572 /* UIImage+CL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+CL.m"; sourceTree = "<group>"; };
 		D9E9D44030C43EDD49F563DA /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		F947CF471CF30A03009635B4 /* resetPinAndPassword.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = resetPinAndPassword.swift; sourceTree = "<group>"; };
 		F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewTaskViewController.swift; sourceTree = "<group>"; };
 		F95985EC1CEDC6E4002582C4 /* DPDConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DPDConstants.swift; sourceTree = "<group>"; };
 		F95985ED1CEDC6E4002582C4 /* DPDKeyboardListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DPDKeyboardListener.swift; sourceTree = "<group>"; };
@@ -102,6 +106,8 @@
 		F95985F31CEDC6E4002582C4 /* DropDownCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDownCell.swift; sourceTree = "<group>"; };
 		F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssignedTasks.swift; sourceTree = "<group>"; };
 		F9EFFDEA1CEEEA710050280D /* closebar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = closebar.png; sourceTree = "<group>"; };
+		F9F0128E1CF31D88003698C6 /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Bold.ttf"; sourceTree = "<group>"; };
+		F9F0128F1CF31D88003698C6 /* Lato-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Regular.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +151,8 @@
 		D97004EE1CE31A1E0036B5EA = {
 			isa = PBXGroup;
 			children = (
+				F9F0128E1CF31D88003698C6 /* Lato-Bold.ttf */,
+				F9F0128F1CF31D88003698C6 /* Lato-Regular.ttf */,
 				D9B0406B1CEB44F600E5CEAF /* Time-em.sqlite */,
 				D99C2D231CEAE0A1007E0A0D /* Time-em-Prefix.pch */,
 				F9EFFDEA1CEEEA710050280D /* closebar.png */,
@@ -186,6 +194,7 @@
 		D97005121CE3357B0036B5EA /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				F947CF461CF309C8009635B4 /* Reset Pin/Password */,
 				D9DA400D1CE9933C00D6B572 /* my-Tasks */,
 				D970052B1CE355560036B5EA /* passCodeViewController.swift */,
 				D970050E1CE31B150036B5EA /* LoginViewController.swift */,
@@ -261,6 +270,14 @@
 				D9DA40261CE9B28A00D6B572 /* UIImage+CL.m */,
 			);
 			name = Misc;
+			sourceTree = "<group>";
+		};
+		F947CF461CF309C8009635B4 /* Reset Pin/Password */ = {
+			isa = PBXGroup;
+			children = (
+				F947CF471CF30A03009635B4 /* resetPinAndPassword.swift */,
+			);
+			name = "Reset Pin/Password";
 			sourceTree = "<group>";
 		};
 		F95985EB1CEDC6C8002582C4 /* Drop-Down */ = {
@@ -368,9 +385,11 @@
 				D97005051CE31A1F0036B5EA /* LaunchScreen.storyboard in Resources */,
 				D97005021CE31A1F0036B5EA /* Assets.xcassets in Resources */,
 				D970050D1CE31A4F0036B5EA /* Podfile in Resources */,
+				F9F012911CF31D88003698C6 /* Lato-Regular.ttf in Resources */,
 				F9EFFDEB1CEEEA710050280D /* closebar.png in Resources */,
 				D9AD39191CE5BAE3005D5029 /* images.xcassets in Resources */,
 				D97005001CE31A1F0036B5EA /* Main.storyboard in Resources */,
+				F9F012901CF31D88003698C6 /* Lato-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,6 +451,7 @@
 				D9DA40191CE9B27100D6B572 /* DailyCalendarView.m in Sources */,
 				D9DA40271CE9B28A00D6B572 /* NSDate+CL.m in Sources */,
 				D9DA402A1CE9B28A00D6B572 /* UIImage+CL.m in Sources */,
+				F947CF481CF30A03009635B4 /* resetPinAndPassword.swift in Sources */,
 				F95985F61CEDC6E4002582C4 /* DPDKeyboardListener.swift in Sources */,
 				F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */,
 				D970050F1CE31B150036B5EA /* LoginViewController.swift in Sources */,

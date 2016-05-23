@@ -26,6 +26,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     var taskId = String()
     var assignedTasksArray = NSMutableArray()
     var createdDate:String!
+    let notificationKey = "com.time-em.addTaskResponse"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -176,8 +177,28 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         let createdDates = self.createdDate! as String
         print(createdDates)
         let assignedTasks = ApiRequest()
-        assignedTasks.AddUpdateNewTask(self.imageData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: "0", view: self.view)
+        var imageData = NSData()
+        if uploadedImage.image != nil {
+            imageData = UIImagePNGRepresentation(uploadedImage.image!)!
+        }
+        assignedTasks.AddUpdateNewTask(imageData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: "0", view: self.view)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AddNewTaskViewController.displayResponse), name: notificationKey, object: nil)
     }
+    
+    @IBAction func backBtn(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: {});
+    }
+    func displayResponse(notification:NSNotification) {
+        
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        if status.lowercaseString == "success"{
+         self.resetTheView()
+        }
+    }
+    
     //~~ TextView Delegates
     func textViewDidBeginEditing(textView: UITextView) {
         commentPlaceholder.hidden = true
@@ -188,7 +209,6 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             uploadImageView.hidden = false
             uploadedImage.contentMode = .ScaleToFill
             uploadedImage.image = pickedImage
-            self.imageData = UIImagePNGRepresentation(pickedImage)!
         }
         
         dismissViewControllerAnimated(true, completion: nil)
@@ -196,5 +216,13 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func resetTheView() {
+        uploadImageView.hidden = true
+        self.selectTaskTxt.text = ""
+        self.commentsTxt.text = ""
+        self.numberOfHoursTxt.text = ""
+        self.commentPlaceholder.hidden = false
     }
 }

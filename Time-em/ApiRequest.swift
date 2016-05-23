@@ -735,12 +735,9 @@ class ApiRequest: NSObject {
     
     func AddUpdateNewTask(imageData: NSData, ActivityId: String, TaskId: String, UserId: String, TaskName: String, TimeSpent: String, Comments: String, CreatedDate: String, ID:String, view:UIView)
     {
+        let notificationKey = "com.time-em.addTaskResponse"
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        let myUrl = NSURL(string: "http://timeemapi.azurewebsites.net/api/UserTask/AddUpdateUserTaskActivity");
-        
-        let request = NSMutableURLRequest(URL:myUrl!);
-        request.HTTPMethod = "POST";
-        
+    
         let param = [
             "ActivityId"    :ActivityId,
             "TaskId"        :TaskId,
@@ -752,74 +749,145 @@ class ApiRequest: NSObject {
             "ID"            :ID
         ]
         print(param)
+        let url = NSURL(string: "http://timeemapi.azurewebsites.net/api/UserTask/AddUpdateUserTaskActivity")
+        
+        let request = NSMutableURLRequest(URL: url!)
+        request.HTTPMethod = "POST"
+        
         let boundary = generateBoundaryString()
+        
         
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         
-        request.HTTPBody = createBodyWithParameters(param, filePathKey: "image", imageDataKey: imageData, boundary: boundary)
+        let image = UIImage(data: imageData)
+        
+        let body = NSMutableData()
+        
+            for (key, value) in param {
+                body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+                body.appendData("Content-Disposition:form-data; name=\"\(key)\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+                body.appendData("\(value)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            }
+        if(image == nil)
+        {
+        let fname = "test.png"
+        let mimetype = "image/png"
+        
+        body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData("Content-Disposition:form-data; name=\"test\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData("hi\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        
+        body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData("Content-Disposition:form-data; name=\"file\"; filename=\"\(fname)\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData("Content-Type: \(mimetype)\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData(imageData)
+        body.appendData("\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        }
+        
+        body.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        
+        request.HTTPBody = body
         
         
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
-            data, response, error in
+        
+        let session = NSURLSession.sharedSession()
+        
+        
+        let task = session.dataTaskWithRequest(request) {
+            (
+            let data, let response, let error) in
             
-            if error != nil {
-                print("error=\(error)")
+            guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
+                print("error")
                 return
             }
             
-            // You can print out response object
-            print("******* response = \(response)")
+            let dataString = NSString(data: data!, encoding: NSUTF8StringEncoding)
             
-            // Print out reponse body
-            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            print("****** response data = \(responseString!)")
+            print(dataString)
             delay(0.001){
-              MBProgressHUD.hideHUDForView(view, animated: true)  
+                MBProgressHUD.hideHUDForView(view, animated: true)
+                let userInfo = ["response" : "SUCCESS"]
+                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             }
-            
-//            var json = NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers, error: &err) as? NSDictionary
-            
-            /*
-             if let parseJSON = json {
-             var firstNameValue = parseJSON["firstName"] as? String
-             println("firstNameValue: \(firstNameValue)")
-             }
-             */
-            
         }
         
         task.resume()
-        
     }
     
     func generateBoundaryString() -> String {
         return "Boundary-\(NSUUID().UUIDString)"
     }
     
-    func createBodyWithParameters(parameters: [String: String]?, filePathKey: String?, imageDataKey: NSData, boundary: String) -> NSData {
-        let body = NSMutableData();
+    
+    func resetPasswordApi(emailId:String,view:UIView)  {
+        let notificationKey = "com.time-em.resetPassword"
         
-        if parameters != nil {
-            for (key, value) in parameters! {
-                body.appendString("--\(boundary)\r\n")
-                body.appendString("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n")
-                body.appendString("\(value)\r\n")
-            }
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/USER/ForgetPassword", parameters: ["email":emailId])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                
+                            let userInfo = ["response" : "SUCCESS"]
+                           
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+                MBProgressHUD.hideHUDForView(view, animated: true)
         }
+    }
+    
+    func resetPinApi(emailId:String,view:UIView)  {
+        let notificationKey = "com.time-em.resetPin"
         
-        if let image = UIImage(data: imageDataKey) {
-            let filename = "user-profile.jpg"
-            let mimetype = "image/jpg"
-            body.appendString("Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(filename)\"\r\n")
-            body.appendString("Content-Type: \(mimetype)\r\n\r\n")
-            body.appendData(imageDataKey)
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/USER/ForgetPin", parameters: ["email":emailId])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        let userInfo = ["response" : "SUCCESS"]
+                        
+                        
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+                MBProgressHUD.hideHUDForView(view, animated: true)
         }
-        
-        body.appendString("--\(boundary)\r\n")
-        body.appendString("\r\n")
-        body.appendString("--\(boundary)--\r\n")
-        
-        return body
     }
 }
 
