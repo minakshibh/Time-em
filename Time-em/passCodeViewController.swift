@@ -166,14 +166,14 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
             dashBoard.fromPassCodeView = "yes"
             
             
-        }
-    }
-    
-    
-
-    if segue.identifier == "resetPin"{
+        }else if segue.identifier == "resetPin"{
             let destinationVC = segue.destinationViewController as! resetPinAndPassword
             destinationVC.resetType = "Pin"
         }
     }
-}
+
+    
+    
+    
+
+    }
