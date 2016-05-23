@@ -34,6 +34,7 @@ class ApiRequest: NSObject {
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.IsSignIn)", forKey: "currentUser_IsSignIn")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.ActivityId)", forKey: "currentUser_ActivityId")
              NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginId)", forKey: "currentUser_LoginId")
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.FullName)", forKey: "currentUser_FullName")
             
             var dictionary:NSMutableDictionary = [:]
             dictionary = currentUsers.returnDict()
@@ -122,6 +123,8 @@ class ApiRequest: NSObject {
                         if "\(JSON.valueForKey("isError")!)" != "0" {
                             let userInfo = ["response" : "FAILURE"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            MBProgressHUD.hideHUDForView(view, animated: true)
+
                             return
                         }
                         
@@ -130,6 +133,7 @@ class ApiRequest: NSObject {
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.IsSignIn)", forKey: "currentUser_IsSignIn")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.ActivityId)", forKey: "currentUser_ActivityId")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginId)", forKey: "currentUser_LoginId")
+                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.FullName)", forKey: "currentUser_FullName")
                         
                         var dictionary:NSMutableDictionary = [:]
                         dictionary = currentUsers.returnDict()
@@ -147,7 +151,7 @@ class ApiRequest: NSObject {
                         }
 
                         do {
-                            try database.executeUpdate("insert into UserData (userId, userData, loggedInUser) values (?, ?, ?)", values: [currentUsers.LoginId, encodedData, "true"])
+                            try database.executeUpdate("UPDATE UserData SET userData = ? , loggedInUser = ? WHERE userId=?", values: [encodedData,"true",currentUsers.LoginId])
                             
                         } catch let error as NSError {
                             print("failed: \(error.localizedDescription)")
@@ -209,7 +213,11 @@ class ApiRequest: NSObject {
 //                            dictTime = dict
 //                            if dict.valueForKey("")
 //                        }
-                        let dict = JSON.valueForKey("UserTaskActivityViewModel") as! NSArray
+                        let dict:NSArray = JSON.valueForKey("UserTaskActivityViewModel") as! NSArray
+                        
+                        
+                        
+                        
                         if dict.count > 0 {
                         //---------
                         var saveDateDict:NSMutableDictionary = [:]
@@ -218,18 +226,19 @@ class ApiRequest: NSObject {
                             var data: NSData = (user.valueForKey("taskTimeStamp") as! NSData)
                             var dictio = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
                             saveDateDict = dictio
-                            if (saveDateDict.valueForKey("\(dict.valueForKey("UserId")[0])") != nil) {
-                                saveDateDict.removeObjectForKey("\(dict.valueForKey("UserId")[0])")
+                            if (saveDateDict.valueForKey("\(dict[0].valueForKey("UserId"))") != nil) {
                                 
-                                saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict.valueForKey("UserId")[0])")
+                                saveDateDict.removeObjectForKey("\(dict[0].valueForKey("UserId"))")
+                                
+                                saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId"))")
                             }
                             else {
                                 
-                                saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict.valueForKey("UserId")[0])")
+                                saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId"))")
                             }
                         }
                         else {
-                            saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict.valueForKey("UserId")[0])")
+                            saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId"))")
                             
                         }
                         var data1: NSData = NSKeyedArchiver.archivedDataWithRootObject(saveDateDict)
@@ -267,77 +276,77 @@ class ApiRequest: NSObject {
             for (var i = 0; i<dict.count;i+=1){
                                 
             let  ActivityId:Int!
-            if let field = dict.valueForKey("ActivityId")[i]  {
+            if let field = dict[i].valueForKey("ActivityId")   {
                                     ActivityId = field as! Int
             }else{
                 ActivityId = 0
             }
                             
             let  AttachmentImageFile:String!
-            if let field = dict.valueForKey("AttachmentImageFile")[i]  as? String{
-                AttachmentImageFile = field as? String ?? ""
+            if let field = dict[i].valueForKey("AttachmentImageFile")  as? String{
+                AttachmentImageFile = field
             }else{
                 AttachmentImageFile = ""
             }
                                 
             let  AttachmentVideoFile:String
-            if let field = dict.valueForKey("AttachmentVideoFile")[i] as? String {
+            if let field = dict[i].valueForKey("AttachmentVideoFile") as? String {
                 AttachmentVideoFile = field
             }else{
                 AttachmentVideoFile = ""
             }
                                 
             let  Comments:String!
-            if let field = dict.valueForKey("Comments")[i] as? String {
+            if let field = dict[i].valueForKey("Comments") as? String {
                 Comments = field
             }else{
                 Comments = ""
             }
                                 
             let  CreatedDate:String!
-            if let field = dict.valueForKey("CreatedDate")[i] as? String {
+            if let field = dict[i].valueForKey("CreatedDate") as? String {
                 CreatedDate = field
             }else{
                 CreatedDate = ""
             }
                                 
             let  EndTime:String!
-            if let field = dict.valueForKey("EndTime")[i] as? String {
+            if let field = dict[i].valueForKey("EndTime") as? String {
                 EndTime = field
             }else{
                 EndTime = ""
             }
                                 
             let  Id: Int!
-            if let field = dict.valueForKey("Id")[i]  {
+            if let field = dict[i].valueForKey("Id")  {
                 Id = field as! Int
             }else{
                 Id = 0
             }
                                 
             let  SelectedDate:String!
-            if let field = dict.valueForKey("SelectedDate") [i]  as? String{
+            if let field = dict[i].valueForKey("SelectedDate")   as? String{
                 SelectedDate = field
             }else{
                 SelectedDate = ""
             }
                                 
             let  SignedInHours: Int!
-            if let field = dict.valueForKey("SignedInHours")[i]  {
+            if let field = dict[i].valueForKey("SignedInHours")  {
                 SignedInHours = field as! Int
             }else{
                 SignedInHours = 0
             }
                                 
             let  StartTime:String!
-            if let field = dict.valueForKey("StartTime")[i] as? String  {
+            if let field = dict[i].valueForKey("StartTime") as? String  {
                 StartTime = field
             }else{
                 StartTime = ""
             }
                                 
             let  TaskId:Int!
-            if let field = dict.valueForKey("TaskId")[i]  {
+            if let field = dict[i].valueForKey("TaskId")  {
                 TaskId = field as! Int
             }else{
                 TaskId = 0
@@ -345,14 +354,14 @@ class ApiRequest: NSObject {
                                 
                                 
                                 let  TaskName :String!
-            if let field = dict.valueForKey("TaskName")[i] as? String {
+            if let field = dict[i].valueForKey("TaskName") as? String {
                 TaskName = field
             }else{
                 TaskName = ""
             }
                                 
             let  TimeSpent:Float!
-            if let field = dict.valueForKey("TimeSpent")[i]  {
+            if let field = dict[i].valueForKey("TimeSpent")  {
                 TimeSpent = field as! Float
             }else{
                 TimeSpent = 0
@@ -360,7 +369,7 @@ class ApiRequest: NSObject {
                                 
                                 
             let  Token: String!
-            if let field = dict.valueForKey("Token")[i] as? String {
+            if let field = dict[i].valueForKey("Token") as? String {
                 Token = field
             }else{
                 Token = ""
@@ -368,7 +377,7 @@ class ApiRequest: NSObject {
                                 
                                 
             let  UserId: Int!
-            if let field = dict.valueForKey("UserId")[i]  {
+            if let field = dict[i].valueForKey("UserId")  {
                 UserId = field as! Int
             }else{
                 UserId = 0
@@ -547,6 +556,8 @@ class ApiRequest: NSObject {
                                     let y = rs.dataForColumn("userData")
                                     let userDict:NSMutableDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSMutableDictionary
                                     userDict.setValue(1, forKey: "IsSignIn")
+                                userDict.setValue("\(JSON.valueForKey("Id")!)", forKey: "ActivityId")
+                            NSUserDefaults.standardUserDefaults().setObject("\(JSON.valueForKey("Id")!)", forKey: "currentUser_ActivityId")
                                     encodedData = NSKeyedArchiver.archivedDataWithRootObject(userDict)
                                 }
                             } catch let error as NSError {

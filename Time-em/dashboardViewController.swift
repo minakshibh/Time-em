@@ -19,6 +19,7 @@ class dashboardViewController: UIViewController {
     @IBOutlet var viewStartWorking: UIView!
     @IBOutlet var btnCrossPOPUP: UIButton!
     @IBOutlet var btnSignInOutPOPUP: UIButton!
+    @IBOutlet var btnSignInOut2: UIButton!
     var currentUser: User!
     @IBOutlet var btnUserInfo: UIButton!
     @IBOutlet var btnMenu: UIButton!
@@ -26,19 +27,22 @@ class dashboardViewController: UIViewController {
     @IBOutlet var btnLogout: UIButton!
     @IBOutlet var imageSyncMenu: UIImageView!
     @IBOutlet var imagePersonMenu: UIImageView!
-   
+    var fromPassCodeView:String!
+    @IBOutlet var lblNameSlideMenu: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-
+        if fromPassCodeView != "yes" {
             if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
-                
-                
-            if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == 0 {
+        
+            if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0" {
                 
                 self.viewStartWorking.alpha = 0
                 self.viewStartWorking.hidden = false
+                 self.btnSignInOutPOPUP.setTitle("SIGN IN", forState: .Normal)
+                self.btnSignInOut2.setTitle("SIGN IN", forState: .Normal)
+
                 UIView.animateWithDuration(1.0, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: {
                     self.viewStartWorking.alpha = 1
                     }, completion: nil)
@@ -47,13 +51,15 @@ class dashboardViewController: UIViewController {
                 self.viewStartWorking.alpha = 0
                 self.viewStartWorking.hidden = false
                 self.btnSignInOutPOPUP.setTitle("SIGN OUT", forState: .Normal)
+                self.btnSignInOut2.setTitle("SIGN OUT", forState: .Normal)
+
                 UIView.animateWithDuration(1.0, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: {
                     self.viewStartWorking.alpha = 1
                     }, completion: nil)
                 }
             }
         
-        
+        }
     }
     override func viewDidDisappear(animated: Bool) {
         btnSetting.backgroundColor = UIColor.clearColor()
@@ -65,7 +71,8 @@ class dashboardViewController: UIViewController {
     }
     func checkActiveInacive() {
         if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
-        if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == 0  {
+            print(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)
+        if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0"  {
         self.btnUserInfo.setImage(UIImage(named: "user_inactive"), forState: .Normal)
          imagePersonMenu.image = UIImage(named: "user_inactive")
         imageSyncMenu.image = UIImage(named: "sync- red")
@@ -78,9 +85,21 @@ class dashboardViewController: UIViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-
+        let currentUserName = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_FullName")  as? String
+        lblNameSlideMenu.text = currentUserName!
         self.checkActiveInacive()
-
+        
+        refreshButtonTitleImage()
+    }
+    
+    func refreshButtonTitleImage() {
+        if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0" {
+            self.btnSignInOutPOPUP.setTitle("SIGN IN", forState: .Normal)
+            self.btnSignInOut2.setTitle("SIGN IN", forState: .Normal)
+        }else{
+            self.btnSignInOutPOPUP.setTitle("SIGN OUT", forState: .Normal)
+            self.btnSignInOut2.setTitle("SIGN OUT", forState: .Normal)
+        }
     }
     
     @IBAction func btnMyTasks(sender: AnyObject) {
@@ -194,7 +213,8 @@ class dashboardViewController: UIViewController {
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_IsSignIn")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_ActivityId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_LoginId")
-        
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_FullName")
+
         let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")
         self.presentViewController(loginVC!, animated: true, completion: nil)
         
@@ -294,6 +314,7 @@ class dashboardViewController: UIViewController {
                 self.viewStartWorking.hidden = true
         })
         self.checkActiveInacive()
+        refreshButtonTitleImage()
 
     }
     

@@ -34,6 +34,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         btnLogin.layer.cornerRadius = 4
     }
     override func viewWillAppear(animated: Bool) {
+        UIApplication.sharedApplication().statusBarStyle = .LightContent
+
         print("\(NSUserDefaults.standardUserDefaults().valueForKey("userLoggedIn"))")
         
         if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
@@ -78,7 +80,24 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 //            txtPassword.becomeFirstResponder()
 //        }
     }
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+//        if textField == txtUserID {
+//            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillShow(_:)), name: UIKeyboardDidShowNotification, object: nil)
+//        }
+//        if textField == txtPassword {
+//            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardDidShowNotification, object: nil)
+//        }
+        return true
+    }
     func textFieldShouldEndEditing(textField: UITextField) -> Bool {  //delegate method
+//        
+//        if textField == txtUserID {
+//            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardDidHideNotification, object: nil)
+//        }
+//        if textField == txtPassword {
+//            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardDidShowNotification, object: nil)
+//        }
+
         return true
     }
     func textFieldShouldReturn(textField: UITextField) -> Bool {   //delegate method
@@ -183,4 +202,22 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         database.close()
     }
 
+    func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+        let newVerticalPosition: Float = Float(-keyboardSize.height)
+        self.moveFrameToVerticalPosition(newVerticalPosition, forDuration: 0.3)
+        }
+    }
+    func keyboardWillHide(notification: NSNotification) {
+        //    CGFloat  kNavBarHeight =  self.navigationController.navigationBar.frame.size.height;
+        let kNavBarHeight: CGFloat = 0
+        self.moveFrameToVerticalPosition(Float(kNavBarHeight), forDuration: 0.3)
+    }
+    func moveFrameToVerticalPosition(position: Float, forDuration duration: Float) {
+        var frame: CGRect = self.view.frame
+        frame.origin.y = CGFloat( -50)
+        UIView.animateWithDuration(0.3, animations: {() -> Void in
+            self.view.frame = frame
+        })
+    }
 }
