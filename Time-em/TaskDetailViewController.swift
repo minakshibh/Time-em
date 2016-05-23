@@ -8,13 +8,15 @@
 
 import UIKit
 
-class TaskDetailViewController: UIViewController {
+class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
 
     var taskData:NSMutableDictionary! = [:]
     @IBOutlet var lblTaskDate: UILabel!
     @IBOutlet var txtComments: UITextView!
     @IBOutlet var lblHourWorked: UILabel!
     @IBOutlet var txtTaskDescription: UITextView!
+    @IBOutlet var btnBack: UIButton!
+    @IBOutlet var scrollView: UIScrollView!
     
     
     
@@ -24,11 +26,16 @@ class TaskDetailViewController: UIViewController {
         
         print(taskData)
 
-    lblTaskDate.text = taskData.valueForKey("CreatedDate") as? String
+    lblTaskDate.text = "\(taskData.valueForKey("CreatedDate") as? String)"
     txtTaskDescription.text = taskData.valueForKey("TaskName") as? String
     txtComments.text = taskData.valueForKey("Comments") as? String
     lblHourWorked.text = taskData.valueForKey("TimeSpent")  as? String
     
+        
+        scrollView.scrollEnabled = true
+        scrollView.delegate = self
+        scrollView.contentSize = CGSizeMake(0, 0)
+        scrollView.backgroundColor = UIColor.clearColor()
     }
 
     override func didReceiveMemoryWarning() {
@@ -46,5 +53,8 @@ class TaskDetailViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    @IBAction func btnBack(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: {});
+    }
 
 }

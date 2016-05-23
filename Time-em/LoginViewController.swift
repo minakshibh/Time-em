@@ -78,22 +78,22 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 //        }
     }
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-        if textField == txtUserID {
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardDidShowNotification, object: nil)
-        }
-        if textField == txtPassword {
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardDidShowNotification, object: nil)
-        }
+//        if textField == txtUserID {
+//            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillShow(_:)), name: UIKeyboardDidShowNotification, object: nil)
+//        }
+//        if textField == txtPassword {
+//            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardDidShowNotification, object: nil)
+//        }
         return true
     }
     func textFieldShouldEndEditing(textField: UITextField) -> Bool {  //delegate method
-        
-        if textField == txtUserID {
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardDidHideNotification, object: nil)
-        }
-        if textField == txtPassword {
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardDidShowNotification, object: nil)
-        }
+//        
+//        if textField == txtUserID {
+//            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardDidHideNotification, object: nil)
+//        }
+//        if textField == txtPassword {
+//            NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardDidShowNotification, object: nil)
+//        }
 
         return true
     }
@@ -198,18 +198,18 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
     func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-        var newVerticalPosition: Float = Float(-keyboardSize.height) + 100
+        let newVerticalPosition: Float = Float(-keyboardSize.height)
         self.moveFrameToVerticalPosition(newVerticalPosition, forDuration: 0.3)
         }
     }
     func keyboardWillHide(notification: NSNotification) {
         //    CGFloat  kNavBarHeight =  self.navigationController.navigationBar.frame.size.height;
-        var kNavBarHeight: CGFloat = 0
+        let kNavBarHeight: CGFloat = 0
         self.moveFrameToVerticalPosition(Float(kNavBarHeight), forDuration: 0.3)
     }
     func moveFrameToVerticalPosition(position: Float, forDuration duration: Float) {
         var frame: CGRect = self.view.frame
-        frame.origin.y = CGFloat( position)
+        frame.origin.y = CGFloat( -50)
         UIView.animateWithDuration(0.3, animations: {() -> Void in
             self.view.frame = frame
         })
