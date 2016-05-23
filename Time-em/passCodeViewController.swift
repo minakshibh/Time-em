@@ -58,6 +58,9 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
     }
     
     @IBAction func btnForgotPin(sender: AnyObject) {
+        let resetPinAndPasswordView = resetPinAndPassword()
+       
+        self.navigationController?.pushViewController(resetPinAndPasswordView, animated: true)
     }
 
     
@@ -168,4 +171,9 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
     
     
 
+    if segue.identifier == "resetPin"{
+            let destinationVC = segue.destinationViewController as! resetPinAndPassword
+            destinationVC.resetType = "Pin"
+        }
+    }
 }
