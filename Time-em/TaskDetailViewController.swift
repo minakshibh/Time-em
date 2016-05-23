@@ -17,7 +17,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
     @IBOutlet var txtTaskDescription: UITextView!
     @IBOutlet var btnBack: UIButton!
     @IBOutlet var scrollView: UIScrollView!
-    
+    @IBOutlet var imageView: UIImageView!
     
     
     override func viewDidLoad() {
@@ -36,6 +36,20 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         scrollView.delegate = self
         scrollView.contentSize = CGSizeMake(0, 0)
         scrollView.backgroundColor = UIColor.clearColor()
+        
+        scrollView.contentOffset.x = 0
+        
+        if taskData.valueForKey("AttachmentImageFile") != nil {
+            
+            if taskData.valueForKey("AttachmentImageFile") as? String != "" {
+            main{
+            let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)")
+            let data = NSData(contentsOfURL: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check
+            self.imageView.image = UIImage(data: data!)
+            }
+            }
+        }
+        
     }
 
     override func didReceiveMemoryWarning() {

@@ -32,7 +32,7 @@ class dashboardViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        sideView.hidden = true
         if fromPassCodeView != "yes" {
             if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
         
@@ -60,7 +60,16 @@ class dashboardViewController: UIViewController {
             }
         
         }
+        print(sideView.frame)
+//        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(dashboardViewController.showMenuFunction), userInfo: nil, repeats: false)
     }
+    
+    func showMenuFunction() {
+        
+        self.menuSlideBack()
+        sideView.hidden = false
+    }
+    
     override func viewDidDisappear(animated: Bool) {
         btnSetting.backgroundColor = UIColor.clearColor()
         btnMyTeam.backgroundColor = UIColor.clearColor()
@@ -90,6 +99,11 @@ class dashboardViewController: UIViewController {
         self.checkActiveInacive()
         
         refreshButtonTitleImage()
+        
+        print(sideView.frame)
+        if sideView.frame.origin.x == 0 {
+            self.menuSlideBack()
+        }
     }
     
     func refreshButtonTitleImage() {

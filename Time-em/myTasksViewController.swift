@@ -327,11 +327,11 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        delay(0.001){
-            let dataDic:NSMutableDictionary = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
-            self.selectedTaskData = dataDic
-            self.performSegueWithIdentifier("taskDetail", sender: self)
-        }
+//        delay(0.001){
+//            let dataDic:NSMutableDictionary = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
+//            self.selectedTaskData = dataDic
+//            self.performSegueWithIdentifier("taskDetail", sender: self)
+//        }
     }
     
     @IBAction func btnBack(sender: AnyObject) {
