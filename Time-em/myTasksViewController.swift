@@ -316,4 +316,12 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             
         }
     }
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        
+        // Create a new variable to store the instance of PlayerTableViewController
+        let destinationVC = segue.destinationViewController as! AddNewTaskViewController
+        destinationVC.createdDate = self.selectedDate
+    }
+
+
 }
