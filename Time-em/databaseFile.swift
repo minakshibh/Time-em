@@ -337,7 +337,7 @@ class databaseFile: NSObject {
             
             if teamIdsArr.containsObject("\(Id!)") {
                 do {
-                    try database.executeUpdate("UPDATE teamData SET ActivityId ?, Company ?, CompanyId ? ,Department ?, DepartmentId ?, FirstName ?,FullName ?, SupervisorId ?, IsNightShift ?,IsSecurityPin ?, IsSignedIn ?, LastName ?,LoginCode ?, LoginId ?, NFCTagId ?, Project ? ,ProjectId ?, SignInAt ?, SignOutAt ?,SignedInHours ?,  TaskActivityId ?,UserTypeId ?, Worksite ?, WorksiteId ? WHERE Id=?", values: [ActivityId , Company , CompanyId ,Department , DepartmentId , FirstName ,FullName , SupervisorId , IsNightShift ,IsSecurityPin , IsSignedIn , LastName ,LoginCode , LoginId , NFCTagId , Project  ,ProjectId , SignInAt , SignOutAt ,SignedInHours ,  TaskActivityId ,UserTypeId , Worksite , WorksiteId,Id])
+                    try database.executeUpdate("UPDATE teamData SET ActivityId=?, Company=?, CompanyId=? ,Department=?, DepartmentId=?, FirstName=?,FullName=?, SupervisorId=?, IsNightShift=?,IsSecurityPin=?, IsSignedIn=?, LastName=?,LoginCode=?, LoginId=?, NFCTagId=?, Project=? ,ProjectId=?, SignInAt=?, SignOutAt=?,SignedInHours=?,  TaskActivityId=?,UserTypeId=?, Worksite=?, WorksiteId=? WHERE Id=?", values: [ActivityId , Company , CompanyId ,Department , DepartmentId , FirstName ,FullName , SupervisorId , IsNightShift ,IsSecurityPin , IsSignedIn , LastName ,LoginCode , LoginId , NFCTagId , Project  ,ProjectId , SignInAt , SignOutAt ,SignedInHours ,  TaskActivityId ,UserTypeId , Worksite , WorksiteId,Id])
                 } catch let error as NSError {
                     print("failed: \(error.localizedDescription)")
                 }
@@ -418,4 +418,101 @@ class databaseFile: NSObject {
         }
         database.close()
     }
+    
+    func teamSignInUpdate (userId:String) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        var encodedData:NSData!
+        var currentUserId:String!
+        do {
+            try database.executeUpdate("UPDATE teamData SET IsSignedIn ? WHERE Id=?", values: ["1", userId])
+            
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        
+        do {
+            let rs = try database.executeQuery("select * from teamData", values: nil)
+            while rs.next() {
+                let dict: NSMutableDictionary = [:]
+                
+                dict.setObject(rs.stringForColumn("IsSignedIn"), forKey: "IsSignedIn")
+                
+                
+                print(rs.stringForColumn("SupervisorId"))
+                if rs.stringForColumn("SupervisorId")! == userId {
+                    print(dict)
+                }
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+
+        
+    }
+    
+    func teamSignOutUpdate (userId:String) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("UPDATE teamData SET IsSignedIn=? WHERE Id=?", values: ["0", userId])
+            
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+               
+        
+    }
+    
+
+    
+    func updateActivityIdForTeam (userid:String,activityId:String,SignInAt:String){
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+
+        do {
+            try database.executeUpdate("UPDATE teamData SET ActivityId=?,IsSignedIn=?,SignInAt=? WHERE Id=?", values: [activityId,"1",SignInAt,userid])
+            
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+
+    }
+    
 }

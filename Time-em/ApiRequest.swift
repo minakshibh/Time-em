@@ -900,6 +900,116 @@ class ApiRequest: NSObject {
                 MBProgressHUD.hideHUDForView(view, animated: true)
         }
     }
+    
+    func teamUserSignIn(userId:String,LoginId:String,view:UIView)  {
+        let notificationKey = "com.time-teamUserSignInOutResponse"
+        
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net//api/UserActivity/SignInByLoginId", parameters: ["userId":userId,"LoginId":LoginId])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        if "\(JSON.valueForKey("isError")!)" == "0"{
+                            
+                            
+                            
+                            
+                            
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            
+                            let database = databaseFile()
+                            database.updateActivityIdForTeam(userId, activityId: "\(JSON.valueForKey("Id")!)",SignInAt:"\(JSON.valueForKey("SignInAt")!)")
+//                            database.teamSignInUpdate(userId)
+                            
+                           
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+                        }else{
+                            if "\(JSON.valueForKey("Message")!)".lowercaseString == "user is already signedin!" {
+                                
+                                let database = databaseFile()
+                                database.updateActivityIdForTeam(userId, activityId: "\(JSON.valueForKey("Id")!)",SignInAt:"\(JSON.valueForKey("SignInAt")!)")
+                                //update query
+                            }
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+        
+    }
+    
+    func teamUserSignOut(userId:String,LoginId:String,ActivityId:String,view:UIView)  {
+        let notificationKey = "com.time-teamUserSignInOutResponse"
+        
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserActivity/SignOutByLoginId", parameters: ["userId":userId,"LoginId":LoginId,"ActivityId":ActivityId])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        if "\(JSON.valueForKey("isError")!)" ==  "0" {
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            
+                            let databse = databaseFile()
+                            databse.teamSignOutUpdate(userId)
+                            
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }else{
+                             if "\(JSON.valueForKey("Message")!)".lowercaseString ==  "user already signed out.please signin!" {
+                                let databse = databaseFile()
+                                databse.teamSignOutUpdate(userId)
+                                
+                            }
+                            
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+        
+    }
+
 }
 
 

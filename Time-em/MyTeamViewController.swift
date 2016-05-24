@@ -65,7 +65,13 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
-        return 50
+        let dict:NSMutableDictionary  = teamDataArray[indexPath.row] as! NSMutableDictionary
+        if "\(dict["IsSignedIn"]!)" == "0" {
+         return 50
+        }else{
+            return 60
+        }
+        
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -105,7 +111,58 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             cell.accessoryView = imageView
         }
         
+        if "\(dict["IsSignedIn"]!)" != "0" {
+            // create dateFormatter with UTC time format
+            if dict["SignInAt"] != nil {
+                let str:String!
+                if dict["SignInAt"]!.lowercaseString.rangeOfString("t") != nil {
+                    str =   "\(dict["SignInAt"]!)".componentsSeparatedByString(".")[0]
+                }else{
+                 str = "\(dict["SignInAt"]!.componentsSeparatedByString(" ")[0])T\(dict["SignInAt"]!.componentsSeparatedByString(" ")[1])"
+                }
+                
+                
+            let dateFormatter: NSDateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
+            print("\(dict["SignInAt"]!)")
+             
+            let date: NSDate = dateFormatter.dateFromString(str)!
+            // create date from string
+            // change to a readable time format and change to local time zone
+            dateFormatter.dateFormat = "EEE, MMM d, yyyy - h:mm a"
+            dateFormatter.timeZone = NSTimeZone.localTimeZone()
+            let timestamp: String = dateFormatter.stringFromDate(date)
+
+            cell.detailTextLabel?.text = "SignIn at:- \(timestamp)"
+            }
+        }
         
+        
+        
+        if "\(dict["IsSignedIn"]!)"  == "0" {
+        cell.rightButtons = [MGSwipeButton(title: "Signin",icon:UIImage(named: "SignIn"),backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
+            (sender: MGSwipeTableCell!) -> Bool in
+            print("delete: \(indexPath.row)")
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.signInOutResponse), name: "com.time-teamUserSignInOutResponse", object: nil)
+            let api = ApiRequest()
+            api.teamUserSignIn("\(dict["Id"]!)", LoginId: "\(dict["LoginId"]!)", view: self.view)
+            
+            
+            return true
+        })]
+        }else{
+        cell.rightButtons = [MGSwipeButton(title: "Signout",icon:UIImage(named: "SignOut"),backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
+                (sender: MGSwipeTableCell!) -> Bool in
+                print("delete: \(indexPath.row)")
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.signInOutResponse), name: "com.time-teamUserSignInOutResponse", object: nil)
+            let api = ApiRequest()
+            api.teamUserSignOut("\(dict["Id"]!)", LoginId: "\(dict["LoginId"]!)", ActivityId: "\(dict["ActivityId"]!)", view: self.view)
+            
+                return true
+            })]
+        }
+
         
         return cell
     }
@@ -115,6 +172,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         selectedUserFullname = "\(dict["FullName"]!)"
         self.performSegueWithIdentifier("myteam_mytask", sender: self)
     }
+    
     
     @IBAction func btnBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
@@ -142,6 +200,24 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             mytask.currentUserFullName = selectedUserFullname
             
         }
+    }
+    
+    func signInOutResponse(notification:NSNotification) {
+        
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        var alert :UIAlertController!
+//        if status.lowercaseString == "success"{
+//            alert = UIAlertController(title: "Time'em", message: "Login Successfull", preferredStyle: UIAlertControllerStyle.Alert)
+//            self.performSegueWithIdentifier("homeView", sender: self)
+//            
+//        }else{
+//            alert = UIAlertController(title: "Time'em", message: "Login Failed", preferredStyle: UIAlertControllerStyle.Alert)
+//        }
+//        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//        self.presentViewController(alert, animated: true, completion: nil)
+        fetchTeamDataFromDatabase()
     }
 
 }
