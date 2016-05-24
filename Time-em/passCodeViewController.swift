@@ -26,7 +26,7 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
         // Please Sign Up (Free!) to remove this limitation.
         
         txtFieldone.becomeFirstResponder()
-
+        self.navigationController?.navigationBarHidden = true
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "goPrevious", name: "deletePressed", object: nil)
 
 

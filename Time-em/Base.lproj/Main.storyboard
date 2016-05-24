@@ -874,7 +874,7 @@
         <!--Add New Task View Controller-->
         <scene sceneID="CwT-9J-aMA">
             <objects>
-                <viewController id="4Gx-cW-4Oh" customClass="AddNewTaskViewController" customModule="Time_em" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddNewTaskIdentifier" id="4Gx-cW-4Oh" customClass="AddNewTaskViewController" customModule="Time_em" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="FMy-3V-Q1g"/>
                         <viewControllerLayoutGuide type="bottom" id="hdt-gP-kUS"/>
@@ -1928,8 +1928,8 @@
         <image name="user_inactive" width="17" height="17"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="1Ot-67-owb"/>
-        <segue reference="ZIq-va-Gog"/>
+        <segue reference="UpT-7q-7gD"/>
+        <segue reference="VHT-wx-fcN"/>
         <segue reference="9mw-38-tLx"/>
     </inferredMetricsTieBreakers>
 </document>

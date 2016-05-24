@@ -30,12 +30,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         txtUserID.delegate = self
         txtPassword.delegate = self
-        
+        self.navigationController?.navigationBarHidden = true
         btnLogin.layer.cornerRadius = 4
     }
     override func viewWillAppear(animated: Bool) {
         UIApplication.sharedApplication().statusBarStyle = .LightContent
-
+        self.navigationController?.navigationBarHidden = true
         print("\(NSUserDefaults.standardUserDefaults().valueForKey("userLoggedIn"))")
         
         if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {

@@ -779,7 +779,7 @@ class ApiRequest: NSObject {
                 body.appendData("Content-Disposition:form-data; name=\"\(key)\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
                 body.appendData("\(value)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
             }
-        if(image == nil)
+        if(image != nil)
         {
         let fname = "test.png"
         let mimetype = "image/png"
