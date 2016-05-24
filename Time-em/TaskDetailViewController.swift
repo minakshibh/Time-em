@@ -29,12 +29,12 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
     lblTaskDate.text = "\(taskData.valueForKey("CreatedDate") as? String)"
     txtTaskDescription.text = taskData.valueForKey("TaskName") as? String
     txtComments.text = taskData.valueForKey("Comments") as? String
-    lblHourWorked.text = taskData.valueForKey("TimeSpent")  as? String
+    lblHourWorked.text = taskData.valueForKey("TimeSpent")!  as? String
     
         
         scrollView.scrollEnabled = true
         scrollView.delegate = self
-        scrollView.contentSize = CGSizeMake(0, 0)
+        scrollView.contentSize = CGSizeMake(0, 800)
         scrollView.backgroundColor = UIColor.clearColor()
         
         scrollView.contentOffset.x = 0
@@ -43,6 +43,8 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
             
             if taskData.valueForKey("AttachmentImageFile") as? String != "" {
             main{
+                
+                
             let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)")
             let data = NSData(contentsOfURL: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check
             self.imageView.image = UIImage(data: data!)
