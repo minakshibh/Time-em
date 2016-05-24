@@ -147,7 +147,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     
     func getDataFromDatabase (id:String) {
         let databaseFetch = databaseFile()
-        taskDataArray = databaseFetch.getTasksForUserID(id)
+        taskDataArray = databaseFetch.getTasksForUserID(id,Date:selectedDate)
         print(taskDataArray)
         tableView.reloadData()
     }
@@ -227,6 +227,8 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let Description: UILabel = UILabel(frame: CGRectMake(15, 0, 250+85 , 58))
         if DeviceType.IS_IPHONE_5 {
             Description.frame = CGRectMake(15,  10 - 10 , 250  + 30  , 58)
+            let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 14.0)!
+            Description.font = myFont
         }else if DeviceType.IS_IPHONE_6 {
             Description.frame = CGRectMake(15,  10 - 10 , 250  + 50  , 58)
         }
@@ -235,11 +237,11 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         Description.font  = UIFont(name: "HelveticaNeue", size: 15)
         let lines = Description.getNoOflines()
         if lines > 3 {
-            return 100
+            return 93
         }else{
             Description.autosizeForWidth()
             print(Description.frame.size.height)
-            return Description.frame.size.height + 30
+            return Description.frame.size.height + 41
             
         }
     }
@@ -265,7 +267,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         let dataDic:NSMutableDictionary = taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
         
-        let notificationImage: UIImageView = UIImageView(frame: CGRectMake(15, 10, 0, 18))
+        let notificationImage: UIImageView = UIImageView(frame: CGRectMake(0, 10, 0, 18))
         //        notificationImage.image = UIImage(named: "cross-popup")
         //        notificationImage.backgroundColor = UIColor.yellowColor()
         cell.contentView.addSubview(notificationImage)
@@ -280,15 +282,19 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         TitleLabel.text = "this is for testing"
         TitleLabel.text =  "\(dataDic.valueForKey("TaskName")!)"
         TitleLabel.font  = UIFont(name: "HelveticaNeue", size: 17)
+        TitleLabel.textColor = UIColor(red: 23/256, green: 166/256, blue: 199/256, alpha: 1)
+
         cell.contentView.addSubview(TitleLabel)
         
         
-        let Description: UILabel = UILabel(frame: CGRectMake(TitleLabel.frame.origin.x, TitleLabel.frame.origin.y + TitleLabel.frame.size.height-10 , 250  + 85  , 58))
+        let Description: UILabel = UILabel(frame: CGRectMake(TitleLabel.frame.origin.x, TitleLabel.frame.origin.y + TitleLabel.frame.size.height , 250  + 95  , 58))
         Description.text = "\(dataDic.valueForKey("Comments")!)"
         Description.font  = UIFont(name: "HelveticaNeue", size: 15)
         Description.textColor = UIColor.darkGrayColor()
         if DeviceType.IS_IPHONE_5 {
             Description.frame = CGRectMake(TitleLabel.frame.origin.x, TitleLabel.frame.origin.y + TitleLabel.frame.size.height-10 , 250  + 30  , 58)
+            let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 14.0)!
+            Description.font = myFont
         }else if DeviceType.IS_IPHONE_6 {
             Description.frame = CGRectMake(TitleLabel.frame.origin.x, TitleLabel.frame.origin.y + TitleLabel.frame.size.height-10 , 250  + 50  , 58)
         }
@@ -300,11 +306,32 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         }
         print(Description.frame.size.height)
         print(lines)
+        if  DeviceType.IS_IPHONE_5 {
+            
+        }
         cell.contentView.addSubview(Description)
+        
+        
         cell.contentView.backgroundColor = UIColor(red: 235/256, green: 235/256, blue: 235/256, alpha: 1)
         
         
         
+        let timelabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x + Description.frame.size.width , (Description.frame.size.height + Description.frame.origin.y)/3 , 30 , 20))
+        if DeviceType.IS_IPHONE_5 {
+            timelabel.frame = CGRectMake(Description.frame.origin.x + Description.frame.size.width-15, TitleLabel.frame.origin.y+5+4, 30 , 20)
+        }else if DeviceType.IS_IPHONE_6 {
+            timelabel.frame = CGRectMake(Description.frame.origin.x + Description.frame.size.width , TitleLabel.frame.origin.y, 30 , 20)
+        }
+        timelabel.text =  "\(dataDic.valueForKey("TimeSpent")!)"
+        timelabel.font  = UIFont(name: "HelveticaNeue", size: 14)
+        timelabel.textColor = UIColor.blackColor()
+        cell.contentView.addSubview(timelabel)
+        
+        
+        
+         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 5, (timelabel.frame.origin.x + timelabel.frame.size.width+4 ), 2))
+        partitionlabel.backgroundColor = UIColor.lightGrayColor()
+        cell.contentView.addSubview(partitionlabel)
 //        cell.rightButtons = [MGSwipeButton(title: "", icon: UIImage(named:"edit"), backgroundColor: UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1))
 //            ,MGSwipeButton(title: "", icon: UIImage(named:"delete"), backgroundColor:UIColor(red: 209/255, green: 25/255, blue: 16/255, alpha: 1))]
 //        cell.leftSwipeSettings.transition = MGSwipeTransition.Static
@@ -312,6 +339,12 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         cell.rightButtons = [MGSwipeButton(title: "",icon:UIImage(named: "delete"),backgroundColor: UIColor(red: 209/255, green: 25/255, blue: 16/255, alpha: 1), callback: {
             (sender: MGSwipeTableCell!) -> Bool in
             print("delete: \(indexPath.row)")
+            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.deleteTaskResponse), name: "com.time-em.deleteResponse", object: nil)
+
+            print(dataDic)
+            let api = ApiRequest()
+            api.deleteTasks("\(dataDic.valueForKey("Id")!)", view: self.view)
             
             return true
         }),MGSwipeButton(title: "", icon:UIImage(named: "edit"),backgroundColor: UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1), callback: {
@@ -340,13 +373,41 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        //        delay(0.001){
-        //            let dataDic:NSMutableDictionary = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
-        //            self.selectedTaskData = dataDic
-        //            self.performSegueWithIdentifier("taskDetail", sender: self)
-        //        }
+                delay(0.001){
+                    let dataDic:NSMutableDictionary = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
+                    self.selectedTaskData = dataDic
+                    self.performSegueWithIdentifier("taskDetail", sender: self)
+                }
     }
     
+    func deleteTaskResponse(notification:NSNotification) {
+        
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        var alert :UIAlertController!
+        if status.lowercaseString == "success"{
+            
+            
+            
+        }else{
+            
+            alert = UIAlertController(title: "Time'em", message: "\(status)", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            
+        }
+        //        changeSignINButton()
+        
+        if currentUserID != nil{
+            self.getDataFromDatabase(currentUserID)
+        }else{
+            let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+            self.getDataFromDatabase(logedInUserId!)
+        }
+    }
+    
+
     @IBAction func btnBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
     }
@@ -377,9 +438,11 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         } else if segue.identifier == "addNewTask"{
             
             let destinationVC = segue.destinationViewController as! AddNewTaskViewController
+            destinationVC.isEditting = "false"
             destinationVC.createdDate = self.selectedDate
         }
-        
     }
     
+    
 }
+//

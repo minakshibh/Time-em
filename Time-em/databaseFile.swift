@@ -11,7 +11,7 @@ import FMDB
 
 class databaseFile: NSObject {
     
-    func getTasksForUserID(ID:String) -> NSMutableArray {
+    func getTasksForUserID(ID:String,Date:String) -> NSMutableArray {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
@@ -21,6 +21,7 @@ class databaseFile: NSObject {
             print("Unable to open database")
         }
         let dataArray:NSMutableArray! = []
+        let str = "\(Date.componentsSeparatedByString("-")[1])/\(Date.componentsSeparatedByString("-")[0])/\(Date.componentsSeparatedByString("-")[2])"
         do {
             let rs = try database.executeQuery("select * from tasksData", values: nil)
             while rs.next() {
@@ -41,7 +42,7 @@ class databaseFile: NSObject {
                 dict.setObject(rs.stringForColumn("Id"), forKey: "Id")
                 dict.setObject(rs.stringForColumn("Comments"), forKey: "Comments")
                 print(rs.stringForColumn("UserId"))
-                if rs.stringForColumn("UserId") == ID {
+                if rs.stringForColumn("UserId") == ID  && rs.stringForColumn("CreatedDate")!.componentsSeparatedByString(" ")[0] == str {
                 dataArray.addObject(dict)
                 }
             }
@@ -373,7 +374,8 @@ class databaseFile: NSObject {
             
             let rs = try database.executeQuery("select * from assignedTaskList", values: nil)
             while rs.next() {
-                let x = rs.stringForColumn("TaskId")
+                let x = "\(rs.stringForColumn("TaskId")!)"
+                print(x)
                 teamIdsArr.addObject(x)
             }
         } catch let error as NSError {
@@ -381,7 +383,7 @@ class databaseFile: NSObject {
         }
         
          for i in 0 ..< dataArr.count {
-            let dict = dataArr[i]
+            let dict:NSMutableDictionary! = dataArr[i] as? NSMutableDictionary
             
             let  TaskId:Int!
             if let field = dict.valueForKey("TaskId")  {
@@ -399,7 +401,7 @@ class databaseFile: NSObject {
             
             if teamIdsArr.containsObject("\(TaskId!)") {
                 do {
-                    try database.executeUpdate("UPDATE assignedTaskList SET TaskId ?, TaskName ?", values: [TaskId , TaskName])
+                    try database.executeUpdate("UPDATE assignedTaskList SET  TaskName=? where TaskId=?,", values: [  TaskName,TaskId])
                 } catch let error as NSError {
                     print("failed: \(error.localizedDescription)")
                 }
@@ -432,7 +434,7 @@ class databaseFile: NSObject {
         var encodedData:NSData!
         var currentUserId:String!
         do {
-            try database.executeUpdate("UPDATE teamData SET IsSignedIn ? WHERE Id=?", values: ["1", userId])
+            try database.executeUpdate("UPDATE teamData SET IsSignedIn=? WHERE Id=?", values: ["1", userId])
             
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
@@ -465,7 +467,7 @@ class databaseFile: NSObject {
         
     }
     
-    func teamSignOutUpdate (userId:String) {
+    func teamSignOutUpdate (userId:String,SignInAt:String,SignOutAt:String) {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
@@ -476,7 +478,7 @@ class databaseFile: NSObject {
             return
         }
         do {
-            try database.executeUpdate("UPDATE teamData SET IsSignedIn=? WHERE Id=?", values: ["0", userId])
+            try database.executeUpdate("UPDATE teamData SET IsSignedIn=?, SignInAt=?, SignOutAt=? WHERE Id=?", values: ["0",SignInAt,SignOutAt, userId])
             
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
@@ -513,6 +515,24 @@ class databaseFile: NSObject {
             return
         }
 
+    }
+    
+    func deleteTask(id:String) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("delete  from  tasksData WHERE Id=?", values: [id])            
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
     }
     
 }

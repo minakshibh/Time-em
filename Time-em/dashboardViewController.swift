@@ -60,7 +60,7 @@ class dashboardViewController: UIViewController {
             }
         
         }
-        print(sideView.frame)
+       
 //        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(dashboardViewController.showMenuFunction), userInfo: nil, repeats: false)
     }
     
@@ -103,6 +103,26 @@ class dashboardViewController: UIViewController {
         print(sideView.frame)
         if sideView.frame.origin.x == 0 {
             self.menuSlideBack()
+        }
+        
+        let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
+        print(usertype)
+        
+        
+        if "\(usertype)" == "4" {
+            btnMyTeam.hidden = true
+            btnMyTeam.frame = CGRectMake(btnMyTeam.frame.origin.x,btnMyTeam.frame.origin.y, 0, btnMyTeam.frame.size.height)
+        }
+   
+    }
+    
+   override func viewDidAppear(animated: Bool) {
+        let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
+        print(usertype)
+        
+        
+        if "\(usertype)" == "4" {
+            btnNotifications.frame = CGRectMake(self.view.frame.size.width/2-btnNotifications.frame.size.width/2,btnNotifications.frame.origin.y, btnNotifications.frame.size.width, btnNotifications.frame.size.height)
         }
     }
     
@@ -221,8 +241,8 @@ class dashboardViewController: UIViewController {
         
         
         
-        
-        NSUserDefaults.standardUserDefaults().removeObjectForKey("userLoggedIn")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("UserTypeId")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("userLoggedIn")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_id")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_IsSignIn")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_ActivityId")

@@ -130,7 +130,7 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
     let password = "\(txtFieldone.text!)\(txtFieldtwo.text!)\(txtFieldthree.text!)\(txtFieldFour.text!)"
     let currentUser_LoginId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginId") as? String
         let api = ApiRequest()
-        api.loginThroughPasscode("admin", SecurityPin: password, view: self.view)
+        api.loginThroughPasscode(currentUser_LoginId!, SecurityPin: password, view: self.view)
     }
     
     func textFieldShouldEndEditing(textField: UITextField) -> Bool {  //delegate method

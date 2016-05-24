@@ -33,13 +33,24 @@
                                     <constraint firstAttribute="height" constant="56" id="UJb-6J-YP4"/>
                                 </constraints>
                             </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k7w-Lw-ovf">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="20"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="Oki-cb-bgY"/>
+                                    <constraint firstAttribute="width" secondItem="k7w-Lw-ovf" secondAttribute="height" multiplier="207:10" id="OlM-oe-c3S"/>
+                                </constraints>
+                            </view>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="k7w-Lw-ovf" secondAttribute="trailing" constant="-20" id="6Rj-My-u1Y"/>
+                            <constraint firstItem="k7w-Lw-ovf" firstAttribute="top" secondItem="RMo-1w-ApL" secondAttribute="topMargin" id="8Yx-g8-4Eh"/>
                             <constraint firstItem="Edw-xh-nKp" firstAttribute="centerY" secondItem="zEG-Br-jyz" secondAttribute="centerY" id="Nob-9O-9V3"/>
                             <constraint firstItem="zEG-Br-jyz" firstAttribute="leading" secondItem="RMo-1w-ApL" secondAttribute="leadingMargin" constant="-20" id="Nww-ob-fYE"/>
                             <constraint firstItem="Edw-xh-nKp" firstAttribute="centerX" secondItem="zEG-Br-jyz" secondAttribute="centerX" id="Oeh-1A-o57"/>
                             <constraint firstItem="zEG-Br-jyz" firstAttribute="top" secondItem="Dr2-h7-5oj" secondAttribute="bottom" id="gVS-AS-zLO"/>
+                            <constraint firstItem="k7w-Lw-ovf" firstAttribute="leading" secondItem="RMo-1w-ApL" secondAttribute="leadingMargin" constant="-20" id="gy2-3h-ims"/>
                             <constraint firstItem="zfn-IM-PRa" firstAttribute="top" secondItem="zEG-Br-jyz" secondAttribute="bottom" id="mml-a5-573"/>
                             <constraint firstAttribute="trailingMargin" secondItem="zEG-Br-jyz" secondAttribute="trailing" constant="-20" id="yJP-fG-bUi"/>
                         </constraints>

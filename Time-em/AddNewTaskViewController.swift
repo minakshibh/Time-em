@@ -68,6 +68,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         
         let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AddNewTaskViewController.getAssignedTaskIListResponse), name: "com.time-em.getAssignedTaskIList", object: nil)
         assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
         let databaseFetch = databaseFile()
         assignedTasksArray = databaseFetch.getAssignedTasks()
@@ -131,6 +132,65 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         
         //~~ Set delegate of UIImagePickerController
         imagePicker.delegate = self
+    }
+    
+    func getDataFUnction(){
+        var dropdownArray = NSMutableArray()
+        dropdownArray = ["Add New Task"]
+        
+        for i in 0 ..< assignedTasksArray.count {
+            let taskNameArray:NSMutableDictionary = assignedTasksArray .objectAtIndex(i) as! NSMutableDictionary
+            
+            dropdownArray.addObject(taskNameArray.valueForKey("taskName")! as! String)
+            
+        }
+        dropDown.dataSource = dropdownArray.mutableCopy() as! [String]
+        
+        
+        //~~ Add Value to textfield from dropdown
+        dropDown.selectionAction = { [unowned self] (index, item) in
+            
+            if index == 0 {
+                self.taskId = "0"
+                self.isNewTask = true
+                //~~ Show Alertview with Textfield at 0th Index
+                var tField: UITextField!
+                
+                func configurationTextField(textField: UITextField!)
+                {
+                    print("generating the TextField")
+                    textField.placeholder = "Enter an item"
+                    tField = textField
+                }
+                
+                
+                func handleCancel(alertView: UIAlertAction!)
+                {
+                    print("Cancelled !!")
+                }
+                
+                let alert = UIAlertController(title: "Add new task", message: "", preferredStyle: UIAlertControllerStyle.Alert)
+                
+                alert.addTextFieldWithConfigurationHandler(configurationTextField)
+                alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler:handleCancel))
+                alert.addAction(UIAlertAction(title: "Done", style: UIAlertActionStyle.Default, handler:{ (UIAlertAction)in
+                    print("Done !!")
+                    print("Item : \(tField.text)")
+                    self.selectTaskTxt.text = tField.text
+                }))
+                self.presentViewController(alert, animated: true, completion: {
+                    print("completion block")
+                })
+            }else{
+                let taskNameArray:NSMutableDictionary = self.assignedTasksArray .objectAtIndex(index-1) as! NSMutableDictionary
+                self.taskId = taskNameArray.valueForKey("taskId") as! String
+                self.isNewTask = false
+                self.selectTaskTxt.text = item
+            }
+        }
+        
+        dropDown.anchorView = selectTaskTxt
+        dropDown.bottomOffset = CGPoint(x: 0, y:selectTaskTxt.bounds.height)
     }
     
     override func didReceiveMemoryWarning() {
@@ -226,7 +286,16 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
          self.resetTheView()
         }
     }
-    
+    func getAssignedTaskIListResponse(notification:NSNotification) {
+        
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        if status.lowercaseString == "success"{
+            self.resetTheView()
+        }
+        getDataFUnction()
+    }
     //~~ TextView Delegates
     func textViewDidBeginEditing(textView: UITextView) {
         commentPlaceholder.hidden = true

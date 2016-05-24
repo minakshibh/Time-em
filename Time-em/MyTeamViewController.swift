@@ -19,6 +19,33 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     
     @IBOutlet var btnUserDetail: UIButton!
     
+    
+    enum UIUserInterfaceIdiom : Int
+    {
+        case Unspecified
+        case Phone
+        case Pad
+    }
+    
+    struct ScreenSize
+    {
+        static let SCREEN_WIDTH         = UIScreen.mainScreen().bounds.size.width
+        static let SCREEN_HEIGHT        = UIScreen.mainScreen().bounds.size.height
+        static let SCREEN_MAX_LENGTH    = max(ScreenSize.SCREEN_WIDTH, ScreenSize.SCREEN_HEIGHT)
+        static let SCREEN_MIN_LENGTH    = min(ScreenSize.SCREEN_WIDTH, ScreenSize.SCREEN_HEIGHT)
+    }
+    
+    struct DeviceType
+    {
+        static let IS_IPHONE_4_OR_LESS  = UIDevice.currentDevice().userInterfaceIdiom == .Phone && ScreenSize.SCREEN_MAX_LENGTH < 568.0
+        static let IS_IPHONE_5          = UIDevice.currentDevice().userInterfaceIdiom == .Phone && ScreenSize.SCREEN_MAX_LENGTH == 568.0
+        static let IS_IPHONE_6          = UIDevice.currentDevice().userInterfaceIdiom == .Phone && ScreenSize.SCREEN_MAX_LENGTH == 667.0
+        static let IS_IPHONE_6P         = UIDevice.currentDevice().userInterfaceIdiom == .Phone && ScreenSize.SCREEN_MAX_LENGTH == 736.0
+        static let IS_IPAD              = UIDevice.currentDevice().userInterfaceIdiom == .Pad && ScreenSize.SCREEN_MAX_LENGTH == 1024.0
+    }
+
+    
+    
     override func viewDidLoad() {
 
         super.viewDidLoad()
@@ -49,10 +76,15 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     
     func fetchTeamList() {
         let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
-
+        let timestm:String!
+        if NSUserDefaults.standardUserDefaults().valueForKey("teamTimeStamp") != nil {
+         timestm = NSUserDefaults.standardUserDefaults().valueForKey("teamTimeStamp") as? String
+        }else{
+            timestm = ""
+        }
             let api = ApiRequest()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.displayResponse), name: "com.time-em.getTeamResponse", object: nil)
-            api.getTeamDetail(logedInUserId!, TimeStamp: "", view: self.view)
+            api.getTeamDetail(logedInUserId!, TimeStamp:timestm, view: self.view)
     }
     func fetchTeamDataFromDatabase() {
         let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
@@ -67,11 +99,22 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     {
         let dict:NSMutableDictionary  = teamDataArray[indexPath.row] as! NSMutableDictionary
         if "\(dict["IsSignedIn"]!)" == "0" {
-         return 50
+            if dict["SignInAt"] != nil && dict["SignOutAt"] != nil && "\(dict["SignOutAt"]!)" != "" && "\(dict["SignInAt"]!)" != "" {
+                 if DeviceType.IS_IPHONE_5 {
+                    return 50
+                }
+                return 60
+            }
         }else{
+            if DeviceType.IS_IPHONE_5 {
+                return 50
+            }
             return 60
         }
-        
+        if DeviceType.IS_IPHONE_5 {
+            return 40
+        }
+        return 50
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -111,14 +154,29 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             cell.accessoryView = imageView
         }
         
-        if "\(dict["IsSignedIn"]!)" != "0" {
+        var finalStrSignInAt:String!
+        var finalStrSignOutAt:String!
+        
+        if "\(dict["IsSignedIn"]!)" != "0" && "\(dict["SignInAt"]!)" != "" {
             // create dateFormatter with UTC time format
+            
             if dict["SignInAt"] != nil {
                 let str:String!
                 if dict["SignInAt"]!.lowercaseString.rangeOfString("t") != nil {
                     str =   "\(dict["SignInAt"]!)".componentsSeparatedByString(".")[0]
                 }else{
-                 str = "\(dict["SignInAt"]!.componentsSeparatedByString(" ")[0])T\(dict["SignInAt"]!.componentsSeparatedByString(" ")[1])"
+                 //   24/05/2016 07:27:45
+                    let datestr = "\(dict["SignInAt"]!.componentsSeparatedByString(" ")[0])"
+                    let dateFormat:String!
+                  if datestr.lowercaseString.rangeOfString("/") != nil {
+                     dateFormat = "\(datestr.componentsSeparatedByString("/")[2])-\(datestr.componentsSeparatedByString("/")[1])-\(datestr.componentsSeparatedByString("/")[0])"
+                  }else{
+                    dateFormat = datestr
+                    }
+                    
+                    
+                    
+                 str = "\(dateFormat)T\(dict["SignInAt"]!.componentsSeparatedByString(" ")[1])"
                 }
                 
                 
@@ -134,14 +192,89 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             dateFormatter.timeZone = NSTimeZone.localTimeZone()
             let timestamp: String = dateFormatter.stringFromDate(date)
 
-            cell.detailTextLabel?.text = "SignIn at:- \(timestamp)"
+            cell.detailTextLabel?.text = "In:- \(timestamp)"
+              if  DeviceType.IS_IPHONE_5 {
+                let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
+                cell.detailTextLabel?.font = myFont
+                
+                }
+                cell.detailTextLabel?.numberOfLines = 2
             }
+        }else{
+            if dict["SignInAt"] != nil && "\(dict["SignInAt"]!)" != ""{
+                let str:String!
+                if dict["SignInAt"]!.lowercaseString.rangeOfString("t") != nil {
+                    str =   "\(dict["SignInAt"]!)".componentsSeparatedByString(".")[0]
+                }else{
+                    //   24/05/2016 07:27:45
+                    let datestr = "\(dict["SignInAt"]!.componentsSeparatedByString(" ")[0])"
+                    let dateFormat:String!
+                    if datestr.lowercaseString.rangeOfString("/") != nil {
+                        dateFormat = "\(datestr.componentsSeparatedByString("/")[2])-\(datestr.componentsSeparatedByString("/")[1])-\(datestr.componentsSeparatedByString("/")[0])"
+                    }else{
+                        dateFormat = datestr
+                    }
+                    
+                    
+                    
+                    str = "\(dateFormat)T\(dict["SignInAt"]!.componentsSeparatedByString(" ")[1])"
+                }
+                
+                
+                let dateFormatter: NSDateFormatter = NSDateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+                dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
+                print("\(dict["SignInAt"]!)")
+                
+                let date: NSDate = dateFormatter.dateFromString(str)!
+                // create date from string
+                // change to a readable time format and change to local time zone
+                dateFormatter.dateFormat = "EEE, MMM d, yyyy - h:mm a"
+                dateFormatter.timeZone = NSTimeZone.localTimeZone()
+                let timestamp: String = dateFormatter.stringFromDate(date)
+                
+                finalStrSignInAt = "In:- \(timestamp)"
+            }
+            //---
+            if dict["SignInAt"] != nil && dict["SignOutAt"] != nil && "\(dict["SignOutAt"]!)" != "" && "\(dict["SignInAt"]!)" != ""{
+                let str:String!
+                if dict["SignOutAt"]!.lowercaseString.rangeOfString("t") != nil {
+                    str =   "\(dict["SignOutAt"]!)".componentsSeparatedByString(".")[0]
+                }else{
+                    let datestr = "\(dict["SignOutAt"]!.componentsSeparatedByString(" ")[0])"
+                    let dateFormat = "\(datestr.componentsSeparatedByString("/")[2])-\(datestr.componentsSeparatedByString("/")[1])-\(datestr.componentsSeparatedByString("/")[0])"
+                    
+                    str = "\(dateFormat)T\(dict["SignOutAt"]!.componentsSeparatedByString(" ")[1])"
+                }
+                let dateFormatter: NSDateFormatter = NSDateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+                dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
+                print("\(dict["SignOutAt"]!)")
+                
+                let date: NSDate = dateFormatter.dateFromString(str)!
+                // create date from string
+                // change to a readable time format and change to local time zone
+                dateFormatter.dateFormat = "EEE, MMM d, yyyy - h:mm a"
+                dateFormatter.timeZone = NSTimeZone.localTimeZone()
+                let timestamp: String = dateFormatter.stringFromDate(date)
+                
+                finalStrSignOutAt = "Out- \(timestamp)"
+                
+            }
+            
+            cell.detailTextLabel?.text = "\(finalStrSignInAt)\n\(finalStrSignOutAt)"
+            if  DeviceType.IS_IPHONE_5 {
+            let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
+            cell.detailTextLabel?.font = myFont
+                
+            }
+            cell.detailTextLabel?.numberOfLines = 2
         }
         
         
         
         if "\(dict["IsSignedIn"]!)"  == "0" {
-        cell.rightButtons = [MGSwipeButton(title: "Signin",icon:UIImage(named: "SignIn"),backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
+        cell.rightButtons = [MGSwipeButton(title: "  Signin  ",icon:UIImage(named: ""),backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
             (sender: MGSwipeTableCell!) -> Bool in
             print("delete: \(indexPath.row)")
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.signInOutResponse), name: "com.time-teamUserSignInOutResponse", object: nil)
@@ -152,7 +285,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             return true
         })]
         }else{
-        cell.rightButtons = [MGSwipeButton(title: "Signout",icon:UIImage(named: "SignOut"),backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
+        cell.rightButtons = [MGSwipeButton(title: "  Signout  ",icon:UIImage(named: ""),backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
                 (sender: MGSwipeTableCell!) -> Bool in
                 print("delete: \(indexPath.row)")
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.signInOutResponse), name: "com.time-teamUserSignInOutResponse", object: nil)

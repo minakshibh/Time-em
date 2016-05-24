@@ -35,6 +35,7 @@ class ApiRequest: NSObject {
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.ActivityId)", forKey: "currentUser_ActivityId")
              NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginId)", forKey: "currentUser_LoginId")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.FullName)", forKey: "currentUser_FullName")
+             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserTypeId)", forKey: "UserTypeId")
             
             var dictionary:NSMutableDictionary = [:]
             dictionary = currentUsers.returnDict()
@@ -102,6 +103,53 @@ class ApiRequest: NSObject {
            
         }
     
+    func deleteTasks(Id:String,view:UIView) {
+        let notificationKey = "com.time-em.deleteResponse"
+        
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserTask/DeleteTask", parameters: ["Id":Id])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        let userInfo = ["response" : "SUCCESS"]
+                        
+                        if "\(JSON.valueForKey("isError")!)" == "0"{
+                        
+                            var databse = databaseFile()
+                            databse.deleteTask(Id)
+                            
+                            
+                           NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+                        }else{
+                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+        
+    }
+
      // http://timeemapi.azurewebsites.net/api/User/GetValidateUserByPin?loginId=admin&SecurityPin
     func loginThroughPasscode(loginId:String,SecurityPin:String,view:UIView) {
         let notificationKey = "com.time-em.passcodeloginResponse"
@@ -134,7 +182,8 @@ class ApiRequest: NSObject {
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.ActivityId)", forKey: "currentUser_ActivityId")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginId)", forKey: "currentUser_LoginId")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.FullName)", forKey: "currentUser_FullName")
-                        
+                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserTypeId)", forKey: "UserTypeId")
+
                         var dictionary:NSMutableDictionary = [:]
                         dictionary = currentUsers.returnDict()
                         
@@ -194,8 +243,8 @@ class ApiRequest: NSObject {
                 if let JSON = response.result.value {
                     print("JSON: \(JSON)")
                     var message:String!
-                    if JSON.valueForKey("Message") != nil {
-                     message = "\(JSON.valueForKey("Message")!)"
+                    if JSON.valueForKey("IsError") != nil {
+                     message = "\(JSON.valueForKey("IsError")!)"
                     }else{
                         let userInfo = ["response" : "Failure"]
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -203,7 +252,7 @@ class ApiRequest: NSObject {
                     }
                     
                     
-                    if message.lowercaseString == "success"{
+                    if message!.lowercaseString == "0"{
                         
 //                        var dictTime:NSMutableDictionary = [:]
 //                        let user = NSUserDefaults.standardUserDefaults()
@@ -447,7 +496,7 @@ class ApiRequest: NSObject {
                        
                         
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("successfully") != nil {
-                             let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             
                             
                             let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
@@ -496,7 +545,7 @@ class ApiRequest: NSObject {
                             
                             
                         }else{
-                             let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }
                         
@@ -534,7 +583,7 @@ class ApiRequest: NSObject {
                         
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("successfully") != nil{
 
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             
                             
                             let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
@@ -584,7 +633,7 @@ class ApiRequest: NSObject {
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             
                         }else{
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }
                         
@@ -629,7 +678,7 @@ class ApiRequest: NSObject {
                         
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
                             
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             NSUserDefaults.standardUserDefaults().setObject(JSON.valueForKey("TimeStamp"), forKey: "teamTimeStamp")
                             let dict = JSON.valueForKey("AppUserViewModel") as! NSArray
                           
@@ -641,7 +690,7 @@ class ApiRequest: NSObject {
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             
                         }else{
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }
                         
@@ -691,7 +740,7 @@ class ApiRequest: NSObject {
     
     
     func GetAssignedTaskIList(userId:String,view:UIView)  {
-        let notificationKey = "com.time-em.getTeamResponse"
+        let notificationKey = "com.time-em.getAssignedTaskIList"
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
         Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/Task/GetAssignedTaskIList", parameters: ["userId":userId])
@@ -940,7 +989,7 @@ class ApiRequest: NSObject {
                                 database.updateActivityIdForTeam(userId, activityId: "\(JSON.valueForKey("Id")!)",SignInAt:"\(JSON.valueForKey("SignInAt")!)")
                                 //update query
                             }
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }
                         
@@ -976,21 +1025,21 @@ class ApiRequest: NSObject {
                     
                     if "\(response.result)" == "SUCCESS"{
                         if "\(JSON.valueForKey("isError")!)" ==  "0" {
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             
                             let databse = databaseFile()
-                            databse.teamSignOutUpdate(userId)
+                            databse.teamSignOutUpdate(userId,SignInAt:"\(JSON.valueForKey("SignInAt")!)",SignOutAt:"\(JSON.valueForKey("SignOutAt")!)")
                             
                             
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }else{
                              if "\(JSON.valueForKey("Message")!)".lowercaseString ==  "user already signed out.please signin!" {
                                 let databse = databaseFile()
-                                databse.teamSignOutUpdate(userId)
+                                databse.teamSignOutUpdate(userId,SignInAt:"\(JSON.valueForKey("SignInAt")!)",SignOutAt:"\(JSON.valueForKey("SignOutAt")!)")
                                 
                             }
                             
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }
                         

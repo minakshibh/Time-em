@@ -19,9 +19,9 @@
     CGSize expectedLabelSize = [self.text sizeWithFont:font constrainedToSize:maximumLabelSize lineBreakMode:self.lineBreakMode];
     self.contentMode = UIControlContentVerticalAlignmentTop;
     CGRect newFrame = self.frame;
-    if (!(expectedLabelSize.height<newFrame.size.height)) {
+//    if (!(expectedLabelSize.height<newFrame.size.height)) {
         newFrame.size.height = expectedLabelSize.height;
-    }
+//    }
   //  [self alignTop];
     self.frame = newFrame;
     

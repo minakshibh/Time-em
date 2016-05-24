@@ -122,26 +122,26 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         let userIDStr: String = txtUserID.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
         let passwordStr: String = txtPassword.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
         
-//        var message:String = ""
-//        if userIDStr.isEmpty {
-//            message = "Please enter userID"
-//            let alert = UIAlertController(title: "Time'em", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-//            self.presentViewController(alert, animated: true, completion: nil)
-//            return
-//        }else if passwordStr.isEmpty{
-//            message = "Please enter password"
-//            let alert = UIAlertController(title: "Time'em", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-//            self.presentViewController(alert, animated: true, completion: nil)
-//            return
-//        }
-//        
+        var message:String = ""
+        if userIDStr.isEmpty {
+            message = "Please enter userID"
+            let alert = UIAlertController(title: "Time'em", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }else if passwordStr.isEmpty{
+            message = "Please enter password"
+            let alert = UIAlertController(title: "Time'em", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.displayResponse), name: notificationKey, object: nil)
     
         let loginUser = ApiRequest()
 //        let status:Bool = loginUser.loginApi(userIDStr, password: passwordStr)
-        loginUser.loginApi("admin", password: "training",view: self.view)
+        loginUser.loginApi(userIDStr, password: passwordStr,view: self.view)
         
         
       
