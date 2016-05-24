@@ -14,12 +14,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var storyboard:UIStoryboard?
-
+    let navigator:UINavigationController? = nil
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         window?.backgroundColor = UIColor.blackColor()
         self.createCopyOfDatabaseIfNeeded()
+        
+        let storyboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let navigationController:UINavigationController = storyboard.instantiateInitialViewController() as! UINavigationController
+        let rootViewController:UIViewController!
+        
+        if (NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginId") != nil){
+            rootViewController = storyboard.instantiateViewControllerWithIdentifier("passCode") as! passCodeViewController
+        }else{
+            rootViewController = storyboard.instantiateViewControllerWithIdentifier("loginView") as! LoginViewController
+        }
+        navigationController.viewControllers = [rootViewController]
+        self.window?.rootViewController = navigationController
+        
         UIApplication.sharedApplication().statusBarStyle = .LightContent
         return true
     }

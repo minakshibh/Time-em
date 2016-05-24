@@ -26,7 +26,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     var taskId = String()
     var assignedTasksArray = NSMutableArray()
     var createdDate:String!
+    var editTaskDict:NSDictionary!    
     let notificationKey = "com.time-em.addTaskResponse"
+    var isEditting: String!
+    var editId: String! = "0"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +39,31 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         addBtn.layer.borderWidth = 1
         addBtn.layer.borderColor = UIColor(red: 207, green: 237, blue: 244, alpha: 1).CGColor
         
+        if isEditting == "true" {
+            self.selectTaskTxt.text = "\(editTaskDict.valueForKey("TaskName")!)"
+            self.commentsTxt.text = "\(editTaskDict.valueForKey("Comments")!)"
+            if self.commentsTxt.text != "" {
+                self.commentPlaceholder.hidden = true
+            }
+            self.numberOfHoursTxt.text = "\(editTaskDict.valueForKey("SignedInHours")!)"
+            self.taskId = "\(editTaskDict.valueForKey("TaskId")!)"
+            self.createdDate = "\(editTaskDict.valueForKey("CreatedDate")!)"
+            let dateStr = "\(self.createdDate)".componentsSeparatedByString(" ")[0]
+            let day = dateStr.componentsSeparatedByString("/")[0]
+            let month = dateStr.componentsSeparatedByString("/")[1]
+            let year = dateStr.componentsSeparatedByString("/")[2]
+            self.createdDate = "\(month)-\(day)-\(year)"
+            
+            let imageUrl = "\(editTaskDict.valueForKey("AttachmentImageFile")!)"
+            if let url = NSURL(string: imageUrl) {
+                if let data = NSData(contentsOfURL: url) {
+                    uploadedImage.image = UIImage(data: data)
+                    uploadImageView.hidden = false
+                }        
+            }
+            self.editId = "\(editTaskDict.valueForKey("Id")!)"
+            
+        }
         let assignedTasks = ApiRequest()
         
         let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
@@ -181,7 +209,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         if uploadedImage.image != nil {
             imageData = UIImagePNGRepresentation(uploadedImage.image!)!
         }
-        assignedTasks.AddUpdateNewTask(imageData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: "0", view: self.view)
+        assignedTasks.AddUpdateNewTask(imageData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: editId as String, view: self.view)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AddNewTaskViewController.displayResponse), name: notificationKey, object: nil)
     }
