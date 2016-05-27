@@ -25,6 +25,7 @@ class dashboardViewController: UIViewController {
     @IBOutlet var btnMenu: UIButton!
     @IBOutlet var sideView: UIView!
     @IBOutlet var btnLogout: UIButton!
+    @IBOutlet var btnScanBarcode: UIButton!
     @IBOutlet var imageSyncMenu: UIImageView!
     @IBOutlet var imagePersonMenu: UIImageView!
     var fromPassCodeView:String!
@@ -84,11 +85,11 @@ class dashboardViewController: UIViewController {
         if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0"  {
         self.btnUserInfo.setImage(UIImage(named: "user_inactive"), forState: .Normal)
          imagePersonMenu.image = UIImage(named: "user_inactive")
-        imageSyncMenu.image = UIImage(named: "sync- red")
+        
         }else{
             self.btnUserInfo.setImage(UIImage(named: "user_active"), forState: .Normal)
             imagePersonMenu.image = UIImage(named: "user_active")
-            imageSyncMenu.image = UIImage(named: "sync - green")
+            
             }
         }
     }
@@ -112,6 +113,17 @@ class dashboardViewController: UIViewController {
         if "\(usertype)" == "4" {
             btnMyTeam.hidden = true
             btnMyTeam.frame = CGRectMake(btnMyTeam.frame.origin.x,btnMyTeam.frame.origin.y, 0, btnMyTeam.frame.size.height)
+        }
+        
+        
+        if NSUserDefaults.standardUserDefaults().valueForKey("sync") != nil {
+            let syncStr = "\(NSUserDefaults.standardUserDefaults().valueForKey("sync"))"
+            if syncStr == "yes" {
+                imageSyncMenu.image = UIImage(named: "sync- red")
+            }else{
+                imageSyncMenu.image = UIImage(named: "sync - green")
+
+            }
         }
    
     }
@@ -198,7 +210,11 @@ class dashboardViewController: UIViewController {
         
         
     }
-    
+    @IBAction func btnScanBarcode(sender: AnyObject) {
+        let barcodeView: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("barcode")
+        self.presentViewController(barcodeView!, animated: true, completion: nil)
+
+    }
     @IBAction func btnLogout(sender: AnyObject) {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
@@ -244,6 +260,7 @@ class dashboardViewController: UIViewController {
     NSUserDefaults.standardUserDefaults().removeObjectForKey("UserTypeId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("userLoggedIn")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_id")
+         NSUserDefaults.standardUserDefaults().removeObjectForKey("sync")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_IsSignIn")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_ActivityId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_LoginId")

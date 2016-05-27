@@ -11,6 +11,64 @@ import FMDB
 
 class databaseFile: NSObject {
     
+    
+    
+    func getTeamDetail(loginCode:String) -> NSMutableDictionary{
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        let dict: NSMutableDictionary = [:]
+        do {
+            let rs = try database.executeQuery("select * from teamData where LoginCode = ?", values: [loginCode])
+            while rs.next() {
+            
+                
+                dict.setObject(rs.stringForColumn("ActivityId"), forKey: "ActivityId")
+                dict.setObject(rs.stringForColumn("Company"), forKey: "Company")
+                dict.setObject(rs.stringForColumn("CompanyId"), forKey: "CompanyId")
+                dict.setObject(rs.stringForColumn("Department"), forKey: "Department")
+                dict.setObject(rs.stringForColumn("DepartmentId"), forKey: "DepartmentId")
+                dict.setObject(rs.stringForColumn("FirstName"), forKey: "FirstName")
+                dict.setObject(rs.stringForColumn("FullName"), forKey: "FullName")
+                dict.setObject(rs.stringForColumn("Id"), forKey: "Id")
+                dict.setObject(rs.stringForColumn("IsNightShift"), forKey: "IsNightShift")
+                dict.setObject(rs.stringForColumn("IsSecurityPin"), forKey: "IsSecurityPin")
+                dict.setObject(rs.stringForColumn("IsSignedIn"), forKey: "IsSignedIn")
+                dict.setObject(rs.stringForColumn("LastName"), forKey: "LastName")
+                dict.setObject(rs.stringForColumn("LoginCode"), forKey: "LoginCode")
+                dict.setObject(rs.stringForColumn("LoginId"), forKey: "LoginId")
+                dict.setObject(rs.stringForColumn("Project"), forKey: "Project")
+                
+                dict.setObject(rs.stringForColumn("SignInAt"), forKey: "SignInAt")
+                dict.setObject(rs.stringForColumn("SignOutAt"), forKey: "SignOutAt")
+                dict.setObject(rs.stringForColumn("SignedInHours"), forKey: "SignedInHours")
+                dict.setObject(rs.stringForColumn("SupervisorId"), forKey: "SupervisorId")
+                dict.setObject(rs.stringForColumn("TaskActivityId"), forKey: "TaskActivityId")
+                
+                dict.setObject(rs.stringForColumn("UserTypeId"), forKey: "UserTypeId")
+                dict.setObject(rs.stringForColumn("Worksite"), forKey: "Worksite")
+                dict.setObject(rs.stringForColumn("WorksiteId"), forKey: "WorksiteId")
+                dict.setObject(rs.stringForColumn("ID"), forKey: "ID")
+                
+            database.close()   
+            return dict
+            }
+            
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        dict.setObject("nodata", forKey: "nodata")
+        database.close()
+        return dict
+        
+    }
+    
+    
     func getTasksForUserID(ID:String,Date:String) -> NSMutableArray {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
@@ -41,7 +99,7 @@ class databaseFile: NSObject {
                 dict.setObject(rs.stringForColumn("UserId"), forKey: "UserId")
                 dict.setObject(rs.stringForColumn("Id"), forKey: "Id")
                 dict.setObject(rs.stringForColumn("Comments"), forKey: "Comments")
-                print(rs.stringForColumn("UserId"))
+//                print(rs.stringForColumn("UserId"))
                 if rs.stringForColumn("UserId") == ID  && rs.stringForColumn("CreatedDate")!.componentsSeparatedByString(" ")[0] == str {
                 dataArray.addObject(dict)
                 }
@@ -120,7 +178,7 @@ class databaseFile: NSObject {
                 dict.setObject(rs.stringForColumn("Worksite"), forKey: "Worksite")
                 dict.setObject(rs.stringForColumn("WorksiteId"), forKey: "WorksiteId")
                 
-                print(rs.stringForColumn("SupervisorId"))
+//                print(rs.stringForColumn("SupervisorId"))
                 if rs.stringForColumn("SupervisorId") == ID {
                     dataArray.addObject(dict)
                 }
@@ -375,7 +433,7 @@ class databaseFile: NSObject {
             let rs = try database.executeQuery("select * from assignedTaskList", values: nil)
             while rs.next() {
                 let x = "\(rs.stringForColumn("TaskId")!)"
-                print(x)
+//                print(x)
                 teamIdsArr.addObject(x)
             }
         } catch let error as NSError {
@@ -454,9 +512,9 @@ class databaseFile: NSObject {
                 dict.setObject(rs.stringForColumn("IsSignedIn"), forKey: "IsSignedIn")
                 
                 
-                print(rs.stringForColumn("SupervisorId"))
+//                print(rs.stringForColumn("SupervisorId"))
                 if rs.stringForColumn("SupervisorId")! == userId {
-                    print(dict)
+//                    print(dict)
                 }
             }
         } catch let error as NSError {
@@ -489,6 +547,28 @@ class databaseFile: NSObject {
         
     }
     
+    func signOutUpdate (userId:String) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("UPDATE teamData SET IsSignedIn=? WHERE Id=?", values: ["0"])
+            
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+        
+        
+    }
+
 
     
     func updateActivityIdForTeam (userid:String,activityId:String,SignInAt:String){
@@ -535,4 +615,272 @@ class databaseFile: NSObject {
         database.close()
     }
     
+    func addDataToSync(type:String,data:NSMutableArray)  {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        
+        let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data)
+        
+        do {
+            try database.executeUpdate("insert into sync (type , data) values (?, ?)", values: [type , encodedData])
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+    }
+    
+    func getDataFromSync() -> NSMutableDictionary  {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        let dict:NSMutableDictionary = [:]
+        do {
+            let rs = try database.executeQuery("select * from sync", values: nil)
+            while rs.next() {
+               let x =  rs.stringForColumn("type")
+               let y =  rs.dataForColumn("data")
+                let userArr:NSMutableArray = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSMutableArray
+                
+                dict.setObject(userArr, forKey: x)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        return dict
+    }
+   
+    func currentUserSignOut(array:NSArray)  {
+    
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        var encodedData:NSData!
+        var currentUserId:String!
+        do {
+           
+            let rs = try database.executeQuery("select * from userdata", values: nil)
+            while rs.next() {
+                currentUserId = rs.stringForColumn("userId")
+                let y = rs.dataForColumn("userData")
+                
+                let userDict:NSMutableDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSMutableDictionary
+                userDict.setValue(0, forKey: "IsSignIn")
+                
+                let dicton = array[0] as? NSDictionary
+                print("\(dicton?.valueForKey("SignInAt"))")
+                userDict.setValue(dicton?.valueForKey("SignInAt")!, forKey: "SignInAt")
+                userDict.setValue(dicton?.valueForKey("SignOutAt")!, forKey: "SignOutAt")
+                encodedData = NSKeyedArchiver.archivedDataWithRootObject(userDict)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        //                            userdata(userId text, userData text, loggedInUser text)
+        do {
+            try database.executeUpdate("UPDATE userdata SET userData = ? WHERE userId=?", values: [encodedData,currentUserId])
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+        database.close()
+    }
+    
+    func currentUserSignIn(arr:NSArray)  {
+        
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        var encodedData:NSData!
+        var currentUserId:String!
+        do {
+            let rs = try database.executeQuery("select * from userdata", values: nil)
+            while rs.next() {
+                currentUserId = rs.stringForColumn("userId")
+                let y = rs.dataForColumn("userData")
+                let userDict:NSMutableDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSMutableDictionary
+                userDict.setValue(1, forKey: "IsSignIn")
+                let val:NSDictionary = (arr[0] as? NSDictionary)!
+                print(val.valueForKey("Id"))
+                
+                userDict.setValue("\(val.valueForKey("Id")!)", forKey: "ActivityId")
+                NSUserDefaults.standardUserDefaults().setObject("\(val.valueForKey("Id")!)", forKey: "currentUser_ActivityId")
+                encodedData = NSKeyedArchiver.archivedDataWithRootObject(userDict)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        //                            userdata(userId text, userData text, loggedInUser text)
+        do {
+            try database.executeUpdate("UPDATE userdata SET userData = ? WHERE userId=?", values: [encodedData,currentUserId])
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+        database.close()
+    }
+    
+    func currentUserSignOutSync()  {
+        
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        var encodedData:NSData!
+        var currentUserId:String!
+        do {
+            
+            let rs = try database.executeQuery("select * from userdata", values: nil)
+            while rs.next() {
+                currentUserId = rs.stringForColumn("userId")
+                let y = rs.dataForColumn("userData")
+                
+                let userDict:NSMutableDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSMutableDictionary
+                userDict.setValue(0, forKey: "IsSignIn")
+                encodedData = NSKeyedArchiver.archivedDataWithRootObject(userDict)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("UPDATE userdata SET userData = ? WHERE userId=?", values: [encodedData,currentUserId])
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+        database.close()
+    }
+
+    func currentUserSignInSync()  {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        var encodedData:NSData!
+        var currentUserId:String!
+        do {
+            let rs = try database.executeQuery("select * from userdata", values: nil)
+            while rs.next() {
+                currentUserId = rs.stringForColumn("userId")
+                let y = rs.dataForColumn("userData")
+                let userDict:NSMutableDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSMutableDictionary
+                userDict.setValue(1, forKey: "IsSignIn")
+                encodedData = NSKeyedArchiver.archivedDataWithRootObject(userDict)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("UPDATE userdata SET userData = ? WHERE userId=?", values: [encodedData,currentUserId])
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+    }
+    
+    func saveNotificationType(data:NSArray) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        let userDict = NSKeyedArchiver.archivedDataWithRootObject(data)
+        do {
+            try database.executeUpdate("insert into notificationtype (data) values (?)", values: [userDict])
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+    }
+    func getNotificationType() -> NSArray{
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        var userARR:NSArray = []
+        do {
+            let rs = try database.executeQuery("select * from notificationtype", values: nil)
+
+            while rs.next() {
+             let x = rs.dataForColumn("data")
+                 userARR = NSKeyedUnarchiver.unarchiveObjectWithData(x) as! NSArray
+
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+            userARR = []
+        }
+        database.close()
+        return userARR
+
+    }
+
+    
 }
+

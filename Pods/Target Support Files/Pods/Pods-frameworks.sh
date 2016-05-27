@@ -84,20 +84,20 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "Pods/AFViewShaker.framework"
   install_framework "Pods/Alamofire.framework"
-  install_framework "Pods/BKPasscodeView.framework"
   install_framework "Pods/FMDB.framework"
+  install_framework "Pods/JLToast.framework"
   install_framework "Pods/KGModal.framework"
   install_framework "Pods/MBProgressHUD.framework"
   install_framework "Pods/MGSwipeTableCell.framework"
+  install_framework "Pods/RSBarcodes_Swift.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "Pods/AFViewShaker.framework"
   install_framework "Pods/Alamofire.framework"
-  install_framework "Pods/BKPasscodeView.framework"
   install_framework "Pods/FMDB.framework"
+  install_framework "Pods/JLToast.framework"
   install_framework "Pods/KGModal.framework"
   install_framework "Pods/MBProgressHUD.framework"
   install_framework "Pods/MGSwipeTableCell.framework"
+  install_framework "Pods/RSBarcodes_Swift.framework"
 fi

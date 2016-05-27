@@ -1,7 +1,7 @@
 //
 //  AppDelegate.swift
 //  Time-em
-//
+// self.dispatch = false
 //  Created by Krishna Mac Mini 2 on 11/05/16.
 //  Copyright © 2016 Krishna_Mac_2. All rights reserved.
 //
@@ -34,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.rootViewController = navigationController
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
+        NSUserDefaults.standardUserDefaults().setObject("no", forKey:"sync")
+        
         return true
     }
 

@@ -162,11 +162,8 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             
             if dict["SignInAt"] != nil {
                 let str:String!
-                if dict["SignInAt"]!.lowercaseString.rangeOfString("t") != nil {
-                    str =   "\(dict["SignInAt"]!)".componentsSeparatedByString(".")[0]
-                }else{
-                 //   24/05/2016 07:27:45
-                    let datestr = "\(dict["SignInAt"]!.componentsSeparatedByString(" ")[0])"
+
+                let datestr = "\(dict["SignInAt"]!.componentsSeparatedByString(" ")[0])"
                     let dateFormat:String!
                   if datestr.lowercaseString.rangeOfString("/") != nil {
                      dateFormat = "\(datestr.componentsSeparatedByString("/")[2])-\(datestr.componentsSeparatedByString("/")[1])-\(datestr.componentsSeparatedByString("/")[0])"
@@ -177,22 +174,23 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
                     
                     
                  str = "\(dateFormat)T\(dict["SignInAt"]!.componentsSeparatedByString(" ")[1])"
-                }
-                
-                
-            let dateFormatter: NSDateFormatter = NSDateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-            dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
-            print("\(dict["SignInAt"]!)")
-             
-            let date: NSDate = dateFormatter.dateFromString(str)!
-            // create date from string
-            // change to a readable time format and change to local time zone
-            dateFormatter.dateFormat = "EEE, MMM d, yyyy - h:mm a"
-            dateFormatter.timeZone = NSTimeZone.localTimeZone()
-            let timestamp: String = dateFormatter.stringFromDate(date)
 
-            cell.detailTextLabel?.text = "In:- \(timestamp)"
+                
+                
+//            let dateFormatter: NSDateFormatter = NSDateFormatter()
+//            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+//            dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
+//            print("\(dict["SignInAt"]!)")
+//             
+//            let date: NSDate = dateFormatter.dateFromString(str)!
+//            // create date from string
+//            // change to a readable time format and change to local time zone
+//            dateFormatter.dateFormat = "EEE, MMM d, yyyy - h:mm a"
+//            dateFormatter.timeZone = NSTimeZone.localTimeZone()
+//            let timestamp: String = dateFormatter.stringFromDate(date)
+
+//            cell.detailTextLabel?.text = "In:- \(timestamp)"
+             cell.detailTextLabel?.text =  "In:- \(dict["SignInAt"]!)"
               if  DeviceType.IS_IPHONE_5 {
                 let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
                 cell.detailTextLabel?.font = myFont
@@ -203,10 +201,10 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         }else{
             if dict["SignInAt"] != nil && "\(dict["SignInAt"]!)" != ""{
                 let str:String!
-                if dict["SignInAt"]!.lowercaseString.rangeOfString("t") != nil {
-                    str =   "\(dict["SignInAt"]!)".componentsSeparatedByString(".")[0]
-                }else{
-                    //   24/05/2016 07:27:45
+//                if dict["SignInAt"]!.lowercaseString.rangeOfString("t") != nil {
+//                    str =   "\(dict["SignInAt"]!)".componentsSeparatedByString(".")[0]
+//                }else{
+//                    //   24/05/2016 07:27:45
                     let datestr = "\(dict["SignInAt"]!.componentsSeparatedByString(" ")[0])"
                     let dateFormat:String!
                     if datestr.lowercaseString.rangeOfString("/") != nil {
@@ -218,7 +216,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
                     
                     
                     str = "\(dateFormat)T\(dict["SignInAt"]!.componentsSeparatedByString(" ")[1])"
-                }
+//                }
                 
                 
                 let dateFormatter: NSDateFormatter = NSDateFormatter()
@@ -242,26 +240,28 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
                     str =   "\(dict["SignOutAt"]!)".componentsSeparatedByString(".")[0]
                 }else{
                     let datestr = "\(dict["SignOutAt"]!.componentsSeparatedByString(" ")[0])"
-                    let dateFormat = "\(datestr.componentsSeparatedByString("/")[2])-\(datestr.componentsSeparatedByString("/")[1])-\(datestr.componentsSeparatedByString("/")[0])"
+                    let dateFormat = datestr
                     
-                    str = "\(dateFormat)T\(dict["SignOutAt"]!.componentsSeparatedByString(" ")[1])"
+//                    str = "\(dateFormat)T\(dict["SignOutAt"]!.componentsSeparatedByString(" ")[1])"
+                    str = "\(dict["SignOutAt"]!)"
                 }
-                let dateFormatter: NSDateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-                dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
-                print("\(dict["SignOutAt"]!)")
+//                let dateFormatter: NSDateFormatter = NSDateFormatter()
+//                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+//                dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
+//                print("\(dict["SignOutAt"]!)")
+//                
+//                let date: NSDate = dateFormatter.dateFromString(str)!
+//                // create date from string
+//                // change to a readable time format and change to local time zone
+//                dateFormatter.dateFormat = "EEE, MMM d, yyyy - h:mm a"
+//                dateFormatter.timeZone = NSTimeZone.localTimeZone()
+//                let timestamp: String = dateFormatter.stringFromDate(date)
                 
-                let date: NSDate = dateFormatter.dateFromString(str)!
-                // create date from string
-                // change to a readable time format and change to local time zone
-                dateFormatter.dateFormat = "EEE, MMM d, yyyy - h:mm a"
-                dateFormatter.timeZone = NSTimeZone.localTimeZone()
-                let timestamp: String = dateFormatter.stringFromDate(date)
-                
-                finalStrSignOutAt = "Out- \(timestamp)"
+//                finalStrSignOutAt = "Out- \(timestamp)"
+                finalStrSignOutAt = "Out- \(str)"
                 
             }
-            
+            if finalStrSignInAt != nil && finalStrSignOutAt != nil {
             cell.detailTextLabel?.text = "\(finalStrSignInAt)\n\(finalStrSignOutAt)"
             if  DeviceType.IS_IPHONE_5 {
             let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
@@ -269,6 +269,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
                 
             }
             cell.detailTextLabel?.numberOfLines = 2
+            }
         }
         
         

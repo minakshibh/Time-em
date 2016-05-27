@@ -4,22 +4,17 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>AFViewShaker.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>Alamofire.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>BKPasscodeView.xcscheme</key>
+		<key>FMDB.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>FMDB.xcscheme</key>
+		<key>JLToast.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -44,10 +39,15 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>RSBarcodes_Swift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>1B7C69C0437F1D606426F8D9F04967AD</key>
+		<key>19F2608FE98D48A519A00108CA8C38FC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -67,17 +67,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>892FE5BFDD0FD8B38E22D76135459FE4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A142A959A9F5A0309C0389E86820C810</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>B4755459F36E3DAC8DA0A67F24712E32</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>D8D3ACD0835583896D47DC5916888D49</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>DDFD5E397CBD3E44AB508DE6B196680D</key>
 		<dict>
 			<key>primary</key>
 			<true/>

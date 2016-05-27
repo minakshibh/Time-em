@@ -10,6 +10,7 @@ import UIKit
 import Alamofire
 import MBProgressHUD
 import FMDB
+import JLToast
 
 class ApiRequest: NSObject {
     
@@ -17,6 +18,7 @@ class ApiRequest: NSObject {
         let notificationKey = "com.time-em.loginResponse"
        
         MBProgressHUD.showHUDAddedTo(view, animated: true)
+
         Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/User/GetValidateUser", parameters: ["loginId":loginId,"password":password])
             .responseJSON { response in
                 print(response.request)  // original URL request
@@ -69,7 +71,16 @@ class ApiRequest: NSObject {
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
-            
+            do {
+                try database.executeUpdate("create table notificationtype(data text)", values: nil)
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
+            do {
+                try database.executeUpdate("create table sync(type text, data text)", values: nil)
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
             do {
                 try database.executeUpdate("create table assignedTaskList(TaskId text, TaskName text)", values: nil)
             } catch let error as NSError {
@@ -481,8 +492,30 @@ class ApiRequest: NSObject {
     func signOutUser(userId:String,LoginId:String,ActivityId:String,view:UIView)  {
         let notificationKey = "com.time-em.signInOutResponse"
         
+        if Reachability.isConnectedToNetwork() == true {
+            print("Internet connection OK")
+        } else {
+            print("Internet connection FAILED")
+            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            let array:NSMutableArray = []
+            array.addObject(userId)
+            array.addObject(LoginId)
+            array.addObject(ActivityId)
+            array.addObject(view)
+            
+            let database = databaseFile()
+            database.addDataToSync("signOutUser", data: array)
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+            
+            NSUserDefaults.standardUserDefaults().setObject("\(0)", forKey: "currentUser_IsSignIn")
+            database.currentUserSignOutSync()
+            return
+        }
+        
+        
+        
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserActivity/SignOutByLoginId", parameters: ["userId":userId,"LoginId":LoginId,"ActivityId":ActivityId])
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/UserActivity/SignOutByUserId", parameters: ["Userids":userId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -495,49 +528,15 @@ class ApiRequest: NSObject {
                     if "\(response.result)" == "SUCCESS"{
                        
                         
-                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("successfully") != nil {
+                        if "\(JSON.valueForKey("isError")!)" == "0" {
                              let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                             NSUserDefaults.standardUserDefaults().setObject("\(0)", forKey: "currentUser_IsSignIn")
                             
+                                                        
+                          let array = JSON.valueForKey("SignedOutUser") as? NSArray
                             
-                            let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
-                            let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
-                            
-                            let database = FMDatabase(path: fileURL.path)
-                            
-                            if !database.open() {
-                                print("Unable to open database")
-                                return
-                            }
-                            var encodedData:NSData!
-                            var currentUserId:String!
-                            do {
-                                NSUserDefaults.standardUserDefaults().setObject("\(0)", forKey: "currentUser_IsSignIn")
-                                let rs = try database.executeQuery("select * from userdata", values: nil)
-                                while rs.next() {
-                                     currentUserId = rs.stringForColumn("userId")
-                                    let y = rs.dataForColumn("userData")
-                                    let userDict:NSMutableDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSMutableDictionary
-                                    userDict.setValue(0, forKey: "IsSignIn")
-                                     encodedData = NSKeyedArchiver.archivedDataWithRootObject(userDict)
-                                }
-                            } catch let error as NSError {
-                                print("failed: \(error.localizedDescription)")
-                            }
-                            database.close()
-                            
-                            if !database.open() {
-                                print("Unable to open database")
-                                return
-                            }
-//                            userdata(userId text, userData text, loggedInUser text)
-                            do {
-                                try database.executeUpdate("UPDATE userdata SET userData = ? WHERE userId=?", values: [encodedData,currentUserId])
-                            } catch let error as NSError {
-                                print("failed: \(error.localizedDescription)")
-                            }
-                            
-                            database.close()
-                            
+                            let database = databaseFile()
+                            database.currentUserSignOut(array!)
                             
                             
                              NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -568,8 +567,28 @@ class ApiRequest: NSObject {
     func signInUser(userId:String,LoginId:String,view:UIView)  {
         let notificationKey = "com.time-em.signInOutResponse"
         
+        if Reachability.isConnectedToNetwork() == true {
+            print("Internet connection OK")
+        } else {
+            print("Internet connection FAILED")
+            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            let array:NSMutableArray = []
+            array.addObject(userId)
+            array.addObject(LoginId)
+            array.addObject(view)
+            
+            let database = databaseFile()
+            database.addDataToSync("signInUser", data: array)
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+            
+            
+            NSUserDefaults.standardUserDefaults().setObject("\(1)", forKey: "currentUser_IsSignIn")
+            database.currentUserSignInSync()
+            return
+        }
+        
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net//api/UserActivity/SignInByLoginId", parameters: ["userId":userId,"LoginId":LoginId])
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net//api/UserActivity/SignInByUserId", parameters: ["Userids":userId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -581,54 +600,16 @@ class ApiRequest: NSObject {
                     
                     if "\(response.result)" == "SUCCESS"{
                         
-                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("successfully") != nil{
+                        if "\(JSON.valueForKey("isError")!)" == "0" {
 
                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             
                             
-                            let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
-                            let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+                            NSUserDefaults.standardUserDefaults().setObject("\(1)", forKey: "currentUser_IsSignIn")
+                            let arr = JSON.valueForKey("SignedinUser") as? NSArray
                             
-                            let database = FMDatabase(path: fileURL.path)
-                            
-                            if !database.open() {
-                                print("Unable to open database")
-                                return
-                            }
-                            var encodedData:NSData!
-                            var currentUserId:String!
-                            do {
-                                NSUserDefaults.standardUserDefaults().setObject("\(1)", forKey: "currentUser_IsSignIn")
-                                let rs = try database.executeQuery("select * from userdata", values: nil)
-                                while rs.next() {
-                                    currentUserId = rs.stringForColumn("userId")
-                                    let y = rs.dataForColumn("userData")
-                                    let userDict:NSMutableDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSMutableDictionary
-                                    userDict.setValue(1, forKey: "IsSignIn")
-                                userDict.setValue("\(JSON.valueForKey("Id")!)", forKey: "ActivityId")
-                            NSUserDefaults.standardUserDefaults().setObject("\(JSON.valueForKey("Id")!)", forKey: "currentUser_ActivityId")
-                                    encodedData = NSKeyedArchiver.archivedDataWithRootObject(userDict)
-                                }
-                            } catch let error as NSError {
-                                print("failed: \(error.localizedDescription)")
-                            }
-                            database.close()
-                            
-                            if !database.open() {
-                                print("Unable to open database")
-                                return
-                            }
-                            //                            userdata(userId text, userData text, loggedInUser text)
-                            do {
-                                try database.executeUpdate("UPDATE userdata SET userData = ? WHERE userId=?", values: [encodedData,currentUserId])
-                            } catch let error as NSError {
-                                print("failed: \(error.localizedDescription)")
-                            }
-                            
-                            database.close()
-                            
-
-                            
+                            let database = databaseFile()
+                            database.currentUserSignIn(arr!)
                             
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             
@@ -808,7 +789,7 @@ class ApiRequest: NSObject {
             "CreatedDate"   :CreatedDate,
             "ID"            :ID
         ]
-        print(param)
+//        print(param)
         let url = NSURL(string: "http://timeemapi.azurewebsites.net/api/UserTask/AddUpdateUserTaskActivity")
         
         let request = NSMutableURLRequest(URL: url!)
@@ -953,8 +934,24 @@ class ApiRequest: NSObject {
     func teamUserSignIn(userId:String,LoginId:String,view:UIView)  {
         let notificationKey = "com.time-teamUserSignInOutResponse"
         
+        if Reachability.isConnectedToNetwork() == true {
+            print("Internet connection OK")
+        } else {
+            print("Internet connection FAILED")
+            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            let array:NSMutableArray = []
+            array.addObject(userId)
+            array.addObject(LoginId)
+            array.addObject(view)
+            
+            let database = databaseFile()
+            database.addDataToSync("teamUserSignIn", data: array)
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+
+        }
+        
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net//api/UserActivity/SignInByLoginId", parameters: ["userId":userId,"LoginId":LoginId])
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net//api/UserActivity/SignInByUserId", parameters: ["Userids":userId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -973,9 +970,13 @@ class ApiRequest: NSObject {
                             
                             
                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            let arr = JSON.valueForKey("SignedinUser") as? NSArray
+                            let val:NSDictionary = (arr![0] as? NSDictionary)!
+                            
+                            
                             
                             let database = databaseFile()
-                            database.updateActivityIdForTeam(userId, activityId: "\(JSON.valueForKey("Id")!)",SignInAt:"\(JSON.valueForKey("SignInAt")!)")
+                            database.updateActivityIdForTeam(userId, activityId: "\(val.valueForKey("Id")!)",SignInAt:"\(val.valueForKey("SignInAt")!)")
 //                            database.teamSignInUpdate(userId)
                             
                            
@@ -984,9 +985,11 @@ class ApiRequest: NSObject {
                             
                         }else{
                             if "\(JSON.valueForKey("Message")!)".lowercaseString == "user is already signedin!" {
+                                let arr = JSON.valueForKey("SignedinUser") as? NSArray
+                                let val:NSDictionary = (arr![0] as? NSDictionary)!
                                 
                                 let database = databaseFile()
-                                database.updateActivityIdForTeam(userId, activityId: "\(JSON.valueForKey("Id")!)",SignInAt:"\(JSON.valueForKey("SignInAt")!)")
+                                database.updateActivityIdForTeam(userId, activityId: "\(val.valueForKey("Id")!)",SignInAt:"\(val.valueForKey("SignInAt")!)")
                                 //update query
                             }
                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
@@ -1011,9 +1014,28 @@ class ApiRequest: NSObject {
     
     func teamUserSignOut(userId:String,LoginId:String,ActivityId:String,view:UIView)  {
         let notificationKey = "com.time-teamUserSignInOutResponse"
+        if Reachability.isConnectedToNetwork() == true {
+            print("Internet connection OK")
+        } else {
+            print("Internet connection FAILED")
+            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            let array:NSMutableArray = []
+            array.addObject(userId)
+            array.addObject(LoginId)
+            array.addObject(ActivityId)
+            array.addObject(view)
+            
+            let database = databaseFile()
+            database.addDataToSync("teamUserSignOut", data: array)
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+
+        }
+        
+        
+        
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserActivity/SignOutByLoginId", parameters: ["userId":userId,"LoginId":LoginId,"ActivityId":ActivityId])
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/UserActivity/SignOutByUserId", parameters: ["Userids":userId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1027,15 +1049,21 @@ class ApiRequest: NSObject {
                         if "\(JSON.valueForKey("isError")!)" ==  "0" {
                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             
+                            let arr = JSON.valueForKey("SignedOutUser") as? NSArray
+                            let val:NSDictionary = (arr![0] as? NSDictionary)!
+                            
                             let databse = databaseFile()
-                            databse.teamSignOutUpdate(userId,SignInAt:"\(JSON.valueForKey("SignInAt")!)",SignOutAt:"\(JSON.valueForKey("SignOutAt")!)")
+                            databse.teamSignOutUpdate(userId,SignInAt:"\(val.valueForKey("SignInAt")!)",SignOutAt:"\(val.valueForKey("SignOutAt")!)")
                             
                             
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }else{
                              if "\(JSON.valueForKey("Message")!)".lowercaseString ==  "user already signed out.please signin!" {
+                                let arr = JSON.valueForKey("SignedOutUser") as? NSArray
+                                let val:NSDictionary = (arr![0] as? NSDictionary)!
+                                
                                 let databse = databaseFile()
-                                databse.teamSignOutUpdate(userId,SignInAt:"\(JSON.valueForKey("SignInAt")!)",SignOutAt:"\(JSON.valueForKey("SignOutAt")!)")
+                                databse.teamSignOutUpdate(userId,SignInAt:"\(val.valueForKey("SignInAt")!)",SignOutAt:"\(val.valueForKey("SignOutAt")!)")
                                 
                             }
                             
@@ -1058,7 +1086,235 @@ class ApiRequest: NSObject {
         }
         
     }
+    
+    func teamSignInAll(userId:String,view:UIView)  {
+        let notificationKey = "com.time-em.signInOutAllResponse"
+        if Reachability.isConnectedToNetwork() == true {
+            print("Internet connection OK")
+        } else {
+            print("Internet connection FAILED")
+            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            let array:NSMutableArray = []
+            array.addObject(userId)
+            array.addObject(view)
+            
+            let database = databaseFile()
+            database.addDataToSync("teamSignInAll", data: array)
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
 
+        }
+        
+        
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net//api/UserActivity/SignInByUserId", parameters: ["Userids":userId])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        if "\(JSON.valueForKey("isError")!)" == "0" {
+                            
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            
+                            if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("user already signed in.") != nil{
+                                
+                                
+                                let idArray = userId.componentsSeparatedByString(",")
+                                let database = databaseFile()
+                                for k in idArray {
+                                    database.teamSignInUpdate(k)
+                                }
+                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                MBProgressHUD.hideHUDForView(view, animated: true)
+                                return
+                            }
+                            
+                            
+                           
+                            let arr = JSON.valueForKey("SignedinUser") as? NSArray
+                            let val:NSDictionary = (arr![0] as? NSDictionary)!
+                            
+                            let database = databaseFile()
+                            
+                            for i in arr! {
+                                database.updateActivityIdForTeam("\(i.valueForKey("UserId")!)", activityId: "\(i.valueForKey("Id")!)", SignInAt: "\(i.valueForKey("SignInAt")!)")
+                            }
+                            
+                            
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+                        }else{
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+        
+    }
+
+    func teamSignOutAll(userId:String,view:UIView)  {
+        let notificationKey = "com.time-em.signInOutAllResponse"
+        
+        if Reachability.isConnectedToNetwork() == true {
+            print("Internet connection OK")
+        } else {
+            print("Internet connection FAILED")
+            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            let array:NSMutableArray = []
+            array.addObject(userId)
+            array.addObject(view)
+            
+            let database = databaseFile()
+            database.addDataToSync("teamSignOutAll", data: array)
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+
+        }
+        
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net//api/UserActivity/SignOutByUserId", parameters: ["Userids":userId])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        if "\(JSON.valueForKey("isError")!)" == "0" {
+                            
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            
+                            if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("user already signed out.") != nil{
+                                
+                                
+                                let idArray = userId.componentsSeparatedByString(",")
+                                let database = databaseFile()
+                                for k in idArray {
+                                    database.signOutUpdate(k)
+                                }
+                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                MBProgressHUD.hideHUDForView(view, animated: true)
+                                return
+                            }
+                            
+                            
+                            
+                            
+                            let arr = JSON.valueForKey("SignedOutUser") as? NSArray
+                            let val:NSDictionary = (arr![0] as? NSDictionary)!
+                            
+                           let database = databaseFile()
+                            
+                        for i in arr! {
+                            
+                            
+                             database.teamSignOutUpdate("\(i.valueForKey("UserId")!)", SignInAt: "\(i.valueForKey("SignInAt")!)", SignOutAt: "\(i.valueForKey("SignOutAt")!)")
+                            }
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+                        }else{
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+        
+    }
+    
+    func openDatabase()  {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+    }
+    
+    func GetNotificationType() {
+        let notificationKey = "com.time-em.NotificationTypeloginResponse"
+
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net//api/notification/GetNotificationType", parameters: nil)
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+//                        if "\(JSON.valueForKey("isError")!)" == "0" {
+                        
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            
+                            let data = JSON as! NSArray
+                        
+                        let database = databaseFile()
+                        database.saveNotificationType(data)
+                                               
+                        
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+//                        }else{
+//                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+//                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                        }
+//                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+        }
+
+    }
+
+    
 }
 
 

@@ -1,1 +1,0 @@
-../../../BKPasscodeView/BKPasscodeView/BKTouchIDManager.h
