@@ -8,7 +8,7 @@
 
 import UIKit
 
-class sendNotificationViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+class sendNotificationViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate{
 
     @IBOutlet var taskDropDown: UIButton!
     let dropDown = DropDown()
@@ -26,7 +26,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     @IBOutlet var uploadedImage:UIImageView!
     @IBOutlet var btnUploadImage:UIButton!
     let imagePicker = UIImagePickerController()
-    
+     @IBOutlet var scrollView: UIScrollView!
+    var NotificationTypeId:String! = " "
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +36,20 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         api.GetNotificationType()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.GetNotificationTypeResponse), name: "com.time-em.NotificationTypeloginResponse", object: nil)
-
+        
+        
+        uploadedImage.hidden = true
+        
+        
+        scrollView.scrollEnabled = true
+        scrollView.delegate = self
+        scrollView.contentSize = CGSizeMake(0, self.view.frame.size.height*1.5)
+        scrollView.backgroundColor = UIColor.clearColor()
+                scrollView.contentOffset.x = 0
+        imagePicker.delegate = self
+    }
+    
+    override func viewDidAppear(animated: Bool) {
         
         tableView = UITableView(frame: CGRectMake(btnSelectRecipients.frame.origin.x, btnSelectRecipients.frame.origin.y+btnSelectRecipients.frame.size.height-3, btnSelectRecipients.frame.size.width, 220), style: .Plain)
         tableView.delegate = self
@@ -45,10 +59,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         self.view.addSubview(tableView)
         tableView.allowsMultipleSelection = true
         tableView.hidden = true
-        
-        uploadedImage.hidden = true
     }
-
+    
     func setDropDown(){
         let idArr:NSMutableArray = []
         let nameArr:NSMutableArray = []
@@ -69,6 +81,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             print(nameArr[index])
             print(idArr[index])
             self.txtSelectMessage.text = item
+            self.NotificationTypeId = "\(idArr[index])"
         }
         
         dropDown.anchorView = txtSelectMessage
@@ -99,9 +112,18 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         
     }
 
-    //~~ TextView Delegates
+    //~ TextView Delegates
     func textViewDidBeginEditing(textView: UITextView) {
-        lblPlaceholderComments.hidden = true
+        if textView == txtComment {
+            lblPlaceholderComments.hidden = true
+        }else if textView == txtSubject {
+            lblPlaceholderSubject.hidden = true
+        }
+        
+        
+    }
+    func textFieldDidBeginEditing(textField: UITextField) {
+        
     }
     func GetNotificationTypeResponse(notification:NSNotification) {
         
@@ -121,16 +143,56 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         }
     }
     @IBAction func btnSend(sender: AnyObject) {
-//        let fileURL = NSBundle.mainBundle().URLForResource("example", withExtension: "png")
-//        let fileUploader = FileUploader()
-//        fileUploader.addFileURL(fileURL!, withName: "myFile")
-//        let data = UIImage(named: "sample")
-//        fileUploader.addFileData( UIImageJPEGRepresentation((NSData)data,0.8), withName: "mySecondFile", withMimeType: "image/jpeg" )
-//        fileUploader.setValue( "sample", forParameter: "folderName" )
-//        var request = NSMutableURLRequest( URL: NSURL(string: "http://myserver.com/uploadFile" )! )
-//        request.HTTPMethod = "POST"
-//        fileUploader.uploadFile(request: request)
+
+        var imageData = NSData()
+        if uploadedImage.image != nil {
+            imageData = UIImagePNGRepresentation(uploadedImage.image!)!
+        }
+        
+        let LoginId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginId") as? String
+        let subject:String!
+        let comments:String!
+        
+        if txtSubject.text.isEmpty {
+            let alert = UIAlertController(title: "Time'em", message: "Enter subject before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }else{
+            subject = txtSubject.text
+        }
+        
+        if txtComment.text.isEmpty {
+            let alert = UIAlertController(title: "Time'em", message: "Enter comments before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }else{
+            comments = txtComment.text
+        }
+        
+        if NotificationTypeId == " " {
+            let alert = UIAlertController(title: "Time'em", message: "Select notification type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        
+        let sendNotification = ApiRequest()
+        sendNotification.sendNotification(imageData, LoginId: LoginId!, Subject: subject, Message: comments, NotificationTypeId: NotificationTypeId, notifyto: "123", view: self.view)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.sendnotificationResponse), name: "com.time-em.sendnotification", object: nil)
     }
+    func sendnotificationResponse(notification:NSNotification) {
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        var alert :UIAlertController!
+            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+
+    }
+    
     
      func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return 5
@@ -160,6 +222,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     }
     
      func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.hidden = true
         tableView.cellForRowAtIndexPath(indexPath)?.accessoryType = UITableViewCellAccessoryType.None
     }
     

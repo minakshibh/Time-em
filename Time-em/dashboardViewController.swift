@@ -20,6 +20,8 @@ class dashboardViewController: UIViewController {
     @IBOutlet var btnCrossPOPUP: UIButton!
     @IBOutlet var btnSignInOutPOPUP: UIButton!
     @IBOutlet var btnSignInOut2: UIButton!
+    @IBOutlet var lblpopupBackground: UILabel!
+
     var currentUser: User!
     @IBOutlet var btnUserInfo: UIButton!
     @IBOutlet var btnMenu: UIButton!
@@ -27,6 +29,7 @@ class dashboardViewController: UIViewController {
     @IBOutlet var btnLogout: UIButton!
     @IBOutlet var btnScanBarcode: UIButton!
     @IBOutlet var imageSyncMenu: UIImageView!
+    @IBOutlet var imageWorkunderConst: UIImageView!
     @IBOutlet var imagePersonMenu: UIImageView!
     var fromPassCodeView:String!
     @IBOutlet var lblNameSlideMenu: UILabel!
@@ -63,6 +66,12 @@ class dashboardViewController: UIViewController {
         }
        
 //        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(dashboardViewController.showMenuFunction), userInfo: nil, repeats: false)
+        lblpopupBackground.layer.cornerRadius = 8
+        btnSignInOutPOPUP.layer.cornerRadius = 4
+        lblpopupBackground.layer.masksToBounds = true
+        btnSignInOutPOPUP.layer.masksToBounds = true
+
+        
     }
     
     func showMenuFunction() {
@@ -125,7 +134,11 @@ class dashboardViewController: UIViewController {
 
             }
         }
-   
+        
+    }
+    
+    func iphone5UiAdjustments() {
+        imageWorkunderConst.frame = CGRectMake(imageWorkunderConst.frame.origin.x, imageWorkunderConst.frame.origin.y, imageWorkunderConst.frame.size.width, imageWorkunderConst.frame.size.height+10)
     }
     
    override func viewDidAppear(animated: Bool) {
@@ -135,6 +148,9 @@ class dashboardViewController: UIViewController {
         
         if "\(usertype)" == "4" {
             btnNotifications.frame = CGRectMake(self.view.frame.size.width/2-btnNotifications.frame.size.width/2,btnNotifications.frame.origin.y, btnNotifications.frame.size.width, btnNotifications.frame.size.height)
+        }
+        if Reachability.DeviceType.IS_IPHONE_5 {
+            iphone5UiAdjustments()
         }
     }
     

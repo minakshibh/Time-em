@@ -860,6 +860,85 @@ class ApiRequest: NSObject {
         return "Boundary-\(NSUUID().UUIDString)"
     }
     
+    func sendNotification(imageData: NSData, LoginId: String, Subject: String, Message: String, NotificationTypeId: String, notifyto: String, view:UIView)
+    {
+        let notificationKey = "com.time-em.sendnotification"
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        
+        let param = [
+            "LoginId"                   :LoginId,
+            "Subject"                   :Subject,
+            "Message"                   :Message,
+            "NotificationTypeId"       :NotificationTypeId,
+            "notifyto"                  :notifyto
+        ]
+        //        print(param)
+        let url = NSURL(string: "http://timeemapi.azurewebsites.net/api/Notification/AddNotification")
+        
+        let request = NSMutableURLRequest(URL: url!)
+        request.HTTPMethod = "POST"
+        
+        let boundary = generateBoundaryString()
+        
+        
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        let image = UIImage(data: imageData)
+        
+        let body = NSMutableData()
+        
+        for (key, value) in param {
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"\(key)\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("\(value)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        }
+        if(image != nil)
+        {
+            let fname = "test.png"
+            let mimetype = "image/png"
+            
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"test\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("hi\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"file\"; filename=\"\(fname)\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Type: \(mimetype)\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData(imageData)
+            body.appendData("\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        }
+        
+        body.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        
+        request.HTTPBody = body
+        
+        
+        
+        let session = NSURLSession.sharedSession()
+        
+        
+        let task = session.dataTaskWithRequest(request) {
+            (
+            let data, let response, let error) in
+            
+            guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
+                print("error")
+                return
+            }
+            
+            let dataString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            
+            print(dataString!)
+            delay(0.001){
+                MBProgressHUD.hideHUDForView(view, animated: true)
+                let userInfo = ["response" : "\(dataString?.valueForKey("Message")!)"]
+                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            }
+        }
+        
+        task.resume()
+    }
+    
     
     func resetPasswordApi(emailId:String,view:UIView)  {
         let notificationKey = "com.time-em.resetPassword"
@@ -964,13 +1043,26 @@ class ApiRequest: NSObject {
                     if "\(response.result)" == "SUCCESS"{
                         
                         if "\(JSON.valueForKey("isError")!)" == "0"{
-                            
-                            
-                            
-                            
-                            
+  
                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            
+                            if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("user already signed in.") != nil{
+                                let database = databaseFile()
+                                database.teamSignInUpdate(userId)
+                                
+                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                MBProgressHUD.hideHUDForView(view, animated: true)
+                                return
+                            }
+                            
+                            
+                            
+                            
+                            
                             let arr = JSON.valueForKey("SignedinUser") as? NSArray
+                            
+                           
+                            
                             let val:NSDictionary = (arr![0] as? NSDictionary)!
                             
                             

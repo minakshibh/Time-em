@@ -29,6 +29,7 @@
 		D97661111CF6D799004E4552 /* RSBarcodes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D976610F1CF6D787004E4552 /* RSBarcodes.framework */; };
 		D97661121CF6D799004E4552 /* RSBarcodes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D976610F1CF6D787004E4552 /* RSBarcodes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D97661191CF706DF004E4552 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = D97661181CF706DF004E4552 /* Reachability.swift */; };
+		D9963C271CFC3E0400537699 /* DigitField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9963C261CFC3E0400537699 /* DigitField.swift */; };
 		D99C2D261CEAE26D007E0A0D /* UILabel+helper.m in Sources */ = {isa = PBXBuildFile; fileRef = D99C2D251CEAE26D007E0A0D /* UILabel+helper.m */; };
 		D9AD39171CE5A2B9005D5029 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AD39161CE5A2B9005D5029 /* User.swift */; };
 		D9AD39191CE5BAE3005D5029 /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D9AD39181CE5BAE3005D5029 /* images.xcassets */; };
@@ -101,6 +102,7 @@
 		D976610D1CF6C9E7004E4552 /* BarcodeDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeDetailViewController.swift; sourceTree = "<group>"; };
 		D976610F1CF6D787004E4552 /* RSBarcodes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RSBarcodes.framework; sourceTree = "<group>"; };
 		D97661181CF706DF004E4552 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		D9963C261CFC3E0400537699 /* DigitField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DigitField.swift; sourceTree = "<group>"; };
 		D99C2D231CEAE0A1007E0A0D /* Time-em-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Time-em-Prefix.pch"; sourceTree = "<group>"; };
 		D99C2D241CEAE26D007E0A0D /* UILabel+helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+helper.h"; sourceTree = "<group>"; };
 		D99C2D251CEAE26D007E0A0D /* UILabel+helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+helper.m"; sourceTree = "<group>"; };
@@ -256,7 +258,7 @@
 				D928049D1CF5ADC000F99D28 /* BarCodeScanning */,
 				F947CF461CF309C8009635B4 /* Reset Pin/Password */,
 				D9DA400D1CE9933C00D6B572 /* my-Tasks */,
-				D970052B1CE355560036B5EA /* passCodeViewController.swift */,
+				D9963C281CFC3E1000537699 /* passCodeView */,
 				D970050E1CE31B150036B5EA /* LoginViewController.swift */,
 				D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */,
 			);
@@ -270,6 +272,15 @@
 				D97005101CE328340036B5EA /* ApiRequest.swift */,
 			);
 			name = "API Data";
+			sourceTree = "<group>";
+		};
+		D9963C281CFC3E1000537699 /* passCodeView */ = {
+			isa = PBXGroup;
+			children = (
+				D9963C261CFC3E0400537699 /* DigitField.swift */,
+				D970052B1CE355560036B5EA /* passCodeViewController.swift */,
+			);
+			name = passCodeView;
 			sourceTree = "<group>";
 		};
 		D99C2D281CEB010E007E0A0D /* images */ = {
@@ -513,6 +524,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9963C271CFC3E0400537699 /* DigitField.swift in Sources */,
 				D9DA40191CE9B27100D6B572 /* DailyCalendarView.m in Sources */,
 				D9DA40271CE9B28A00D6B572 /* NSDate+CL.m in Sources */,
 				D965A2091CF82EF000AB11C0 /* NotificationViewController.swift in Sources */,

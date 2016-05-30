@@ -16,6 +16,14 @@
     self.numberOfLines = 0;
     CGSize maximumLabelSize = CGSizeMake(self.frame.size.width, FLT_MAX);
     UIFont *font = [UIFont fontWithName:@"HelveticaNeue" size:15];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+        CGSize result = [[UIScreen mainScreen] bounds].size;
+        if(result.height == 568)
+        {
+            font = [UIFont fontWithName:@"HelveticaNeue" size:13];
+        }
+    }
     CGSize expectedLabelSize = [self.text sizeWithFont:font constrainedToSize:maximumLabelSize lineBreakMode:self.lineBreakMode];
     self.contentMode = UIControlContentVerticalAlignmentTop;
     CGRect newFrame = self.frame;
@@ -53,7 +61,15 @@
     self.numberOfLines = 0;
     CGSize maximumLabelSize = CGSizeMake(self.frame.size.width, FLT_MAX);
     UIFont *font = [UIFont fontWithName:@"HelveticaNeue" size:15];
-    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+        CGSize result = [[UIScreen mainScreen] bounds].size;
+        if(result.height == 568)
+        {
+            font = [UIFont fontWithName:@"HelveticaNeue" size:13];
+        }
+    }
+
     CGSize expectedLabelSize = [self.text sizeWithFont:font constrainedToSize:maximumLabelSize lineBreakMode:self.lineBreakMode];
     self.contentMode = UIControlContentVerticalAlignmentTop;
     int numberOfLines = expectedLabelSize.height / [UIFont fontWithName:@"HelveticaNeue" size:15].pointSize;

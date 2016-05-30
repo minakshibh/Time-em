@@ -27,7 +27,7 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
         
         txtFieldone.becomeFirstResponder()
         self.navigationController?.navigationBarHidden = true
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "goPrevious", name: "deletePressed", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(passCodeViewController.goPrevious), name: "deletePressed", object: nil)
 
 
     }
@@ -106,14 +106,11 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
                 
             }else {
             main {
+                self.txtFieldFour.resignFirstResponder()
                 self.timer = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(passCodeViewController.callFunction), userInfo: nil, repeats: false)
                 }
             }
         }
-
-        
-        
-        
         return true
     }
     
@@ -148,6 +145,11 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
         
+        txtFieldone.text = ""
+        txtFieldtwo.text = ""
+        txtFieldthree.text = ""
+        txtFieldFour.text = ""
+        
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
             alert = UIAlertController(title: "Time'em", message: "Login Successfull", preferredStyle: UIAlertControllerStyle.Alert)
@@ -155,6 +157,7 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
             
         }else{
             alert = UIAlertController(title: "Time'em", message: "Login Failed", preferredStyle: UIAlertControllerStyle.Alert)
+            txtFieldone.becomeFirstResponder()
         }
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)

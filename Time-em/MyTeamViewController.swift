@@ -19,33 +19,6 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     
     @IBOutlet var btnUserDetail: UIButton!
     
-    
-    enum UIUserInterfaceIdiom : Int
-    {
-        case Unspecified
-        case Phone
-        case Pad
-    }
-    
-    struct ScreenSize
-    {
-        static let SCREEN_WIDTH         = UIScreen.mainScreen().bounds.size.width
-        static let SCREEN_HEIGHT        = UIScreen.mainScreen().bounds.size.height
-        static let SCREEN_MAX_LENGTH    = max(ScreenSize.SCREEN_WIDTH, ScreenSize.SCREEN_HEIGHT)
-        static let SCREEN_MIN_LENGTH    = min(ScreenSize.SCREEN_WIDTH, ScreenSize.SCREEN_HEIGHT)
-    }
-    
-    struct DeviceType
-    {
-        static let IS_IPHONE_4_OR_LESS  = UIDevice.currentDevice().userInterfaceIdiom == .Phone && ScreenSize.SCREEN_MAX_LENGTH < 568.0
-        static let IS_IPHONE_5          = UIDevice.currentDevice().userInterfaceIdiom == .Phone && ScreenSize.SCREEN_MAX_LENGTH == 568.0
-        static let IS_IPHONE_6          = UIDevice.currentDevice().userInterfaceIdiom == .Phone && ScreenSize.SCREEN_MAX_LENGTH == 667.0
-        static let IS_IPHONE_6P         = UIDevice.currentDevice().userInterfaceIdiom == .Phone && ScreenSize.SCREEN_MAX_LENGTH == 736.0
-        static let IS_IPAD              = UIDevice.currentDevice().userInterfaceIdiom == .Pad && ScreenSize.SCREEN_MAX_LENGTH == 1024.0
-    }
-
-    
-    
     override func viewDidLoad() {
 
         super.viewDidLoad()
@@ -100,18 +73,18 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         let dict:NSMutableDictionary  = teamDataArray[indexPath.row] as! NSMutableDictionary
         if "\(dict["IsSignedIn"]!)" == "0" {
             if dict["SignInAt"] != nil && dict["SignOutAt"] != nil && "\(dict["SignOutAt"]!)" != "" && "\(dict["SignInAt"]!)" != "" {
-                 if DeviceType.IS_IPHONE_5 {
-                    return 50
+                 if Reachability.DeviceType.IS_IPHONE_5 {
+                    return 55
                 }
                 return 60
             }
         }else{
-            if DeviceType.IS_IPHONE_5 {
-                return 50
+            if Reachability.DeviceType.IS_IPHONE_5 {
+                return 40
             }
             return 60
         }
-        if DeviceType.IS_IPHONE_5 {
+        if Reachability.DeviceType.IS_IPHONE_5 {
             return 40
         }
         return 50
@@ -144,7 +117,12 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         }
         
         cell.textLabel?.text = "\(dict.valueForKey("FullName")!)"
-        
+        if Reachability.DeviceType.IS_IPHONE_5 {
+        let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 14.0)!
+        cell.textLabel?.font = myFont
+        }
+
+        cell.selectionStyle = .None
         
         if "\(dict["IsNightShift"]!)" == "0" {
             let imageView: UIImageView = UIImageView(image: UIImage(named: "sun"))
@@ -191,7 +169,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
 
 //            cell.detailTextLabel?.text = "In:- \(timestamp)"
              cell.detailTextLabel?.text =  "In:- \(dict["SignInAt"]!)"
-              if  DeviceType.IS_IPHONE_5 {
+              if  Reachability.DeviceType.IS_IPHONE_5 {
                 let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
                 cell.detailTextLabel?.font = myFont
                 
@@ -263,7 +241,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             }
             if finalStrSignInAt != nil && finalStrSignOutAt != nil {
             cell.detailTextLabel?.text = "\(finalStrSignInAt)\n\(finalStrSignOutAt)"
-            if  DeviceType.IS_IPHONE_5 {
+            if  Reachability.DeviceType.IS_IPHONE_5 {
             let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
             cell.detailTextLabel?.font = myFont
                 

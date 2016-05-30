@@ -22,6 +22,10 @@ class NotificationViewController: UIViewController {
     }
     
 
+    @IBAction func btnBack(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: {});
+    }
+    
     /*
     // MARK: - Navigation
 

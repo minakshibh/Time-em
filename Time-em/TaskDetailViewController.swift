@@ -34,10 +34,10 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         
         scrollView.scrollEnabled = true
         scrollView.delegate = self
-        scrollView.contentSize = CGSizeMake(0, 800)
+        scrollView.contentSize = CGSizeMake(0, 1000)
         scrollView.backgroundColor = UIColor.clearColor()
         
-        scrollView.contentOffset.x = 0
+//        scrollView.contentOffset.x = 0
         
         if taskData.valueForKey("AttachmentImageFile") != nil {
             
