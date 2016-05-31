@@ -62,7 +62,6 @@ class databaseFile: NSObject {
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
-        dict.setObject("nodata", forKey: "nodata")
         database.close()
         return dict
         
@@ -498,31 +497,6 @@ class databaseFile: NSObject {
             print("failed: \(error.localizedDescription)")
         }
         database.close()
-        
-        if !database.open() {
-            print("Unable to open database")
-            return
-        }
-        
-        do {
-            let rs = try database.executeQuery("select * from teamData", values: nil)
-            while rs.next() {
-                let dict: NSMutableDictionary = [:]
-                
-                dict.setObject(rs.stringForColumn("IsSignedIn"), forKey: "IsSignedIn")
-                
-                
-//                print(rs.stringForColumn("SupervisorId"))
-                if rs.stringForColumn("SupervisorId")! == userId {
-//                    print(dict)
-                }
-            }
-        } catch let error as NSError {
-            print("failed: \(error.localizedDescription)")
-        }
-        
-
-        
     }
     
     func teamSignOutUpdate (userId:String,SignInAt:String,SignOutAt:String) {
@@ -886,7 +860,7 @@ class databaseFile: NSObject {
 
     }
 
-    func saveNotificationActiveUserList(data:NSArray) {
+    func saveNotificationActiveUserList(FullName:String,userid:String) {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
@@ -896,7 +870,6 @@ class databaseFile: NSObject {
             print("Unable to open database")
             return
         }
-        let userDict = NSKeyedArchiver.archivedDataWithRootObject(data)
         
         do {
         try database.executeUpdate("delete * from  notificationActiveUserList", values: nil)
@@ -905,14 +878,14 @@ class databaseFile: NSObject {
         }
         
         do {
-            try database.executeUpdate("insert into notificationActiveUserList (data) values (?)", values: [userDict])
+            try database.executeUpdate("insert into notificationActiveUserList (userid,FullName) values (?,?)", values: [userid,FullName])
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
         database.close()
     }
 
-    func getNotificationActiveUserList() -> NSArray{
+    func getNotificationActiveUserList() -> NSMutableArray{
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
@@ -921,13 +894,17 @@ class databaseFile: NSObject {
         if !database.open() {
             print("Unable to open database")
         }
-        var userARR:NSArray = []
+        var userARR:NSMutableArray = []
         do {
             let rs = try database.executeQuery("select * from notificationActiveUserList", values: nil)
             
             while rs.next() {
-                let x = rs.dataForColumn("data")
-                userARR = NSKeyedUnarchiver.unarchiveObjectWithData(x) as! NSArray
+                let dict:NSMutableDictionary = [:]
+                let x = rs.stringForColumn("userid")
+                let y = rs.stringForColumn("FullName")
+                dict.setValue(x, forKey: "userid")
+                dict.setValue(y, forKey: "FullName")
+                userARR.addObject(dict)
             }
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")

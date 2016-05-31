@@ -308,6 +308,7 @@ class dashboardViewController: UIViewController {
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_ActivityId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_LoginId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_FullName")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("activeUserListTimeStamp")
 
         let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")
         self.presentViewController(loginVC!, animated: true, completion: nil)

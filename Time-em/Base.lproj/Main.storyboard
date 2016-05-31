@@ -2250,7 +2250,7 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="46" id="o6v-Ji-fcy"/>
                                 </constraints>
-                                <state key="normal" image="EA79011A-7211-485B-826D-C629FBF919E1"/>
+                                <state key="normal" image="60C08809-7361-43C8-8E08-D974C60392A7"/>
                                 <connections>
                                     <action selector="btnback:" destination="Jdn-nB-j0V" eventType="touchUpInside" id="sAy-wx-M1b"/>
                                 </connections>
@@ -2854,7 +2854,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="EA79011A-7211-485B-826D-C629FBF919E1" width="15" height="15">
+        <image name="60C08809-7361-43C8-8E08-D974C60392A7" width="15" height="15">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOjtYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK0HCBEW
 GxwgISgrLjQ3VSRudWxs1AkKCwwNDg8QViRjbGFzc1xOU0ltYWdlRmxhZ3NWTlNSZXBzV05TQ29sb3KA

@@ -29,6 +29,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     let imagePicker = UIImagePickerController()
      @IBOutlet var scrollView: UIScrollView!
     var NotificationTypeId:String! = " "
+    var selectedRecipientsNameArr:NSMutableArray = []
+    var selectedRecipientsIdArr:NSMutableArray = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +39,23 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         
         let api = ApiRequest()
         api.GetNotificationType()
-        api.getActiveUserList(userIdStr!)
+        
+        let TimeStamp:String!
+        if NSUserDefaults.standardUserDefaults().objectForKey("activeUserListTimeStamp") != nil {
+//            let data: NSString = (NSUserDefaults.standardUserDefaults().objectForKey("taskTimeStamp") as? NSString)!
+//            let dict = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
+            
+//            if dict.valueForKey(userId) != nil {
+//                TimeStamp = "\(dict.valueForKey(userId)!)"
+//            }else{
+//                TimeStamp = ""
+//            }
+            TimeStamp = NSUserDefaults.standardUserDefaults().objectForKey("activeUserListTimeStamp") as? String
+            
+        }else{
+            TimeStamp = ""
+        }
+        api.getActiveUserList(userIdStr!,timeStamp:TimeStamp)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.GetNotificationTypeResponse), name: "com.time-em.NotificationTypeloginResponse", object: nil)
         
@@ -84,6 +102,11 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         tableView.delegate = self
         tableView.dataSource = self
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "commentCellss")
+        tableView.layer.cornerRadius = 4
+        tableView.backgroundColor = UIColor(red: 235/256, green: 235/256, blue: 235/256, alpha: 1)
+
+        
+        
         //        self.tableViewContact.layer.cornerRadius = 8.0
         self.scrollView.addSubview(tableView)
         tableView.allowsMultipleSelection = true
@@ -124,7 +147,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         setDropDown()
         
        recipientsArray = database.getNotificationActiveUserList()
-//        tableView.reloadData()
+        tableView.reloadData()
     }
     
     override func didReceiveMemoryWarning() {
@@ -258,12 +281,17 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         return cell
     }
      func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
+        let dict:NSDictionary = (recipientsArray[indexPath.row] as? NSDictionary)!
+        selectedRecipientsNameArr.addObject("\(dict.valueForKey("FullName")!)")
+        selectedRecipientsIdArr.addObject("\(dict.valueForKey("userid")!)")
         
         tableView.cellForRowAtIndexPath(indexPath)?.accessoryType = UITableViewCellAccessoryType.Checkmark
     }
     
      func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        let dict:NSDictionary = (recipientsArray[indexPath.row] as? NSDictionary)!
+        selectedRecipientsNameArr.removeObject("\(dict.valueForKey("FullName")!)")
+        selectedRecipientsIdArr.removeObject("\(dict.valueForKey("userid")!)")
         tableView.cellForRowAtIndexPath(indexPath)?.accessoryType = UITableViewCellAccessoryType.None
     }
     
@@ -321,4 +349,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        tableView.hidden = true
+    }
 }

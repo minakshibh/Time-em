@@ -77,7 +77,7 @@ class ApiRequest: NSObject {
                 print("failed: \(error.localizedDescription)")
             }
             do {
-                try database.executeUpdate("create table notificationActiveUserList(data text)", values: nil)
+                try database.executeUpdate("create table notificationActiveUserList(userid text,FullName text)", values: nil)
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
@@ -1411,10 +1411,10 @@ class ApiRequest: NSObject {
 
     }
 
-    func getActiveUserList(userid:String) {
+    func getActiveUserList(userid:String,timeStamp:String) {
         let notificationKey = "com.time-em.NotificationTypeloginResponse"
         
-        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/User/GetActiveUserList", parameters:  ["userid":userid])
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/user/GetActiveUserList", parameters:  ["UserId":userid,"timeStamp":timeStamp])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1426,22 +1426,30 @@ class ApiRequest: NSObject {
                     
                     if "\(response.result)" == "SUCCESS"{
                         
-                        //                        if "\(JSON.valueForKey("isError")!)" == "0" {
+                        if "\(JSON.valueForKey("IsError")!)" == "false" {
                         
                         let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                         
-                        let data = JSON as! NSArray
-                        
+                            if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record found!") != nil{
+                                NSUserDefaults.standardUserDefaults().setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "activeUserListTimeStamp")
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                return
+                            }
+                            
+                        NSUserDefaults.standardUserDefaults().setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "activeUserListTimeStamp")
+                        let data = JSON.valueForKey("activeuserlist") as! NSArray
                         let database = databaseFile()
-                        database.saveNotificationActiveUserList(data)
-                        
+                            
+                            for i in data {
+                                 database.saveNotificationActiveUserList("\(i.valueForKey("FullName")!)", userid: "\(i.valueForKey("userid")!)")
+                            }
                         
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         
-                        //                        }else{
-                        //                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
-                        //                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
-                        //                        }
+                            }else{
+                                let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                                }
                         //
                         
                     }else{
@@ -1457,7 +1465,50 @@ class ApiRequest: NSObject {
         }
         
     }
-    
+    //http://timeemapi.azurewebsites.net/api/User/GetUsersListByLoginCode?Logincode=9105
+    func getuserListByLoginCode(Logincode:String) {
+        let notificationKey = "com.time-em.getuserListByLoginCode"
+        
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/User/GetUsersListByLoginCode", parameters:  ["Logincode":Logincode])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        print(JSON.valueForKey("isError"))
+                        print(JSON.valueForKey("Message"))
+                        
+                        let userInfo = ["response" : "success"]
+                        
+                        let data = JSON.valueForKey("AppUserViewModel")! as! NSArray
+                        print(data.count)
+                        
+                        let userDict = NSKeyedArchiver.archivedDataWithRootObject(data)
+                       
+                        NSUserDefaults.standardUserDefaults().setObject(userDict, forKey: "getuserListByLoginCode")
+                        
+                        
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                       
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+        }
+        
+    }
+
 }
 
 

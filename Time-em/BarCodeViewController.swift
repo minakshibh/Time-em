@@ -36,6 +36,10 @@ class BarCodeViewController: RSCodeReaderViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        self.performSegueWithIdentifier("barcodeDetail", sender: self)
+        
+        
 
         self.focusMarkLayer.strokeColor = UIColor.redColor().CGColor
         

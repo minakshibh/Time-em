@@ -17,16 +17,18 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
     @IBOutlet var lblHeader: UILabel!
     @IBOutlet var tableView: UITableView!
     var noDataObjects:NSMutableArray = []
+    var remainingDataArr:NSArray = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBarHidden = true
 
         print (scannedBarcodeArr)
         // Do any additional setup after loading the view.
         scannedBarcodeArr = []
-        scannedBarcodeArr.addObject("1001")
-        scannedBarcodeArr.addObject("1006")
-        scannedBarcodeArr.addObject("5006")
+//        scannedBarcodeArr.addObject("1001")
+//        scannedBarcodeArr.addObject("1006")
+//        scannedBarcodeArr.addObject("5006")
         
         getDataFromDatabse()
         
@@ -40,22 +42,47 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         noDataObjects = []
         
         for i in scannedBarcodeArr {
-            var dataDict:NSMutableDictionary = [:]
+            var dataDict:NSDictionary = [:]
             dataDict = database.getTeamDetail(i as! String)
-            dataArray.addObject(dataDict)
+            if dataDict.valueForKey("LoginCode") != nil {
+               dataArray.addObject(dataDict)
+            }else{
+              noDataObjects.addObject(i as! String)
+            }
+            
         }
         
+//        if remainingDataArr.count > 0 {
+//            combineRemainingData()
+//        }
         
-       
-        for (var j=0; j<dataArray.count;j+=1) {
-            let dict:NSMutableDictionary  = dataArray[j] as! NSMutableDictionary
-            if  dict.valueForKey("nodata") != nil {
-                
-                noDataObjects.addObject(scannedBarcodeArr[j])
-                dataArray.removeObjectAtIndex(j)
+        
+               var ids:String!
+        for (var j=0; j<noDataObjects.count;j+=1) {
+            if j==0 {
+                ids = "\(noDataObjects[j])"
+            }else{
+                ids = "\(ids),\(noDataObjects[j])"
             }
         }
+        
+        let api = ApiRequest()
+        api.getuserListByLoginCode(ids)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarcodeDetailViewController.responseForLoginCodes), name: "com.time-em.getuserListByLoginCode", object: nil)
+
+        
+        
         tableView.reloadData()
+    }
+    
+    func combineRemainingData () {
+        if remainingDataArr.count > 0 {
+            for i in remainingDataArr {
+                
+                dataArray.addObject(i)
+            }
+            tableView.reloadData()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -72,7 +99,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         var userids:String!
         
         for (var j=0; j<dataArray.count;j+=1) {
-            let dict:NSMutableDictionary  = dataArray[j] as! NSMutableDictionary
+            let dict:NSDictionary  = dataArray[j] as! NSDictionary
                 if j==0 {
                     userids = "\(dict.valueForKey("Id")!)"
                 }else{
@@ -89,7 +116,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         var userids:String!
         
         for (var j=0; j<dataArray.count;j+=1) {
-            let dict:NSMutableDictionary  = dataArray[j] as! NSMutableDictionary
+            let dict:NSDictionary  = dataArray[j] as! NSDictionary
             if j==0 {
                 userids = "\(dict.valueForKey("Id")!)"
             }else{
@@ -130,7 +157,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         }
         
         
-        let dict:NSMutableDictionary  = dataArray[indexPath.row] as! NSMutableDictionary
+        let dict:NSDictionary  = dataArray[indexPath.row] as! NSDictionary
         
         if "\(dict["IsSignedIn"]!)" == "0" {
             cell.imageView?.image = UIImage(named: "inactive")
@@ -153,7 +180,29 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
        
     }
+    
+    func responseForLoginCodes(notification:NSNotification) {
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        var alert :UIAlertController!
+        if status.lowercaseString == "success"{
+            alert = UIAlertController(title: "Time'em", message: "Successfull", preferredStyle: UIAlertControllerStyle.Alert)
+            if NSUserDefaults.standardUserDefaults().valueForKey("getuserListByLoginCode") != nil {
+                let data =    NSUserDefaults.standardUserDefaults().valueForKey("getuserListByLoginCode") as? NSData
+                remainingDataArr = []
+                remainingDataArr = NSKeyedUnarchiver.unarchiveObjectWithData(data!) as! NSArray
+                combineRemainingData()
+            NSUserDefaults.standardUserDefaults().removeObjectForKey("getuserListByLoginCode")
+            }
 
+        }else{
+            alert = UIAlertController(title: "Time'em", message: "Failed", preferredStyle: UIAlertControllerStyle.Alert)
+        }
+        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
     func displayResponse(notification:NSNotification) {
         
         let userInfo:NSDictionary = notification.userInfo!
@@ -161,10 +210,10 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
-            alert = UIAlertController(title: "Time'em", message: "Login Successfull", preferredStyle: UIAlertControllerStyle.Alert)
-            
+            alert = UIAlertController(title: "Time'em", message: "Successfull", preferredStyle: UIAlertControllerStyle.Alert)
+
         }else{
-            alert = UIAlertController(title: "Time'em", message: "Login Failed", preferredStyle: UIAlertControllerStyle.Alert)
+            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
         }
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
