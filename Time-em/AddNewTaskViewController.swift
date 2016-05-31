@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MobileCoreServices
 
 class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     
@@ -213,22 +214,25 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .ActionSheet)
         
         // 2
-        let deleteAction = UIAlertAction(title: "Camera", style: .Default, handler: {
+        let cameraAction = UIAlertAction(title: "Camera", style: .Default, handler: {
             (alert: UIAlertAction!) -> Void in
             self.imagePicker.allowsEditing = false
             self.imagePicker.sourceType = .Camera
             
             self.presentViewController(self.imagePicker, animated: true, completion: nil)
         })
-        let saveAction = UIAlertAction(title: "Gallery", style: .Default, handler: {
+        let galleryAction = UIAlertAction(title: "Gallery", style: .Default, handler: {
             (alert: UIAlertAction!) -> Void in
             self.imagePicker.allowsEditing = false
             self.imagePicker.sourceType = .PhotoLibrary
             
             self.presentViewController(self.imagePicker, animated: true, completion: nil)
         })
+        let recordAction = UIAlertAction(title: "Record Video", style: .Default, handler: {
+            (alert: UIAlertAction!) -> Void in
+            self.setUpRecorder()
+        })
         
-        //
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: {
             (alert: UIAlertAction!) -> Void in
             print("Cancelled")
@@ -236,8 +240,9 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         
         
         // 4
-        optionMenu.addAction(deleteAction)
-        optionMenu.addAction(saveAction)
+        optionMenu.addAction(cameraAction)
+        optionMenu.addAction(galleryAction)
+        optionMenu.addAction(recordAction)
         optionMenu.addAction(cancelAction)
         
         // 5
@@ -311,6 +316,20 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             uploadedImage.image = pickedImage
         }
         
+        if let pickedVideo:NSURL = (info[UIImagePickerControllerMediaURL] as? NSURL) {
+            // Save video to the main photo album
+//            let selectorToCall = Selector("videoWasSavedSuccessfully:didFinishSavingWithError:context:")
+//            UISaveVideoAtPathToSavedPhotosAlbum(pickedVideo.relativePath!, self, selectorToCall, nil)
+            
+            // Save the video to the app directory so we can play it later
+            let videoData = NSData(contentsOfURL: pickedVideo)
+            let paths = NSSearchPathForDirectoriesInDomains(
+                NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
+            let documentsDirectory: AnyObject = paths[0]
+            let dataPath = documentsDirectory.stringByAppendingPathComponent("Test.mp4")
+            videoData?.writeToFile(dataPath, atomically: false)
+        }
+        
         dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -324,5 +343,23 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         self.commentsTxt.text = ""
         self.numberOfHoursTxt.text = ""
         self.commentPlaceholder.hidden = false
+    }
+    
+    func setUpRecorder(){
+        if (UIImagePickerController.isSourceTypeAvailable(.Camera)) {
+            if UIImagePickerController.availableCaptureModesForCameraDevice(.Rear) != nil {
+                
+                self.imagePicker.sourceType = .Camera
+                self.imagePicker.mediaTypes = [kUTTypeMovie as String]
+                self.imagePicker.allowsEditing = false
+                self.imagePicker.delegate = self
+                
+                presentViewController(imagePicker, animated: true, completion: {})
+            } else {
+                print("Rear camera doesn't exist")
+            }
+        } else {
+            print("Camera inaccessable")
+        }
     }
 }
