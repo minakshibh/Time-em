@@ -19,6 +19,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     @IBOutlet var uploadImageView: UIView!
     @IBOutlet var uploadedImage: UIImageView!
     @IBOutlet var addBtn: UIButton!
+    @IBOutlet var btnplayVideo: UIButton!
     let dropDown = DropDown()
     let imagePicker = UIImagePickerController()
     var imageData = NSData()
@@ -248,7 +249,9 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         uploadImageView.hidden = true
     }
     
-   
+   @IBAction func btnplayVideo(sender: AnyObject) {
+    }
+    
     @IBAction func addUpdateTask(sender: AnyObject) {
         let taskIds:NSString = self.taskId
         var userId:String = ""
