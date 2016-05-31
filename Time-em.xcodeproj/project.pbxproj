@@ -51,6 +51,7 @@
 		F947CF481CF30A03009635B4 /* resetPinAndPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = F947CF471CF30A03009635B4 /* resetPinAndPassword.swift */; };
 		F95985EA1CEDC022002582C4 /* AddNewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */; };
 		F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */; };
+		F9A36C291CFD75A100258074 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9A36C281CFD75A100258074 /* AVKit.framework */; };
 		F9EFFDEB1CEEEA710050280D /* closebar.png in Resources */ = {isa = PBXBuildFile; fileRef = F9EFFDEA1CEEEA710050280D /* closebar.png */; };
 		F9F012901CF31D88003698C6 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9F0128E1CF31D88003698C6 /* Lato-Bold.ttf */; };
 		F9F012911CF31D88003698C6 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9F0128F1CF31D88003698C6 /* Lato-Regular.ttf */; };
@@ -135,6 +136,7 @@
 		F947CF471CF30A03009635B4 /* resetPinAndPassword.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = resetPinAndPassword.swift; sourceTree = "<group>"; };
 		F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewTaskViewController.swift; sourceTree = "<group>"; };
 		F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssignedTasks.swift; sourceTree = "<group>"; };
+		F9A36C281CFD75A100258074 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 		F9EFFDEA1CEEEA710050280D /* closebar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = closebar.png; sourceTree = "<group>"; };
 		F9F0128E1CF31D88003698C6 /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Bold.ttf"; sourceTree = "<group>"; };
 		F9F0128F1CF31D88003698C6 /* Lato-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Regular.ttf"; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9A36C291CFD75A100258074 /* AVKit.framework in Frameworks */,
 				D9DA400A1CE9871B00D6B572 /* AVFoundation.framework in Frameworks */,
 				D9DA40041CE982A600D6B572 /* libsqlite3.tbd in Frameworks */,
 				D97661101CF6D787004E4552 /* RSBarcodes.framework in Frameworks */,
@@ -168,6 +171,7 @@
 		2179CA4CC73A2FC955B7E10B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F9A36C281CFD75A100258074 /* AVKit.framework */,
 				D9DA40091CE9871B00D6B572 /* AVFoundation.framework */,
 				D9DA40071CE984EB00D6B572 /* Foundation.framework */,
 				D9DA40031CE982A600D6B572 /* libsqlite3.tbd */,
@@ -429,6 +433,7 @@
 				TargetAttributes = {
 					D97004F61CE31A1E0036B5EA = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = T5DY39F2BR;
 					};
 				};
 			};
@@ -625,7 +630,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "653bc855-42f9-4553-9824-4af37b16f30b";
+				PROVISIONING_PROFILE = "0dc5e69e-c73f-4dba-bc91-b9402eedab83";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -688,7 +693,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "653bc855-42f9-4553-9824-4af37b16f30b";
+				PROVISIONING_PROFILE = "0dc5e69e-c73f-4dba-bc91-b9402eedab83";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -701,7 +706,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Rocky Uppal (T5DY39F2BR)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
