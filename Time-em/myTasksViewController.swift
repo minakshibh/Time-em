@@ -213,7 +213,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let Description: UILabel = UILabel(frame: CGRectMake(15, 0, 250+85 , 58))
         if Reachability.DeviceType.IS_IPHONE_5 {
             Description.frame = CGRectMake(15,  10 - 10 , 250  + 30  , 58)
-            let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 14.0)!
+            let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 12.0)!
             Description.font = myFont
         }else if Reachability.DeviceType.IS_IPHONE_6 {
             Description.frame = CGRectMake(15,  10 - 10 , 250  + 50  , 58)
@@ -284,7 +284,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         Description.textColor = UIColor.darkGrayColor()
         if Reachability.DeviceType.IS_IPHONE_5 {
             Description.frame = CGRectMake(TitleLabel.frame.origin.x, TitleLabel.frame.origin.y + TitleLabel.frame.size.height-5 , 250  + 30  , 58)
-            let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 13.0)!
+            let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 12.0)!
             Description.font = myFont
         }else if Reachability.DeviceType.IS_IPHONE_6 {
             Description.frame = CGRectMake(TitleLabel.frame.origin.x, TitleLabel.frame.origin.y + TitleLabel.frame.size.height-10 , 250  + 50  , 58)
@@ -297,8 +297,6 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         }
         print(Description.frame.size.height)
         print(lines)
-        if  Reachability.DeviceType.IS_IPHONE_5 {
-        }
         cell.contentView.addSubview(Description)
         
         
@@ -320,7 +318,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
         
-         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 5, (timelabel.frame.origin.x + timelabel.frame.size.width+4 ), 2))
+         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 5, (timelabel.frame.origin.x + timelabel.frame.size.width+4 ), 1))
         partitionlabel.backgroundColor = UIColor.lightGrayColor()
         cell.contentView.addSubview(partitionlabel)
 //        cell.rightButtons = [MGSwipeButton(title: "", icon: UIImage(named:"edit"), backgroundColor: UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1))

@@ -44,20 +44,25 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SCRecorder.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>19F2608FE98D48A519A00108CA8C38FC</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>23CF27B2BA6AC7125EFFEDA8C5AA819F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>4E1263BFF45F6446CF3DE29AE234C893</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>4FAD29FEB6239F4556EE836B01B825AF</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -72,17 +77,22 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A142A959A9F5A0309C0389E86820C810</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>B4755459F36E3DAC8DA0A67F24712E32</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>D5B7DEC9D8E3E367C851811161FD2373</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>E61CE3B6DFA1FE6B3E296965C76C0E10</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>EF2E103A979A4F69FAD510607C0D2E24</key>
 		<dict>
 			<key>primary</key>
 			<true/>

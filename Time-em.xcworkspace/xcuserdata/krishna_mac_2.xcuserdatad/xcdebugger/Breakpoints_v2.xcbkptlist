@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
+            timestampString = "486300618.238249"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "591"
-            endingLineNumber = "591"
+            startingLineNumber = "596"
+            endingLineNumber = "596"
             landmarkName = "signInUser(_:LoginId:view:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
+            timestampString = "486300618.238249"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "598"
-            endingLineNumber = "598"
+            startingLineNumber = "603"
+            endingLineNumber = "603"
             landmarkName = "signInUser(_:LoginId:view:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
+            timestampString = "486300618.238249"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "518"
-            endingLineNumber = "518"
+            startingLineNumber = "523"
+            endingLineNumber = "523"
             landmarkName = "signOutUser(_:LoginId:ActivityId:view:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
+            timestampString = "486300618.238249"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "525"
-            endingLineNumber = "525"
+            startingLineNumber = "530"
+            endingLineNumber = "530"
             landmarkName = "signOutUser(_:LoginId:ActivityId:view:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
+            timestampString = "486300618.238249"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "528"
-            endingLineNumber = "528"
+            startingLineNumber = "533"
+            endingLineNumber = "533"
             landmarkName = "signOutUser(_:LoginId:ActivityId:view:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -90,76 +90,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "954"
-            endingLineNumber = "954"
-            landmarkName = "teamUserSignIn(_:LoginId:view:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "961"
-            endingLineNumber = "961"
-            landmarkName = "teamUserSignIn(_:LoginId:view:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1045"
-            endingLineNumber = "1045"
-            landmarkName = "teamUserSignOut(_:LoginId:ActivityId:view:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
+            timestampString = "486300618.238249"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1038"
             endingLineNumber = "1038"
-            landmarkName = "teamUserSignOut(_:LoginId:ActivityId:view:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/MyTeamViewController.swift"
-            timestampString = "485961251.223402"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "239"
-            endingLineNumber = "239"
-            landmarkName = "tableView(_:cellForRowAtIndexPath:)"
+            landmarkName = "teamUserSignIn(_:LoginId:view:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -170,11 +106,59 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
+            timestampString = "486300618.238249"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "841"
-            endingLineNumber = "841"
+            startingLineNumber = "1045"
+            endingLineNumber = "1045"
+            landmarkName = "teamUserSignIn(_:LoginId:view:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/ApiRequest.swift"
+            timestampString = "486300618.238249"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1142"
+            endingLineNumber = "1142"
+            landmarkName = "teamUserSignOut(_:LoginId:ActivityId:view:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/ApiRequest.swift"
+            timestampString = "486300618.238249"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1135"
+            endingLineNumber = "1135"
+            landmarkName = "teamUserSignOut(_:LoginId:ActivityId:view:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/ApiRequest.swift"
+            timestampString = "486300618.238249"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "846"
+            endingLineNumber = "846"
             landmarkName = "AddUpdateNewTask(_:ActivityId:TaskId:UserId:TaskName:TimeSpent:Comments:CreatedDate:ID:view:)"
             landmarkType = "5">
             <Locations>
@@ -186,12 +170,12 @@
                   moduleName = "Time-em"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/krishna_mac_2/Documents/Github/time-em/Time-em/ApiRequest.swift"
-                  timestampString = "486040041.370978"
+                  timestampString = "486301979.210995"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "841"
-                  endingLineNumber = "841"
-                  offsetFromSymbolStart = "43">
+                  startingLineNumber = "846"
+                  endingLineNumber = "846"
+                  offsetFromSymbolStart = "72">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -201,12 +185,12 @@
                   moduleName = "Time-em"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/krishna_mac_2/Documents/Github/time-em/Time-em/ApiRequest.swift"
-                  timestampString = "486040041.371116"
+                  timestampString = "486301979.211195"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "841"
-                  endingLineNumber = "841"
-                  offsetFromSymbolStart = "115">
+                  startingLineNumber = "846"
+                  endingLineNumber = "846"
+                  offsetFromSymbolStart = "117">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -218,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
+            timestampString = "486300618.238249"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1116"
-            endingLineNumber = "1116"
+            startingLineNumber = "1213"
+            endingLineNumber = "1213"
             landmarkName = "teamSignInAll(_:view:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -250,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486032718.325912"
+            timestampString = "486300618.238249"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1200"
-            endingLineNumber = "1200"
+            startingLineNumber = "1297"
+            endingLineNumber = "1297"
             landmarkName = "teamSignOutAll(_:view:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -314,12 +298,60 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "486035133.347411"
+            timestampString = "486300618.238249"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1280"
-            endingLineNumber = "1280"
-            landmarkName = "GetNotificationType()"
+            startingLineNumber = "929"
+            endingLineNumber = "929"
+            landmarkName = "sendNotification(_:LoginId:Subject:Message:NotificationTypeId:notifyto:view:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Time_em.ApiRequest.(sendNotification (__ObjC.NSData, LoginId : Swift.String, Subject : Swift.String, Message : Swift.String, NotificationTypeId : Swift.String, notifyto : Swift.String, view : __ObjC.UIView) -&gt; ()).(closure #1)"
+                  moduleName = "Time-em"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/krishna_mac_2/Documents/Github/time-em/Time-em/ApiRequest.swift"
+                  timestampString = "486301979.217006"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "929"
+                  endingLineNumber = "929"
+                  offsetFromSymbolStart = "72">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Time_em.ApiRequest.(sendNotification (__ObjC.NSData, LoginId : Swift.String, Subject : Swift.String, Message : Swift.String, NotificationTypeId : Swift.String, notifyto : Swift.String, view : __ObjC.UIView) -&gt; ()).(closure #1)"
+                  moduleName = "Time-em"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/krishna_mac_2/Documents/Github/time-em/Time-em/ApiRequest.swift"
+                  timestampString = "486301979.217207"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "929"
+                  endingLineNumber = "929"
+                  offsetFromSymbolStart = "117">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/sendNotificationViewController.swift"
+            timestampString = "486365953.435584"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "212"
+            endingLineNumber = "212"
+            landmarkName = "btnSend(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -330,11 +362,123 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/sendNotificationViewController.swift"
-            timestampString = "486043188.655095"
+            timestampString = "486365953.435584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "80"
-            endingLineNumber = "80"
+            startingLineNumber = "110"
+            endingLineNumber = "110"
+            landmarkName = "setDropDown()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/ApiRequest.swift"
+            timestampString = "486300618.238249"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "873"
+            endingLineNumber = "873"
+            landmarkName = "sendNotification(_:LoginId:Subject:Message:NotificationTypeId:notifyto:view:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/ApiRequest.swift"
+            timestampString = "486300618.238249"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "939"
+            endingLineNumber = "939"
+            landmarkName = "sendNotification(_:LoginId:Subject:Message:NotificationTypeId:notifyto:view:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/passCodeViewController.swift"
+            timestampString = "486292631.518375"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "goPrevious()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/ApiRequest.swift"
+            timestampString = "486300618.238249"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1424"
+            endingLineNumber = "1424"
+            landmarkName = "getActiveUserList(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/databaseFile.swift"
+            timestampString = "486301187.166224"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "908"
+            endingLineNumber = "908"
+            landmarkName = "saveNotificationActiveUserList(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/databaseFile.swift"
+            timestampString = "486301187.166224"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "926"
+            endingLineNumber = "926"
+            landmarkName = "getNotificationActiveUserList()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/sendNotificationViewController.swift"
+            timestampString = "486365953.435584"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "getDataFromDatabase()"
             landmarkType = "5">
          </BreakpointContent>
@@ -346,12 +490,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "486035413.944907"
+            timestampString = "486301715.449097"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "851"
-            endingLineNumber = "851"
-            landmarkName = "saveNotificationType(_:)"
+            startingLineNumber = "873"
+            endingLineNumber = "873"
+            landmarkName = "getNotificationType()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

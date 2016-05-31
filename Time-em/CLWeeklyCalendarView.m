@@ -103,7 +103,7 @@ static float const CLCalendarSelectedDatePrintFontSizeDefault = 15.f;
     
     self.selectedDatePrintFormat = attributes[CLCalendarSelectedDatePrintFormat]? attributes[CLCalendarSelectedDatePrintFormat] : CLCalendarSelectedDatePrintFormatDefault;
     
-    self.selectedDatePrintColor = attributes[CLCalendarSelectedDatePrintColor]? attributes[CLCalendarSelectedDatePrintColor] : [UIColor whiteColor];
+    self.selectedDatePrintColor = attributes[CLCalendarSelectedDatePrintColor]? attributes[CLCalendarSelectedDatePrintColor] : [UIColor darkGrayColor];
     
     self.selectedDatePrintFontSize = attributes[CLCalendarSelectedDatePrintFontSize]? 18    : CLCalendarSelectedDatePrintFontSizeDefault;
     
@@ -115,7 +115,7 @@ static float const CLCalendarSelectedDatePrintFontSizeDefault = 15.f;
 -(UIView *)dailyInfoSubViewContainer
 {
     if(!_dailyInfoSubViewContainer){
-        _dailyInfoSubViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, DATE_TITLE_MARGIN_TOP+DAY_TITLE_VIEW_HEIGHT + DATE_VIEW_HEIGHT + DATE_VIEW_MARGIN * 2, self.bounds.size.width, DATE_LABEL_INFO_HEIGHT)];
+        _dailyInfoSubViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0,DAY_TITLE_VIEW_HEIGHT + DATE_VIEW_HEIGHT , self.bounds.size.width, DATE_LABEL_INFO_HEIGHT)];
         _dailyInfoSubViewContainer.userInteractionEnabled = YES;
         [_dailyInfoSubViewContainer addSubview:self.weatherIcon];
         [_dailyInfoSubViewContainer addSubview:self.dateInfoLabel];
@@ -138,10 +138,12 @@ static float const CLCalendarSelectedDatePrintFontSizeDefault = 15.f;
     if(!_dateInfoLabel){
         _dateInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(WEATHER_ICON_LEFT+WEATHER_ICON_WIDTH+DATE_LABEL_MARGIN_LEFT, 0, DATE_LABEL_INFO_WIDTH, DATE_LABEL_INFO_HEIGHT)];
         _dateInfoLabel.textAlignment = NSTextAlignmentCenter;
-        _dateInfoLabel.userInteractionEnabled = YES;
+        _dateInfoLabel.userInteractionEnabled = NO;
     }
-    _dateInfoLabel.font = [UIFont systemFontOfSize: self.selectedDatePrintFontSize];
+//    _dateInfoLabel.font = [UIFont systemFontOfSize: self.selectedDatePrintFontSize];
+    _dateInfoLabel.font = [UIFont systemFontOfSize: 13];
     _dateInfoLabel.textColor = self.selectedDatePrintColor;
+    
     return _dateInfoLabel;
 }
 -(UIView *)dayTitleSubViewContainer

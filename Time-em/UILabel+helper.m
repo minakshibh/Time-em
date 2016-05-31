@@ -21,7 +21,7 @@
         CGSize result = [[UIScreen mainScreen] bounds].size;
         if(result.height == 568)
         {
-            font = [UIFont fontWithName:@"HelveticaNeue" size:13];
+            font = [UIFont fontWithName:@"HelveticaNeue" size:12];
         }
     }
     CGSize expectedLabelSize = [self.text sizeWithFont:font constrainedToSize:maximumLabelSize lineBreakMode:self.lineBreakMode];
@@ -66,7 +66,7 @@
         CGSize result = [[UIScreen mainScreen] bounds].size;
         if(result.height == 568)
         {
-            font = [UIFont fontWithName:@"HelveticaNeue" size:13];
+            font = [UIFont fontWithName:@"HelveticaNeue" size:12];
         }
     }
 

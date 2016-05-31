@@ -21,7 +21,11 @@ class dashboardViewController: UIViewController {
     @IBOutlet var btnSignInOutPOPUP: UIButton!
     @IBOutlet var btnSignInOut2: UIButton!
     @IBOutlet var lblpopupBackground: UILabel!
-
+     @IBOutlet var imageViewLogoPopup: UIImageView!
+     @IBOutlet var lblStartWorking: UILabel!
+    @IBOutlet var lblStartWorkingOnTasks: UILabel!
+    @IBOutlet var btnBackgroundPopUP: UIButton!
+    var val:Int = 0
     var currentUser: User!
     @IBOutlet var btnUserInfo: UIButton!
     @IBOutlet var btnMenu: UIButton!
@@ -139,18 +143,31 @@ class dashboardViewController: UIViewController {
     
     func iphone5UiAdjustments() {
         imageWorkunderConst.frame = CGRectMake(imageWorkunderConst.frame.origin.x, imageWorkunderConst.frame.origin.y, imageWorkunderConst.frame.size.width, imageWorkunderConst.frame.size.height+10)
+        imageViewLogoPopup.frame = CGRectMake(imageViewLogoPopup.frame.origin.x, imageViewLogoPopup.frame.origin.y-30, imageViewLogoPopup.frame.size.width, imageViewLogoPopup.frame.size.height)
+        lblStartWorking.frame = CGRectMake(lblStartWorking.frame.origin.x, lblStartWorking.frame.origin.y-30, lblStartWorking.frame.size.width, lblStartWorking.frame.size.height)
+        lblStartWorkingOnTasks.frame = CGRectMake(lblStartWorkingOnTasks.frame.origin.x, lblStartWorkingOnTasks.frame.origin.y-30, lblStartWorkingOnTasks.frame.size.width, lblStartWorkingOnTasks.frame.size.height)
+        btnSignInOutPOPUP.frame = CGRectMake(btnSignInOutPOPUP.frame.origin.x, btnSignInOutPOPUP.frame.origin.y-30, btnSignInOutPOPUP.frame.size.width, btnSignInOutPOPUP.frame.size.height)
+        lblpopupBackground.frame = CGRectMake(lblpopupBackground.frame.origin.x, lblpopupBackground.frame.origin.y, lblpopupBackground.frame.size.width, lblpopupBackground.frame.size.height-30)
+        
     }
-    
+     func layoutSubviews() {
+        
+        
+    }
    override func viewDidAppear(animated: Bool) {
+    
+    
         let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
         print(usertype)
-        
-        
         if "\(usertype)" == "4" {
             btnNotifications.frame = CGRectMake(self.view.frame.size.width/2-btnNotifications.frame.size.width/2,btnNotifications.frame.origin.y, btnNotifications.frame.size.width, btnNotifications.frame.size.height)
         }
-        if Reachability.DeviceType.IS_IPHONE_5 {
-            iphone5UiAdjustments()
+        if val == 0 {
+            val += 1
+            if Reachability.DeviceType.IS_IPHONE_5 {
+                iphone5UiAdjustments()
+            }
+            
         }
     }
     
@@ -169,11 +186,21 @@ class dashboardViewController: UIViewController {
         btnMyTeam.backgroundColor = UIColor.clearColor()
         btnNotifications.backgroundColor = UIColor.clearColor()
         btnSetting.backgroundColor = UIColor.clearColor()
+  
+    }
+    
+     @IBAction func btnBackgroundPopUP(sender: AnyObject) {
+        viewStartWorking.alpha = 1
         
-        
-        
+        UIView.animateWithDuration(1.0, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: {
+            self.viewStartWorking.alpha = 0
+            
+            }, completion: {(finished: Bool) -> Void in
+                self.viewStartWorking.hidden = true
+        })
         
     }
+    
     @IBAction func btnMyTeam(sender: AnyObject) {
         btnMyTeam.backgroundColor = UIColor(red: 35/255, green: 51/255, blue: 86/255, alpha: 1)
         btnMyTasks.backgroundColor = UIColor.clearColor()

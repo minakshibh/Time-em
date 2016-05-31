@@ -19,6 +19,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     @IBOutlet var lblPlaceholderSelectrecipients: UILabel!
     @IBOutlet var lblPlaceholderSubject: UILabel!
     var notificationTypeDropdownArray:NSArray = []
+    var recipientsArray:NSArray = []
     @IBOutlet var btnSelectRecipients: UIButton!
     var tableView: UITableView!
     var selectedUser:NSMutableArray = []
@@ -32,31 +33,59 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let userIdStr = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+        
         let api = ApiRequest()
         api.GetNotificationType()
+        api.getActiveUserList(userIdStr!)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.GetNotificationTypeResponse), name: "com.time-em.NotificationTypeloginResponse", object: nil)
         
         
         uploadedImage.hidden = true
         
-        
-        scrollView.scrollEnabled = true
-        scrollView.delegate = self
-        scrollView.contentSize = CGSizeMake(0, self.view.frame.size.height*1.5)
+//        scrollView.frame = CGRectMake(0, 64, 320, 736)
+//        scrollView.scrollEnabled = true
+//        scrollView.delegate = self
+//        scrollView.translatesAutoresizingMaskIntoConstraints = false
+//        scrollView.contentSize = CGSizeMake(320, 736)
+//        NSLayoutConstraint(item: scrollView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 200).active = true
         scrollView.backgroundColor = UIColor.clearColor()
-                scrollView.contentOffset.x = 0
+//        if #available(iOS 9.0, *) {
+//            scrollView.widthAnchor.constraintEqualToAnchor(nil, constant: 300).active = true
+//        } else {
+//            // Fallback on earlier versions
+//        }
         imagePicker.delegate = self
     }
     
     override func viewDidAppear(animated: Bool) {
         
-        tableView = UITableView(frame: CGRectMake(btnSelectRecipients.frame.origin.x, btnSelectRecipients.frame.origin.y+btnSelectRecipients.frame.size.height-3, btnSelectRecipients.frame.size.width, 220), style: .Plain)
+        scrollView.frame = CGRectMake(0, 64, 320, 736)
+        scrollView.scrollEnabled = true
+        scrollView.delegate = self
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        if Reachability.DeviceType.IS_IPHONE_5 {
+        scrollView.contentSize = CGSizeMake(320, 650)
+        btnUploadImage.frame = CGRectMake(uploadedImage.frame.origin.x, uploadedImage.frame.origin.y, uploadedImage.frame.size.width+35, uploadedImage.frame.size.height)
+        }
+        scrollView.backgroundColor = UIColor.clearColor()
+//        NSLayoutConstraint(item: scrollView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 300).active = true
+//        if #available(iOS 9.0, *) {
+//            scrollView.widthAnchor.constraintEqualToAnchor(nil, constant: 300).active = true
+//        } else {
+//            // Fallback on earlier versions
+//        }
+        
+        tableView = UITableView(frame: CGRectMake(btnSelectRecipients.frame.origin.x, btnSelectRecipients.frame.origin.y+btnSelectRecipients.frame.size.height-3, btnSelectRecipients.frame.size.width, 220 ), style: .Plain)
+        if Reachability.DeviceType.IS_IPHONE_5 {
+           tableView.frame = CGRectMake(tableView.frame.origin.x, tableView.frame.origin.y, tableView.frame.size.width, tableView.frame.size.height-50)
+        }
         tableView.delegate = self
         tableView.dataSource = self
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "commentCellss")
         //        self.tableViewContact.layer.cornerRadius = 8.0
-        self.view.addSubview(tableView)
+        self.scrollView.addSubview(tableView)
         tableView.allowsMultipleSelection = true
         tableView.hidden = true
     }
@@ -93,6 +122,9 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         let database = databaseFile()
        notificationTypeDropdownArray = database.getNotificationType()
         setDropDown()
+        
+       recipientsArray = database.getNotificationActiveUserList()
+//        tableView.reloadData()
     }
     
     override func didReceiveMemoryWarning() {
@@ -195,10 +227,10 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     
     
      func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return 5
+            return recipientsArray.count
     }
      func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-            return 50
+            return 30
     }
 
       func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -210,9 +242,19 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         {
             object.removeFromSuperview();
         }
+        let dict:NSDictionary = (recipientsArray[indexPath.row] as? NSDictionary)!
         
-        cell.textLabel?.text = "sample"
+        cell.textLabel?.text = "\(dict.valueForKey("FullName")!)"
+        let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 14.0)!
+        cell.textLabel?.font = myFont
+        if Reachability.DeviceType.IS_IPHONE_5 {
+        let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 12.0)!
+        cell.textLabel?.font = myFont
+        }
+        cell.contentView.backgroundColor = UIColor(red: 235/256, green: 235/256, blue: 235/256, alpha: 1)
         cell.selectionStyle = .None
+        
+        
         return cell
     }
      func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -222,7 +264,6 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     }
     
      func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.hidden = true
         tableView.cellForRowAtIndexPath(indexPath)?.accessoryType = UITableViewCellAccessoryType.None
     }
     

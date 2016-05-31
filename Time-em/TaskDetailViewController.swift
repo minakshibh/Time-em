@@ -34,23 +34,29 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         
         scrollView.scrollEnabled = true
         scrollView.delegate = self
-        scrollView.contentSize = CGSizeMake(0, 1000)
+        scrollView.contentSize = CGSizeMake(0, 2000)
         scrollView.backgroundColor = UIColor.clearColor()
+        scrollView.contentSize = self.view.bounds.size
+        scrollView.contentOffset = CGPoint(x: 450, y: 2000)
         
 //        scrollView.contentOffset.x = 0
-        
         if taskData.valueForKey("AttachmentImageFile") != nil {
             
             if taskData.valueForKey("AttachmentImageFile") as? String != "" {
-            main{
+            
                 
+                let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)")
                 
-            let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)")
-            let data = NSData(contentsOfURL: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check
-            self.imageView.image = UIImage(data: data!)
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                    let data = NSData(contentsOfURL: url!)
+                    dispatch_async(dispatch_get_main_queue(), {
+                       self.imageView.image = UIImage(data: data!)
+                    });
+                }
             }
-            }
+            
         }
+        
         
     }
 
@@ -59,16 +65,11 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    override func viewDidAppear(animated: Bool) {
+        if Reachability.DeviceType.IS_IPHONE_5 {
+        scrollView.contentSize = CGSizeMake(320, 650)
+        }
     }
-    */
     @IBAction func btnBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
     }

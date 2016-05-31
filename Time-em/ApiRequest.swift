@@ -77,6 +77,11 @@ class ApiRequest: NSObject {
                 print("failed: \(error.localizedDescription)")
             }
             do {
+                try database.executeUpdate("create table notificationActiveUserList(data text)", values: nil)
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
+            do {
                 try database.executeUpdate("create table sync(type text, data text)", values: nil)
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
@@ -1406,6 +1411,52 @@ class ApiRequest: NSObject {
 
     }
 
+    func getActiveUserList(userid:String) {
+        let notificationKey = "com.time-em.NotificationTypeloginResponse"
+        
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/User/GetActiveUserList", parameters:  ["userid":userid])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        //                        if "\(JSON.valueForKey("isError")!)" == "0" {
+                        
+                        let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                        
+                        let data = JSON as! NSArray
+                        
+                        let database = databaseFile()
+                        database.saveNotificationActiveUserList(data)
+                        
+                        
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        
+                        //                        }else{
+                        //                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                        //                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        //                        }
+                        //
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+        }
+        
+    }
     
 }
 

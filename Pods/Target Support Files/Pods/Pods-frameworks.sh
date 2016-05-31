@@ -91,6 +91,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/MBProgressHUD.framework"
   install_framework "Pods/MGSwipeTableCell.framework"
   install_framework "Pods/RSBarcodes_Swift.framework"
+  install_framework "Pods/SCRecorder.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/Alamofire.framework"
@@ -100,4 +101,5 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/MBProgressHUD.framework"
   install_framework "Pods/MGSwipeTableCell.framework"
   install_framework "Pods/RSBarcodes_Swift.framework"
+  install_framework "Pods/SCRecorder.framework"
 fi

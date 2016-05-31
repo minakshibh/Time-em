@@ -11,7 +11,7 @@ import FMDB
 
 class databaseFile: NSObject {
     
-    
+    // try database.executeUpdate("create table notificationActiveUserList(userid text, FullName text)", values: nil)
     
     func getTeamDetail(loginCode:String) -> NSMutableDictionary{
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
@@ -848,6 +848,11 @@ class databaseFile: NSObject {
         }
         let userDict = NSKeyedArchiver.archivedDataWithRootObject(data)
         do {
+            try database.executeUpdate("delete * from  notificationtype", values: nil)
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        do {
             try database.executeUpdate("insert into notificationtype (data) values (?)", values: [userDict])
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
@@ -881,6 +886,56 @@ class databaseFile: NSObject {
 
     }
 
-    
+    func saveNotificationActiveUserList(data:NSArray) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        let userDict = NSKeyedArchiver.archivedDataWithRootObject(data)
+        
+        do {
+        try database.executeUpdate("delete * from  notificationActiveUserList", values: nil)
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+        do {
+            try database.executeUpdate("insert into notificationActiveUserList (data) values (?)", values: [userDict])
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+    }
+
+    func getNotificationActiveUserList() -> NSArray{
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        var userARR:NSArray = []
+        do {
+            let rs = try database.executeQuery("select * from notificationActiveUserList", values: nil)
+            
+            while rs.next() {
+                let x = rs.dataForColumn("data")
+                userARR = NSKeyedUnarchiver.unarchiveObjectWithData(x) as! NSArray
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+            userARR = []
+        }
+        database.close()
+        return userARR
+        
+    }
 }
 
