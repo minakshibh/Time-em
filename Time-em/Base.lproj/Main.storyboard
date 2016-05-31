@@ -1108,6 +1108,21 @@
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LBq-fg-vek">
+                                <rect key="frame" x="253" y="212" width="161" height="29"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="0.24551309120000001" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="LBq-fg-vek" secondAttribute="height" multiplier="161:29" id="hLK-5n-pka"/>
+                                    <constraint firstAttribute="height" constant="29" id="id1-jt-qMm"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <state key="normal" title="Video">
+                                    <color key="titleColor" white="0.0" alpha="0.39000000000000001" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnplayVideo:" destination="4Gx-cW-4Oh" eventType="touchUpInside" id="fvb-x2-Wvf"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -1140,6 +1155,7 @@
                             <constraint firstItem="gat-vA-sW3" firstAttribute="leading" secondItem="4uV-Vh-6rM" secondAttribute="trailing" constant="14" id="HJf-5i-aL9"/>
                             <constraint firstItem="VWh-nq-bz6" firstAttribute="top" secondItem="ojG-Ro-I5H" secondAttribute="bottom" constant="34" id="HOS-Nt-Udc"/>
                             <constraint firstItem="aRp-E2-OBf" firstAttribute="leading" secondItem="BGM-fy-Myc" secondAttribute="leading" id="HYF-tU-sLa"/>
+                            <constraint firstItem="LBq-fg-vek" firstAttribute="top" secondItem="QQI-oK-48x" secondAttribute="bottom" constant="47" id="HgT-ha-0BH"/>
                             <constraint firstItem="AI7-fh-zs7" firstAttribute="trailing" secondItem="De0-gX-5se" secondAttribute="trailing" id="Hiw-m4-nOx"/>
                             <constraint firstItem="9sL-b2-Rd7" firstAttribute="top" secondItem="z8w-Em-eRu" secondAttribute="bottom" constant="13" id="ILd-lv-UFK"/>
                             <constraint firstAttribute="trailingMargin" secondItem="QQI-oK-48x" secondAttribute="trailing" constant="-6" id="IzS-o5-HGZ"/>
@@ -1152,6 +1168,7 @@
                             <constraint firstItem="MHi-gB-Edf" firstAttribute="leading" secondItem="NvR-6a-l31" secondAttribute="trailing" constant="17" id="SbT-EP-aX2"/>
                             <constraint firstItem="hdt-gP-kUS" firstAttribute="top" secondItem="JB8-yH-ojZ" secondAttribute="bottom" constant="218" id="TdZ-Se-rRb"/>
                             <constraint firstItem="aFZ-y2-Uf0" firstAttribute="trailing" secondItem="ojG-Ro-I5H" secondAttribute="trailing" id="Tkv-uA-HIn"/>
+                            <constraint firstItem="LBq-fg-vek" firstAttribute="leading" secondItem="NvR-6a-l31" secondAttribute="trailing" constant="72" id="U4u-mO-Ux6"/>
                             <constraint firstItem="aRp-E2-OBf" firstAttribute="top" secondItem="j3Q-1R-pfg" secondAttribute="bottom" constant="31" id="Uy2-s3-CK0"/>
                             <constraint firstItem="aFZ-y2-Uf0" firstAttribute="leading" secondItem="NvR-6a-l31" secondAttribute="leading" id="VZc-0U-znl"/>
                             <constraint firstItem="WQ7-Vv-HEb" firstAttribute="top" secondItem="j3Q-1R-pfg" secondAttribute="top" id="VeU-zF-bHY"/>
@@ -1160,6 +1177,7 @@
                             <constraint firstItem="CF8-Lt-5Ji" firstAttribute="top" secondItem="z8w-Em-eRu" secondAttribute="bottom" constant="16" id="ZeE-dC-uQl"/>
                             <constraint firstItem="n6V-g1-UcF" firstAttribute="top" secondItem="CF8-Lt-5Ji" secondAttribute="bottom" constant="2" id="ZvN-bo-90o"/>
                             <constraint firstItem="z8w-Em-eRu" firstAttribute="leading" secondItem="CF8-Lt-5Ji" secondAttribute="leading" id="b6v-ql-dtc"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="LBq-fg-vek" secondAttribute="trailing" constant="-20" id="bsl-6Z-bhm"/>
                             <constraint firstItem="aFZ-y2-Uf0" firstAttribute="top" secondItem="MHi-gB-Edf" secondAttribute="top" id="c3c-Mt-5xf"/>
                             <constraint firstItem="CF8-Lt-5Ji" firstAttribute="centerY" secondItem="9sL-b2-Rd7" secondAttribute="centerY" id="ccQ-1p-J17"/>
                             <constraint firstItem="9sL-b2-Rd7" firstAttribute="leading" secondItem="CF8-Lt-5Ji" secondAttribute="trailing" constant="8" symbolic="YES" id="czu-s8-5SZ"/>
@@ -1186,6 +1204,7 @@
                     </view>
                     <connections>
                         <outlet property="addBtn" destination="JB8-yH-ojZ" id="lc1-eT-9Zb"/>
+                        <outlet property="btnplayVideo" destination="LBq-fg-vek" id="jKJ-r5-4bO"/>
                         <outlet property="commentPlaceholder" destination="VWh-nq-bz6" id="xA6-d0-h5O"/>
                         <outlet property="commentsTxt" destination="De0-gX-5se" id="JqT-mS-WEO"/>
                         <outlet property="numberOfHoursTxt" destination="9sL-b2-Rd7" id="LpM-Z0-d7k"/>
@@ -2231,7 +2250,7 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="46" id="o6v-Ji-fcy"/>
                                 </constraints>
-                                <state key="normal" image="0CD0570B-F480-43AB-9399-C393EDA7F508"/>
+                                <state key="normal" image="EA79011A-7211-485B-826D-C629FBF919E1"/>
                                 <connections>
                                     <action selector="btnback:" destination="Jdn-nB-j0V" eventType="touchUpInside" id="sAy-wx-M1b"/>
                                 </connections>
@@ -2835,27 +2854,27 @@
         </scene>
     </scenes>
     <resources>
-        <image name="0CD0570B-F480-43AB-9399-C393EDA7F508" width="15" height="15">
+        <image name="EA79011A-7211-485B-826D-C629FBF919E1" width="15" height="15">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOjtYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK0HCBEW
 GxwgISgrLjQ3VSRudWxs1AkKCwwNDg8QViRjbGFzc1xOU0ltYWdlRmxhZ3NWTlNSZXBzV05TQ29sb3KA
 DBIAwAAAgAKACtISCRMVWk5TLm9iamVjdHOhFIADgAnSEgkXGqIYGYAEgAWACBAA0h0JHh9fEBROU1RJ
-RkZSZXByZXNlbnRhdGlvboAGgAdPERCSTU0AKgAAA4z///8A////AP///wD///8A////AP///wD///8A
-////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A
-////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A
-////Lv////////+k////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8n
-////9v////////+E////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///yf////5
-/////////z////8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////J/////n/////
-////P////wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///83/////f////////82
-////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///+h/////////5f///8A
-////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8F////yf////////9z
-////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////Av///8z/////
-////c////wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wL////M
-/////////3P///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8C
-////y/////////+Y////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A
-////FP///6P///9m////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A
-////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A
-////AP///wD///8A////AP///wD///8A////AP///wAADgEAAAMAAAABAA8AAAEBAAMAAAABAA8AAAEC
+RkZSZXByZXNlbnRhdGlvboAGgAdPERCSTU0AKgAAA4wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+////Lv////////+kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8n
+////9v////////+EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///yf////5
+/////////z8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////J/////n/////
+////PwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///83/////f////////82
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///+h/////////5cAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8F////yf////////9z
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////Av///8z/////
+////cwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///wL////M
+/////////3MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8C
+////y/////////+YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+////FP///6P///9mAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgEAAAMAAAABAA8AAAEBAAMAAAABAA8AAAEC
 AAMAAAAEAAAEOgEDAAMAAAABAAEAAAEGAAMAAAABAAIAAAERAAQAAAABAAAACAESAAMAAAABAAEAAAEV
 AAMAAAABAAQAAAEWAAMAAAABAA8AAAEXAAQAAAABAAADhAEcAAMAAAABAAEAAAFSAAMAAAABAAIAAAFT
 AAMAAAAEAAAEQodzAAcAAAxIAAAESgAAAAAACAAIAAgACAABAAEAAQABAAAMSExpbm8CEAAAbW50clJH
