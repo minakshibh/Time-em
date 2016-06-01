@@ -19,10 +19,12 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     var taskDataArray:NSMutableArray! = []
     @IBOutlet var btnBack: UIButton!
     @IBOutlet var lblMyTasksHeader: UILabel!
+    @IBOutlet var btnAddTask: UIButton!
     var currentUserID:String! = nil
     var currentUserFullName:String! = nil
     var selectedDate:String!
     var selectedTaskData:NSMutableDictionary! = [:]
+    var selectededitRowDict:NSMutableDictionary = [:]
     
     @IBOutlet var btnSignIn: UIButton!
     
@@ -44,6 +46,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
         if currentUserID != nil{
+            btnAddTask.hidden = true
             lblMyTasksHeader.text = currentUserFullName!
             self.getDataFromDatabase(currentUserID)
             getuserTask(currentUserID, createdDate: selectedDate)
@@ -224,14 +227,14 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let lines = Description.getNoOflines()
         if lines > 3 {
             if Reachability.DeviceType.IS_IPHONE_5 {
-                return 90
+                return 88
             }
             return 93
         }else{
             Description.autosizeForWidth()
             print(Description.frame.size.height)
             if Reachability.DeviceType.IS_IPHONE_5 {
-                return Description.frame.size.height + 33
+                return Description.frame.size.height + 31
             }
             return Description.frame.size.height + 41
             
@@ -339,16 +342,17 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         }),MGSwipeButton(title: "", icon:UIImage(named: "edit"),backgroundColor: UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1), callback: {
             (sender: MGSwipeTableCell!) -> Bool in
             
-            delay(0.001){
-                let dataDic:NSMutableDictionary = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
-                
-                let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
-                
-                let AddNewTaskView = storyBoard.instantiateViewControllerWithIdentifier("AddNewTaskIdentifier") as! AddNewTaskViewController
-                AddNewTaskView.editTaskDict = dataDic
-                AddNewTaskView.isEditting = "true"
-                self.presentViewController(AddNewTaskView, animated:false, completion:nil)
-            }
+//            delay(0.001){
+//                let dataDic:NSMutableDictionary = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
+                self.selectededitRowDict = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
+            self.performSegueWithIdentifier("editNewTask", sender: self)
+//                let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+//                
+//                let AddNewTaskView = storyBoard.instantiateViewControllerWithIdentifier("AddNewTaskIdentifier") as! AddNewTaskViewController
+//                AddNewTaskView.editTaskDict = dataDic
+//                AddNewTaskView.isEditting = "true"
+//                self.presentViewController(AddNewTaskView, animated:false, completion:nil)
+//            }
             
             
             
@@ -429,6 +433,11 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             let destinationVC = segue.destinationViewController as! AddNewTaskViewController
             destinationVC.isEditting = "false"
             destinationVC.createdDate = self.selectedDate
+        }else if segue.identifier == "editNewTask"{
+            
+            let destinationVC = segue.destinationViewController as! AddNewTaskViewController
+            destinationVC.editTaskDict = selectededitRowDict
+            destinationVC.isEditting = "true"
         }
     }
     

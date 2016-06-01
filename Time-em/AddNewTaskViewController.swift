@@ -11,7 +11,7 @@ import MobileCoreServices
 import AVKit
 import AVFoundation
 
-class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate{
     
     @IBOutlet var taskDropDown: UIButton!
     @IBOutlet var selectTaskTxt: UITextField!
@@ -23,6 +23,8 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     @IBOutlet var uploadedImage: UIImageView!
     @IBOutlet var addBtn: UIButton!
     @IBOutlet var btnplayVideo: UIButton!
+    @IBOutlet var lblbackground: UIView!
+    @IBOutlet var scrollView: UIScrollView!
     let dropDown = DropDown()
     let imagePicker = UIImagePickerController()
     var imageData = NSData()
@@ -36,9 +38,15 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     let notificationKey = "com.time-em.addTaskResponse"
     var isEditting: String!
     var editId: String! = "0"
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name: UIKeyboardWillShowNotification, object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name: UIKeyboardWillHideNotification, object: nil)
+
+        
         uploadBtn.layer.cornerRadius = 5
         uploadedImage.layer.cornerRadius = 5
         addBtn.layer.cornerRadius = 5
@@ -138,6 +146,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         
         //~~ Set delegate of UIImagePickerController
         imagePicker.delegate = self
+        
+        scrollView.scrollEnabled = false
+        scrollView.delegate = self
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func getDataFUnction(){
@@ -232,10 +244,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             
             self.presentViewController(self.imagePicker, animated: true, completion: nil)
         })
-        let recordAction = UIAlertAction(title: "Record Video", style: .Default, handler: {
-            (alert: UIAlertAction!) -> Void in
-            self.setUpRecorder()
-        })
+//        let recordAction = UIAlertAction(title: "Record Video", style: .Default, handler: {
+//            (alert: UIAlertAction!) -> Void in
+//            self.setUpRecorder()
+//        })
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: {
             (alert: UIAlertAction!) -> Void in
@@ -246,7 +258,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         // 4
         optionMenu.addAction(cameraAction)
         optionMenu.addAction(galleryAction)
-        optionMenu.addAction(recordAction)
+//        optionMenu.addAction(recordAction)
         optionMenu.addAction(cancelAction)
         
         // 5
@@ -330,8 +342,49 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     //~~ TextView Delegates
     func textViewDidBeginEditing(textView: UITextView) {
         commentPlaceholder.hidden = true
+        scrollView.scrollEnabled = true
+         scrollView.contentSize = CGSizeMake(320, 700)
+        
+        if Reachability.DeviceType.IS_IPHONE_5 {
+            scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+            var pt:CGPoint!
+            var rc:CGRect = textView.frame
+            rc = textView.convertRect(rc, toView: scrollView)
+            
+            pt = rc.origin;
+            pt.x = 0
+            pt.y -= 200
+            scrollView.setContentOffset(pt, animated: true)
+        
+        }
     }
-    
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+
+        scrollView.scrollEnabled = true
+        scrollView.contentSize = CGSizeMake(320, 700)
+        
+          if Reachability.DeviceType.IS_IPHONE_5 {
+            scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+            var pt:CGPoint!
+            var rc:CGRect = textField.frame
+            rc = textField.convertRect(rc, toView: scrollView)
+        
+            pt = rc.origin;
+            pt.x = 0
+            pt.y -= 200
+            scrollView.setContentOffset(pt, animated: true)
+        }
+       return true
+    }
+    func textFieldShouldEndEditing(textField: UITextField) -> Bool {  //delegate method
+        scrollView.scrollEnabled = false
+        scrollView.contentSize = CGSizeMake(0, 0)
+        return true
+    }
+    func textViewDidEndEditing(textView: UITextView) {
+        scrollView.scrollEnabled = false
+        scrollView.contentSize = CGSizeMake(0, 0)
+    }
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             uploadImageView.hidden = false
@@ -397,5 +450,25 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             return true
         }
         return true
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+            
+            let topView:UIView = UIView(frame: CGRectMake(0, 0, self.view.frame.size.width, 20))
+            main {
+            self.lblbackground.frame.origin.y -= 150
+            }
+        }
+        
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+             main {
+            self.lblbackground.frame.origin.y += 150
+            }
+            }
     }
 }

@@ -40,6 +40,7 @@ class BarCodeViewController: RSCodeReaderViewController {
 //        self.performSegueWithIdentifier("barcodeDetail", sender: self)
         
         
+        
 
         self.focusMarkLayer.strokeColor = UIColor.redColor().CGColor
         
@@ -107,6 +108,15 @@ class BarCodeViewController: RSCodeReaderViewController {
         super.viewWillAppear(animated)
         
         self.navigationController?.navigationBarHidden = true
+        
+        
+        
+        
+        let btnback   = UIButton(type: UIButtonType.System) as UIButton
+        btnback.frame = CGRectMake(0, lblHeader.frame.origin.y, 25, lblHeader.frame.size.height)
+        btnback.backgroundColor = UIColor.clearColor()
+        btnback.setImage(UIImage(named: "previous-icon"), forState: .Normal)
+        self.view.addSubview(btnback)
     }
     
     @IBAction func btnback(sender: AnyObject) {

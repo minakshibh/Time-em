@@ -31,6 +31,19 @@ class ApiRequest: NSObject {
                     
         if "\(response.result)" == "SUCCESS"{
             let userInfo = ["response" : "SUCCESS"]
+           
+            if let field = JSON.valueForKey("Message")   as? String{
+                if "\(JSON.valueForKey("Message")!)".lowercaseString == "an error has occurred." {
+                    let userInfo = ["response" : "failre"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                    MBProgressHUD.hideHUDForView(view, animated: true)
+                    return
+                }
+            }
+            
+            
+            
             let currentUsers =  User(dict: JSON as! NSMutableDictionary)
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Id)", forKey: "currentUser_id")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.IsSignIn)", forKey: "currentUser_IsSignIn")
@@ -109,85 +122,7 @@ class ApiRequest: NSObject {
             
             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             
-                    if "\(response.result)" == "SUCCESS"{
-                        let userInfo = ["response" : "SUCCESS"]
-                        let currentUsers =  User(dict: JSON as! NSMutableDictionary)
-                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Id)", forKey: "currentUser_id")
-                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.IsSignIn)", forKey: "currentUser_IsSignIn")
-                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.ActivityId)", forKey: "currentUser_ActivityId")
-                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginId)", forKey: "currentUser_LoginId")
-                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.FullName)", forKey: "currentUser_FullName")
-                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserTypeId)", forKey: "UserTypeId")
-                        
-                        var dictionary:NSMutableDictionary = [:]
-                        dictionary = currentUsers.returnDict()
-                        
-                        let encodedData = NSKeyedArchiver.archivedDataWithRootObject(dictionary)
-                        
-                        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
-                        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
-                        
-                        let database = FMDatabase(path: fileURL.path)
-                        
-                        if !database.open() {
-                            print("Unable to open database")
-                            return
-                        }
-                        
-                        do {
-                            try database.executeUpdate("create table tasksData(ActivityId text, AttachmentImageFile text, AttachmentVideoFile text ,Comments text, CreatedDate text, EndTime text,Id text, SelectedDate text, SignedInHours text,StartTime text, TaskId text, TaskName text,TimeSpent text, Token text, UserId text)", values: nil)
-                        } catch let error as NSError {
-                            print("failed: \(error.localizedDescription)")
-                        }
-                        
-                        do {
-                            try database.executeUpdate("create table teamData(ActivityId text, Company text, CompanyId text ,Department text, DepartmentId text, FirstName text,FullName text, Id text, IsNightShift text,IsSecurityPin text, IsSignedIn text, LastName text,LoginCode text, LoginId text, NFCTagId text, Project text ,ProjectId text, SignInAt text, SignOutAt text,SignedInHours text, SupervisorId text, TaskActivityId text,UserTypeId text, Worksite text, WorksiteId text)", values: nil)
-                        } catch let error as NSError {
-                            print("failed: \(error.localizedDescription)")
-                        }
-                        
-                        do {
-                            try database.executeUpdate("create table userdata(userId text, userData text, loggedInUser text)", values: nil)
-                        } catch let error as NSError {
-                            print("failed: \(error.localizedDescription)")
-                        }
-                        do {
-                            try database.executeUpdate("create table notificationtype(data text)", values: nil)
-                        } catch let error as NSError {
-                            print("failed: \(error.localizedDescription)")
-                        }
-                        do {
-                            try database.executeUpdate("create table notificationActiveUserList(data text)", values: nil)
-                        } catch let error as NSError {
-                            print("failed: \(error.localizedDescription)")
-                        }
-                        do {
-                            try database.executeUpdate("create table sync(type text, data text)", values: nil)
-                        } catch let error as NSError {
-                            print("failed: \(error.localizedDescription)")
-                        }
-                        do {
-                            try database.executeUpdate("create table assignedTaskList(TaskId text, TaskName text)", values: nil)
-                        } catch let error as NSError {
-                            print("failed: \(error.localizedDescription)")
-                        }
-                        
-                        do {
-                            try database.executeUpdate("insert into UserData (userId, userData, loggedInUser) values (?, ?, ?)", values: [currentUsers.LoginId, encodedData, "true"])
-                            
-                        } catch let error as NSError {
-                            print("failed: \(error.localizedDescription)")
-                        }
-                        
-                        database.close()
-                        NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "userLoggedIn")
-                        
-                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
-                        
-                    }else{
-                        let userInfo = ["response" : "FAILURE"]
-                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
-                    }
+            
                 }else if "\(response.result)" == "FAILURE"{
                     let userInfo = ["response" : "FAILURE"]
                     NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -195,6 +130,14 @@ class ApiRequest: NSObject {
                 }
                 
                 MBProgressHUD.hideHUDForView(view, animated: true)
+                }else{
+                    let userInfo = ["response" : "FAILURE"]
+                    main{
+                        MBProgressHUD.hideHUDForView(view, animated: true)
+                    }
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                   
+                }
         }
         
     }

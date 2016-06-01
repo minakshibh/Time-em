@@ -7,6 +7,9 @@ class resetPinAndPassword: UIViewController
     @IBOutlet var emailTxt: UITextField!
     @IBOutlet var resetInfoLbl: UILabel!
     @IBOutlet var titleBar: UILabel!
+     @IBOutlet var btnSend: UIButton!
+    
+    
     let passwordNotificationKey = "com.time-em.resetPassword"
     let pinNotificationKey = "com.time-em.resetPin"
     
@@ -15,7 +18,7 @@ class resetPinAndPassword: UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+    btnSend.layer.cornerRadius = 4
         if resetType == "Password" {
             resetInfoLbl.text = "Enter your email to reset your password."
             titleBar.text = "Forgot Password?"
@@ -23,6 +26,7 @@ class resetPinAndPassword: UIViewController
             resetInfoLbl.text = "Enter your email to reset your pin."
             titleBar.text = "Forgot Pin?"
         }
+        
     }
     @IBAction func send(sender: AnyObject) {
         let emailIs = self.emailTxt.text!
@@ -63,6 +67,9 @@ class resetPinAndPassword: UIViewController
     }
     
     @IBAction func backBtn(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: {});
+        delay(0.001) {
+        self.dismissViewControllerAnimated(true, completion: {})
+        }
+        self.navigationController?.popViewControllerAnimated(true)
     }
 }

@@ -18,6 +18,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     @IBOutlet var lblPlaceholderComments: UILabel!
     @IBOutlet var lblPlaceholderSelectrecipients: UILabel!
     @IBOutlet var lblPlaceholderSubject: UILabel!
+    @IBOutlet var lblheader: UILabel!
     var notificationTypeDropdownArray:NSArray = []
     var recipientsArray:NSArray = []
     @IBOutlet var btnSelectRecipients: UIButton!
@@ -79,7 +80,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     
     override func viewDidAppear(animated: Bool) {
         
-        scrollView.frame = CGRectMake(0, 64, 320, 736)
+//        scrollView.frame = CGRectMake(0, lblheader.frame.origin.y + lblheader.frame.size.height, 320, 736)
         scrollView.scrollEnabled = true
         scrollView.delegate = self
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -95,7 +96,9 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
 //            // Fallback on earlier versions
 //        }
         
+        
         tableView = UITableView(frame: CGRectMake(btnSelectRecipients.frame.origin.x, btnSelectRecipients.frame.origin.y+btnSelectRecipients.frame.size.height-3, btnSelectRecipients.frame.size.width, 220 ), style: .Plain)
+        
         if Reachability.DeviceType.IS_IPHONE_5 {
            tableView.frame = CGRectMake(tableView.frame.origin.x, tableView.frame.origin.y, tableView.frame.size.width, tableView.frame.size.height-50)
         }
@@ -161,7 +164,9 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     
 
     @IBAction func selectTaskFromDropDown(sender: AnyObject) {
-        
+        txtSubject.resignFirstResponder()
+        txtComment.resignFirstResponder()
+        tableView.hidden = true
             if dropDown.hidden {
                 dropDown.show()
             } else {
@@ -173,6 +178,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
 
     //~ TextView Delegates
     func textViewDidBeginEditing(textView: UITextView) {
+        tableView.hidden = true
         if textView == txtComment {
             lblPlaceholderComments.hidden = true
         }else if textView == txtSubject {
@@ -181,8 +187,32 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         
         
     }
+    func textViewShouldEndEditing(textView: UITextView) {
+        if textView == txtComment {
+            if txtComment.text.characters.count == 0 {
+                lblPlaceholderComments.hidden = false
+            }
+        }else if textView == txtSubject {
+            if txtSubject.text.characters.count == 0 {
+                lblPlaceholderSubject.hidden = false
+            }
+        }
+    }
     func textFieldDidBeginEditing(textField: UITextField) {
         
+    }
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        
+        if textView == txtSubject {
+            if (text == "\n") {
+                txtComment.becomeFirstResponder()
+            }
+        }else if textView == txtComment {
+            if (text == "\n") {
+                txtComment.resignFirstResponder()
+            }
+        }
+        return true
     }
     func GetNotificationTypeResponse(notification:NSNotification) {
         
@@ -193,8 +223,11 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     
     @IBAction func btnBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
+        self.navigationController?.popViewControllerAnimated(true)
     }
     @IBAction func btnSelectRecipients(sender: AnyObject) {
+        txtComment.resignFirstResponder()
+        txtSubject.resignFirstResponder()
         if tableView.hidden {
             tableView.hidden = false
         } else {
@@ -203,6 +236,10 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     }
     @IBAction func btnSend(sender: AnyObject) {
 
+        tableView.hidden = true
+        txtComment.resignFirstResponder()
+        txtSubject.resignFirstResponder()
+        
         var imageData = NSData()
         if uploadedImage.image != nil {
             imageData = UIImagePNGRepresentation(uploadedImage.image!)!
@@ -270,6 +307,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             self.presentViewController(alert, animated: true, completion: nil)
             delay(0.001){
             self.dismissViewControllerAnimated(true, completion: {});
+                self.navigationController?.popViewControllerAnimated(true)
             }
         }else{
             var alert :UIAlertController!
@@ -352,6 +390,9 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     
     
      @IBAction func btnUploadImage(sender: AnyObject) {
+        
+        txtComment.resignFirstResponder()
+        txtSubject.resignFirstResponder()
     // 1
         let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .ActionSheet)
     

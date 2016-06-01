@@ -35,6 +35,7 @@
 		D9AD39191CE5BAE3005D5029 /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D9AD39181CE5BAE3005D5029 /* images.xcassets */; };
 		D9AD391F1CE5CD8D005D5029 /* dashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */; };
 		D9AD39231CE5F29D005D5029 /* async.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AD39221CE5F29D005D5029 /* async.swift */; };
+		D9D01AA41CFEC9FD0098C224 /* KeyboardLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D01AA31CFEC9FD0098C224 /* KeyboardLayoutConstraint.swift */; };
 		D9D378011CEC9201002E24D9 /* databaseFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378001CEC9201002E24D9 /* databaseFile.swift */; };
 		D9D378031CEC92C8002E24D9 /* TaskData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378021CEC92C8002E24D9 /* TaskData.swift */; };
 		D9D378051CECAC6D002E24D9 /* MyTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378041CECAC6D002E24D9 /* MyTeamViewController.swift */; };
@@ -111,6 +112,7 @@
 		D9AD39181CE5BAE3005D5029 /* images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = images.xcassets; sourceTree = "<group>"; };
 		D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = dashboardViewController.swift; sourceTree = "<group>"; };
 		D9AD39221CE5F29D005D5029 /* async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = async.swift; sourceTree = "<group>"; };
+		D9D01AA31CFEC9FD0098C224 /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
 		D9D378001CEC9201002E24D9 /* databaseFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = databaseFile.swift; sourceTree = "<group>"; };
 		D9D378021CEC92C8002E24D9 /* TaskData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskData.swift; sourceTree = "<group>"; };
 		D9D378041CECAC6D002E24D9 /* MyTeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyTeamViewController.swift; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 				D9963C281CFC3E1000537699 /* passCodeView */,
 				D970050E1CE31B150036B5EA /* LoginViewController.swift */,
 				D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */,
+				D9D01AA31CFEC9FD0098C224 /* KeyboardLayoutConstraint.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -534,6 +537,7 @@
 				D9DA40271CE9B28A00D6B572 /* NSDate+CL.m in Sources */,
 				D965A2091CF82EF000AB11C0 /* NotificationViewController.swift in Sources */,
 				D9DA402A1CE9B28A00D6B572 /* UIImage+CL.m in Sources */,
+				D9D01AA41CFEC9FD0098C224 /* KeyboardLayoutConstraint.swift in Sources */,
 				F9F012961CF33489003698C6 /* DPDKeyboardListener.swift in Sources */,
 				F9F0129D1CF334A2003698C6 /* DropDownCell.swift in Sources */,
 				F947CF481CF30A03009635B4 /* resetPinAndPassword.swift in Sources */,

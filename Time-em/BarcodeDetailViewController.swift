@@ -25,7 +25,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
 
         print (scannedBarcodeArr)
         // Do any additional setup after loading the view.
-        scannedBarcodeArr = []
+//        scannedBarcodeArr = []
 //        scannedBarcodeArr.addObject("1001")
 //        scannedBarcodeArr.addObject("1006")
 //        scannedBarcodeArr.addObject("5006")
@@ -56,7 +56,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
 //            combineRemainingData()
 //        }
         
-        
+        if noDataObjects.count > 0 {
                var ids:String!
         for (var j=0; j<noDataObjects.count;j+=1) {
             if j==0 {
@@ -69,7 +69,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         let api = ApiRequest()
         api.getuserListByLoginCode(ids)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarcodeDetailViewController.responseForLoginCodes), name: "com.time-em.getuserListByLoginCode", object: nil)
-
+        }
         
         
         tableView.reloadData()
@@ -93,6 +93,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
 
     @IBAction func btnback(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
+        self.navigationController?.popViewControllerAnimated(true)
     }
 
     @IBAction func btnSignInAll(sender: AnyObject) {
@@ -175,6 +176,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
             cell.accessoryView = imageView
         }
         
+         cell.selectionStyle = .None
         return cell
     }
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

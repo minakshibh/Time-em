@@ -60,6 +60,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func btnForgotPassword(sender: AnyObject) {
 
+        self.performSegueWithIdentifier("resetPassword", sender: self)
 //        let resetPinAndPasswordView = resetPinAndPassword()
 //        self.navigationController?.pushViewController(resetPinAndPasswordView, animated: true)
     }

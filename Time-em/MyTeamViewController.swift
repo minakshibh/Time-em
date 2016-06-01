@@ -62,7 +62,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     func fetchTeamDataFromDatabase() {
         let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
 
-        var databaseFetch = databaseFile()
+        let databaseFetch = databaseFile()
         teamDataArray = databaseFetch.getTeamForUserID(logedInUserId!)
         print(teamDataArray)
         tableView.reloadData()
