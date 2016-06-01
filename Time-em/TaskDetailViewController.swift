@@ -43,7 +43,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         if taskData.valueForKey("AttachmentImageFile") != nil {
             
             if taskData.valueForKey("AttachmentImageFile") as? String != "" {
-            
+             
                 
                 let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)")
                 

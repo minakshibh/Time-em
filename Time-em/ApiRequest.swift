@@ -82,6 +82,11 @@ class ApiRequest: NSObject {
                 print("failed: \(error.localizedDescription)")
             }
             do {
+                try database.executeUpdate("create table notificationsTable(AttachmentFullPath text,Message text,NotificationId text,NotificationTypeName text,SenderFullName text,Senderid text,Subject text,createdDate text)", values: nil)
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
+            do {
                 try database.executeUpdate("create table sync(type text, data text)", values: nil)
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
@@ -928,6 +933,12 @@ class ApiRequest: NSObject {
             
             guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
                 print("error")
+                print(response)
+                  // original URL request
+                let msg = "failed"
+                let userInfo = ["response" : "\(msg)"]
+                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                MBProgressHUD.hideHUDForView(view, animated: true)
                 return
             }
             
@@ -936,7 +947,8 @@ class ApiRequest: NSObject {
             print(dataString!)
             delay(0.001){
                 MBProgressHUD.hideHUDForView(view, animated: true)
-                let userInfo = ["response" : "\(dataString?.valueForKey("Message")!)"]
+                let msg = "successfully"
+                let userInfo = ["response" : "\(msg)"]
                 NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             }
         }
@@ -1508,7 +1520,119 @@ class ApiRequest: NSObject {
         }
         
     }
-
+//http://timeemapi.azurewebsites.net/api/notification/NotificationByUserId
+    func getNotifications(UserId:String,timeStamp:String) {
+        let notificationKey = "com.time-em.getuserListByLoginCode"
+        
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/notification/NotificationByUserId", parameters:  ["UserId":UserId,"timeStamp":timeStamp])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        print(JSON.valueForKey("isError"))
+                        print(JSON.valueForKey("Message"))
+                        
+                        if "\(JSON.valueForKey("IsError")!)" == "0" {
+                             let userInfo = ["response" : "success"]
+                            NSUserDefaults.standardUserDefaults().setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "notificationsTimeStamp")
+                            
+                            let dataArr = JSON.valueForKey("notificationslist") as? NSArray
+                            let database = databaseFile()
+                            
+                            for i in dataArr! {
+                            
+                                let  AttachmentFullPath:String
+                                if let field = i.valueForKey("AttachmentFullPath") as? String {
+                                    AttachmentFullPath = field
+                                }else{
+                                    AttachmentFullPath = ""
+                                }
+                                
+                                let  Message:String
+                                if let field = i.valueForKey("Message") as? String {
+                                    Message = field
+                                }else{
+                                    Message = ""
+                                }
+                                let  NotificationId: Int!
+                                if let field = i.valueForKey("NotificationId")  {
+                                    NotificationId = field as! Int
+                                }else{
+                                    NotificationId = 0
+                                }
+                                let  NotificationTypeName:String
+                                if let field = i.valueForKey("NotificationTypeName") as? String {
+                                    NotificationTypeName = field
+                                }else{
+                                    NotificationTypeName = ""
+                                }
+                                let  SenderFullName:String
+                                if let field = i.valueForKey("SenderFullName") as? String {
+                                    SenderFullName = field
+                                }else{
+                                    SenderFullName = ""
+                                }
+                                let  Senderid: Int!
+                                if let field = i.valueForKey("Senderid")  {
+                                    Senderid = field as! Int
+                                }else{
+                                    Senderid = 0
+                                }
+                                let  Subject:String
+                                if let field = i.valueForKey("Subject") as? String {
+                                    Subject = field
+                                }else{
+                                    Subject = ""
+                                }
+                                let  createdDate:String
+                                if let field = i.valueForKey("createdDate") as? String {
+                                    createdDate = field
+                                }else{
+                                    createdDate = ""
+                                }
+                                
+                                
+                                
+                                
+                                
+                                database.saveNotifications(AttachmentFullPath, Message: Message, NotificationId: "\(NotificationId!)", NotificationTypeName: NotificationTypeName, SenderFullName: SenderFullName, Senderid: "\(Senderid!)", Subject: Subject, createdDate: createdDate)
+                            
+                            }
+                            
+                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }else{
+                             let userInfo = ["response" : "failure"]
+                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                       
+                        
+                       
+                        
+                        
+                       
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+        }
+        
+    }
+    
+    
 }
 
 

@@ -59,7 +59,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.GetNotificationTypeResponse), name: "com.time-em.NotificationTypeloginResponse", object: nil)
         
-        
+        btnSelectRecipients.setTitleColor(UIColor.blackColor(), forState: .Normal)
         uploadedImage.hidden = true
         
 //        scrollView.frame = CGRectMake(0, 64, 320, 736)
@@ -85,7 +85,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         if Reachability.DeviceType.IS_IPHONE_5 {
         scrollView.contentSize = CGSizeMake(320, 650)
-        btnUploadImage.frame = CGRectMake(uploadedImage.frame.origin.x, uploadedImage.frame.origin.y, uploadedImage.frame.size.width+35, uploadedImage.frame.size.height)
+        btnUploadImage.frame = CGRectMake(uploadedImage.frame.origin.x, uploadedImage.frame.origin.y, uploadedImage.frame.size.width+65, uploadedImage.frame.size.height)
         }
         scrollView.backgroundColor = UIColor.clearColor()
 //        NSLayoutConstraint(item: scrollView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 300).active = true
@@ -111,6 +111,10 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         self.scrollView.addSubview(tableView)
         tableView.allowsMultipleSelection = true
         tableView.hidden = true
+        
+        getDataFromDatabase()
+        tableView.reloadData()
+
     }
     
     func setDropDown(){
@@ -133,6 +137,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             print(nameArr[index])
             print(idArr[index])
             self.txtSelectMessage.text = item
+             self.txtSelectMessage.textColor = UIColor.blackColor()
             self.NotificationTypeId = "\(idArr[index])"
         }
         
@@ -147,7 +152,6 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         setDropDown()
         
        recipientsArray = database.getNotificationActiveUserList()
-        tableView.reloadData()
     }
     
     override func didReceiveMemoryWarning() {
@@ -208,6 +212,13 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         let subject:String!
         let comments:String!
         
+        if NotificationTypeId == " " {
+            let alert = UIAlertController(title: "Time'em", message: "Select notification type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        
         if txtSubject.text.isEmpty {
             let alert = UIAlertController(title: "Time'em", message: "Enter subject before continue.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
@@ -226,25 +237,47 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             comments = txtComment.text
         }
         
-        if NotificationTypeId == " " {
-            let alert = UIAlertController(title: "Time'em", message: "Select notification type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+        var ids:String!
+        if selectedRecipientsIdArr.count == 0 {
+            let alert = UIAlertController(title: "Time'em", message: "Select recipients before continue.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
             return
+        }else{
+            
+            for (var j=0; j<selectedRecipientsIdArr.count;j+=1) {
+                if j==0 {
+                    ids = "\(selectedRecipientsIdArr[0])"
+                }else{
+                    ids = "\(ids),\(selectedRecipientsIdArr[j])"
+                }
+            }
         }
         
+        
         let sendNotification = ApiRequest()
-        sendNotification.sendNotification(imageData, LoginId: LoginId!, Subject: subject, Message: comments, NotificationTypeId: NotificationTypeId, notifyto: "123", view: self.view)
+        sendNotification.sendNotification(imageData, LoginId: LoginId!, Subject: subject, Message: comments, NotificationTypeId: NotificationTypeId, notifyto: ids, view: self.view)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.sendnotificationResponse), name: "com.time-em.sendnotification", object: nil)
     }
     func sendnotificationResponse(notification:NSNotification) {
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
         
-        var alert :UIAlertController!
+        if status == "successfully"{
+            var alert :UIAlertController!
             alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            delay(0.001){
+            self.dismissViewControllerAnimated(true, completion: {});
+            }
+        }else{
+            var alert :UIAlertController!
+            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+       
 
     }
     
@@ -274,7 +307,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 12.0)!
         cell.textLabel?.font = myFont
         }
-        cell.contentView.backgroundColor = UIColor(red: 235/256, green: 235/256, blue: 235/256, alpha: 1)
+        cell.backgroundColor = UIColor(red: 235/256, green: 235/256, blue: 235/256, alpha: 1)
         cell.selectionStyle = .None
         
         
@@ -285,6 +318,16 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         selectedRecipientsNameArr.addObject("\(dict.valueForKey("FullName")!)")
         selectedRecipientsIdArr.addObject("\(dict.valueForKey("userid")!)")
         
+        var usernames:String!
+        for (var j=0; j<selectedRecipientsNameArr.count;j+=1) {
+            if j==0 {
+                usernames = "\(selectedRecipientsNameArr[0])"
+            }else{
+                usernames = "\(usernames),\(selectedRecipientsNameArr[j])"
+            }
+        }
+        lblPlaceholderSelectrecipients.hidden = true
+        btnSelectRecipients.setTitle(usernames, forState: .Normal)
         tableView.cellForRowAtIndexPath(indexPath)?.accessoryType = UITableViewCellAccessoryType.Checkmark
     }
     
@@ -292,6 +335,18 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         let dict:NSDictionary = (recipientsArray[indexPath.row] as? NSDictionary)!
         selectedRecipientsNameArr.removeObject("\(dict.valueForKey("FullName")!)")
         selectedRecipientsIdArr.removeObject("\(dict.valueForKey("userid")!)")
+        var usernames:String!
+        for (var j=0; j<selectedRecipientsNameArr.count;j+=1) {
+            if j==0 {
+                usernames = "\(selectedRecipientsNameArr[0])"
+            }else{
+                usernames = "\(usernames),\(selectedRecipientsNameArr[j])"
+            }
+        }
+        if usernames.characters.count == 0 {
+            lblPlaceholderSelectrecipients.hidden = false
+        }
+        btnSelectRecipients.setTitle(usernames, forState: .Normal)
         tableView.cellForRowAtIndexPath(indexPath)?.accessoryType = UITableViewCellAccessoryType.None
     }
     

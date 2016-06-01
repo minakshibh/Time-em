@@ -872,12 +872,6 @@ class databaseFile: NSObject {
         }
         
         do {
-        try database.executeUpdate("delete * from  notificationActiveUserList", values: nil)
-        } catch let error as NSError {
-            print("failed: \(error.localizedDescription)")
-        }
-        
-        do {
             try database.executeUpdate("insert into notificationActiveUserList (userid,FullName) values (?,?)", values: [userid,FullName])
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
@@ -914,5 +908,70 @@ class databaseFile: NSObject {
         return userARR
         
     }
+    
+    
+    func saveNotifications(AttachmentFullPath:String,Message:String,NotificationId:String,NotificationTypeName:String,SenderFullName:String,Senderid:String,Subject:String,createdDate:String) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        
+        do {
+            try database.executeUpdate("insert into notificationsTable(AttachmentFullPath,Message,NotificationId,NotificationTypeName,SenderFullName,Senderid,Subject,createdDate) values (?,?,?,?,?,?,?,?)", values: [AttachmentFullPath,Message,NotificationId,NotificationTypeName,SenderFullName,Senderid,Subject,createdDate])
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+    }
+    
+    func getNotifications() -> NSMutableArray{
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        var userARR:NSMutableArray = []
+        do {
+            let rs = try database.executeQuery("select * from notificationsTable", values: nil)
+            
+            while rs.next() {
+                let dict:NSMutableDictionary = [:]
+                let AttachmentFullPath = rs.stringForColumn("AttachmentFullPath")
+                let Message = rs.stringForColumn("Message")
+                let NotificationId = rs.stringForColumn("NotificationId")
+                let NotificationTypeName = rs.stringForColumn("NotificationTypeName")
+                let SenderFullName = rs.stringForColumn("SenderFullName")
+                let Senderid = rs.stringForColumn("Senderid")
+                let Subject = rs.stringForColumn("Subject")
+                let createdDate = rs.stringForColumn("createdDate")
+                
+                dict.setValue(AttachmentFullPath, forKey: "AttachmentFullPath")
+                dict.setValue(Message, forKey: "Message")
+                dict.setValue(NotificationId, forKey: "NotificationId")
+                dict.setValue(NotificationTypeName, forKey: "NotificationTypeName")
+                dict.setValue(SenderFullName, forKey: "SenderFullName")
+                dict.setValue(Senderid, forKey: "Senderid")
+                dict.setValue(Subject, forKey: "Subject")
+                dict.setValue(createdDate, forKey: "createdDate")
+                userARR.addObject(dict)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+            userARR = []
+        }
+        database.close()
+        return userARR
+        
+    }
+    
+
 }
 

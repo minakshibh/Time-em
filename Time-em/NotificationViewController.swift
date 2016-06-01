@@ -13,6 +13,11 @@ class NotificationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let userid = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+
+        
+        let api = ApiRequest()
+        api.getNotifications(userid!, timeStamp: "")
         // Do any additional setup after loading the view.
     }
 
