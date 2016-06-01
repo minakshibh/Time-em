@@ -8,6 +8,8 @@
 
 import Foundation
 import MobileCoreServices
+import AVKit
+import AVFoundation
 
 class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     
@@ -24,7 +26,9 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     let dropDown = DropDown()
     let imagePicker = UIImagePickerController()
     var imageData = NSData()
+    var videoData = NSData()
     var isNewTask = Bool()
+    var isVideoRecorded = Bool()
     var taskId = String()
     var assignedTasksArray = NSMutableArray()
     var createdDate:String!
@@ -255,6 +259,21 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     }
     
    @IBAction func btnplayVideo(sender: AnyObject) {
+    
+    let paths = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
+    let documentsDirectory:AnyObject = paths[0]
+    let dataPath = documentsDirectory.stringByAppendingPathComponent("Test.mp4")
+    
+    let videoAsset = (AVAsset(URL: NSURL(fileURLWithPath: dataPath)))
+    let playerItem = AVPlayerItem(asset:videoAsset)
+    
+    let player = AVPlayer(playerItem: playerItem)
+    let playerViewController = AVPlayerViewController()
+    playerViewController.player = player
+    
+    presentViewController(playerViewController, animated:true){
+        playerViewController.player!.play()
+    }
     }
     
     @IBAction func addUpdateTask(sender: AnyObject) {
@@ -277,7 +296,11 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         if uploadedImage.image != nil {
             imageData = UIImagePNGRepresentation(uploadedImage.image!)!
         }
-        assignedTasks.AddUpdateNewTask(imageData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: editId as String, view: self.view)
+        var videoRecordedData = NSData()
+        if isVideoRecorded {
+            videoRecordedData = videoData
+        }
+        assignedTasks.AddUpdateNewTask(imageData,videoData: videoRecordedData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: editId as String, view: self.view, isVideoRecorded:isVideoRecorded)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AddNewTaskViewController.displayResponse), name: notificationKey, object: nil)
     }
@@ -317,17 +340,15 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         }
         
         if let pickedVideo:NSURL = (info[UIImagePickerControllerMediaURL] as? NSURL) {
-            // Save video to the main photo album
-//            let selectorToCall = Selector("videoWasSavedSuccessfully:didFinishSavingWithError:context:")
-//            UISaveVideoAtPathToSavedPhotosAlbum(pickedVideo.relativePath!, self, selectorToCall, nil)
             
             // Save the video to the app directory so we can play it later
-            let videoData = NSData(contentsOfURL: pickedVideo)
+            videoData = NSData(contentsOfURL: pickedVideo)!
             let paths = NSSearchPathForDirectoriesInDomains(
                 NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
             let documentsDirectory: AnyObject = paths[0]
             let dataPath = documentsDirectory.stringByAppendingPathComponent("Test.mp4")
-            videoData?.writeToFile(dataPath, atomically: false)
+            videoData.writeToFile(dataPath, atomically: false)
+            btnplayVideo.hidden = false
         }
         
         dismissViewControllerAnimated(true, completion: nil)
@@ -347,6 +368,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     
     func setUpRecorder(){
         if (UIImagePickerController.isSourceTypeAvailable(.Camera)) {
+            isVideoRecorded = true
             if UIImagePickerController.availableCaptureModesForCameraDevice(.Rear) != nil {
                 
                 self.imagePicker.sourceType = .Camera
@@ -361,5 +383,19 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         } else {
             print("Camera inaccessable")
         }
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {   //delegate method
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool
+    {
+        if text == "\n" {
+            textView.resignFirstResponder()
+            return true
+        }
+        return true
     }
 }
