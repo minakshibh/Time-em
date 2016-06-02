@@ -59,7 +59,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             if self.commentsTxt.text != "" {
                 self.commentPlaceholder.hidden = true
             }
-            self.numberOfHoursTxt.text = "\(editTaskDict.valueForKey("SignedInHours")!)"
+            self.numberOfHoursTxt.text = "\(editTaskDict.valueForKey("TimeSpent")!)"
             self.taskId = "\(editTaskDict.valueForKey("TaskId")!)"
             self.createdDate = "\(editTaskDict.valueForKey("CreatedDate")!)"
             let dateStr = "\(self.createdDate)".componentsSeparatedByString(" ")[0]
@@ -244,10 +244,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             
             self.presentViewController(self.imagePicker, animated: true, completion: nil)
         })
-//        let recordAction = UIAlertAction(title: "Record Video", style: .Default, handler: {
-//            (alert: UIAlertAction!) -> Void in
-//            self.setUpRecorder()
-//        })
+        let recordAction = UIAlertAction(title: "Record Video", style: .Default, handler: {
+            (alert: UIAlertAction!) -> Void in
+            self.setUpRecorder()
+        })
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: {
             (alert: UIAlertAction!) -> Void in
@@ -258,7 +258,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         // 4
         optionMenu.addAction(cameraAction)
         optionMenu.addAction(galleryAction)
-//        optionMenu.addAction(recordAction)
+        optionMenu.addAction(recordAction)
         optionMenu.addAction(cancelAction)
         
         // 5
@@ -303,7 +303,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         let comments = self.commentsTxt.text! as String
         let createdDates = self.createdDate! as String
         print(createdDates)
-        let assignedTasks = ApiRequest()
+        let assignedTasks =  ApiRequest()
         var imageData = NSData()
         if uploadedImage.image != nil {
             imageData = UIImagePNGRepresentation(uploadedImage.image!)!
@@ -340,22 +340,23 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         getDataFUnction()
     }
     //~~ TextView Delegates
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        
+        
+            if (text == "\n") {
+                numberOfHoursTxt.becomeFirstResponder()
+            }
+       
+        return true
+    }
     func textViewDidBeginEditing(textView: UITextView) {
         commentPlaceholder.hidden = true
         scrollView.scrollEnabled = true
          scrollView.contentSize = CGSizeMake(320, 700)
         
-        if Reachability.DeviceType.IS_IPHONE_5 {
-            scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
-            var pt:CGPoint!
-            var rc:CGRect = textView.frame
-            rc = textView.convertRect(rc, toView: scrollView)
-            
-            pt = rc.origin;
-            pt.x = 0
-            pt.y -= 200
-            scrollView.setContentOffset(pt, animated: true)
-        
+//            scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+        if scrollView.contentOffset.y != 200.0 {
+            scrollView.setContentOffset(CGPointMake(0, 200), animated: true)
         }
     }
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
@@ -363,27 +364,32 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         scrollView.scrollEnabled = true
         scrollView.contentSize = CGSizeMake(320, 700)
         
-          if Reachability.DeviceType.IS_IPHONE_5 {
-            scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
-            var pt:CGPoint!
-            var rc:CGRect = textField.frame
-            rc = textField.convertRect(rc, toView: scrollView)
-        
-            pt = rc.origin;
-            pt.x = 0
-            pt.y -= 200
-            scrollView.setContentOffset(pt, animated: true)
+//            scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+        if scrollView.contentOffset.y != 200.0 {
+          scrollView.setContentOffset(CGPointMake(0, 200), animated: true)
         }
+        
        return true
     }
     func textFieldShouldEndEditing(textField: UITextField) -> Bool {  //delegate method
         scrollView.scrollEnabled = false
-        scrollView.contentSize = CGSizeMake(0, 0)
+        print(scrollView.contentOffset)
+//        scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+//        scrollView.contentSize = CGSizeMake(0, 0)
         return true
     }
     func textViewDidEndEditing(textView: UITextView) {
         scrollView.scrollEnabled = false
-        scrollView.contentSize = CGSizeMake(0, 0)
+//        scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+//        scrollView.contentSize = CGSizeMake(0, 0)
+    }
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+         if (string == "\n") {
+         numberOfHoursTxt.resignFirstResponder()
+            scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+            scrollView.contentSize = CGSizeMake(0, 0)
+        }
+        return true
     }
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
@@ -443,14 +449,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         return true
     }
     
-    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool
-    {
-        if text == "\n" {
-            textView.resignFirstResponder()
-            return true
-        }
-        return true
-    }
+   
     
     func keyboardWillShow(notification: NSNotification) {
         

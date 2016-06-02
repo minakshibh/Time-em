@@ -11,6 +11,7 @@ import UIKit
 class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
 
     var taskData:NSMutableDictionary! = [:]
+    @IBOutlet var TextViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet var lblTaskDate: UILabel!
     @IBOutlet var txtComments: UITextView!
     @IBOutlet var lblHourWorked: UILabel!
@@ -26,11 +27,39 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         
         print(taskData)
 
-    lblTaskDate.text = "\(taskData.valueForKey("CreatedDate") as? String)"
+    txtComments.scrollEnabled = false
+        
     txtTaskDescription.text = taskData.valueForKey("TaskName") as? String
     txtComments.text = taskData.valueForKey("Comments") as? String
     lblHourWorked.text = taskData.valueForKey("TimeSpent")!  as? String
-    
+    print(taskData.valueForKey("CreatedDate")!)
+        
+        if taskData.valueForKey("TaskName") != nil {
+        
+        var dateStr = "\(taskData.valueForKey("CreatedDate")!)".componentsSeparatedByString(" ")[0]
+        var dateArr = dateStr.componentsSeparatedByString("/") as? NSArray
+        dateStr = "\(dateArr![2])-\(dateArr![1])-\(dateArr![0])T\("\(taskData.valueForKey("CreatedDate")!)".componentsSeparatedByString(" ")[1])"
+        
+        
+                        let dateFormatter: NSDateFormatter = NSDateFormatter()
+                        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+                        dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
+        
+        
+                        let date: NSDate = dateFormatter.dateFromString(dateStr)!
+                        // create date from string
+                        // change to a readable time format and change to local time zone
+                        dateFormatter.dateFormat = "EEE MMM d, yyyy"
+        
+                        dateFormatter.timeZone = NSTimeZone.localTimeZone()
+                        let timestamp: String = dateFormatter.stringFromDate(date)
+        lblTaskDate.text = "\(timestamp)"
+        }else {
+             lblTaskDate.text = "\(taskData.valueForKey("CreatedDate")!)"
+        }
+        
+        
+        
         
         scrollView.scrollEnabled = true
         scrollView.delegate = self
@@ -55,11 +84,15 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                 }
             }
             
+        }else{
+            imageView.highlighted = true
         }
         
         
     }
 
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -69,6 +102,12 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         if Reachability.DeviceType.IS_IPHONE_5 {
         scrollView.contentSize = CGSizeMake(320, 650)
         }
+        
+        var sizeThatFitsTextView: CGSize = self.txtComments.sizeThatFits(CGSizeMake(txtComments.frame.size.width, CGFloat(MAXFLOAT)))
+        TextViewHeightConstraint.constant = sizeThatFitsTextView.height
+        
+        
+
     }
     @IBAction func btnBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});

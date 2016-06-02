@@ -36,6 +36,9 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        btnSend.layer.cornerRadius = 4
+        btnUploadImage.layer.cornerRadius = 4
+        
         let userIdStr = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
         
         let api = ApiRequest()
@@ -81,12 +84,12 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     override func viewDidAppear(animated: Bool) {
         
 //        scrollView.frame = CGRectMake(0, lblheader.frame.origin.y + lblheader.frame.size.height, 320, 736)
-        scrollView.scrollEnabled = true
+        scrollView.scrollEnabled = false
         scrollView.delegate = self
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         if Reachability.DeviceType.IS_IPHONE_5 {
         scrollView.contentSize = CGSizeMake(320, 650)
-        btnUploadImage.frame = CGRectMake(uploadedImage.frame.origin.x, uploadedImage.frame.origin.y, uploadedImage.frame.size.width+65, uploadedImage.frame.size.height)
+//        btnUploadImage.frame = CGRectMake(uploadedImage.frame.origin.x, uploadedImage.frame.origin.y, uploadedImage.frame.size.width+65, uploadedImage.frame.size.height)
         }
         scrollView.backgroundColor = UIColor.clearColor()
 //        NSLayoutConstraint(item: scrollView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 300).active = true
@@ -245,7 +248,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             imageData = UIImagePNGRepresentation(uploadedImage.image!)!
         }
         
-        let LoginId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginId") as? String
+        let UserId =             NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")
+ as? String
         let subject:String!
         let comments:String!
         
@@ -293,14 +297,14 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         
         
         let sendNotification = ApiRequest()
-        sendNotification.sendNotification(imageData, LoginId: LoginId!, Subject: subject, Message: comments, NotificationTypeId: NotificationTypeId, notifyto: ids, view: self.view)
+        sendNotification.sendNotification(imageData, UserId: UserId!, Subject: subject, Message: comments, NotificationTypeId: NotificationTypeId, notifyto: ids, view: self.view)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.sendnotificationResponse), name: "com.time-em.sendnotification", object: nil)
     }
     func sendnotificationResponse(notification:NSNotification) {
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
         
-        if status == "successfully"{
+        if status.lowercaseString.rangeOfString("successfully") != nil {
             var alert :UIAlertController!
             alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))

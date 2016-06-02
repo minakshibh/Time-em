@@ -115,8 +115,15 @@ class BarCodeViewController: RSCodeReaderViewController {
         let btnback   = UIButton(type: UIButtonType.System) as UIButton
         btnback.frame = CGRectMake(0, lblHeader.frame.origin.y, 25, lblHeader.frame.size.height)
         btnback.backgroundColor = UIColor.clearColor()
-        btnback.setImage(UIImage(named: "previous-icon"), forState: .Normal)
+//        btnback.setImage(UIImage(named: "previous-icon"), forState: .Normal)
+        btnback.addTarget(self, action: #selector(BarCodeViewController.btnbackCopy(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+
         self.view.addSubview(btnback)
+    }
+    func btnbackCopy(sender:UIButton!)
+    {
+          self.dismissViewControllerAnimated(true, completion: {});
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     @IBAction func btnback(sender: AnyObject) {

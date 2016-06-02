@@ -183,33 +183,34 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
 //                    str =   "\(dict["SignInAt"]!)".componentsSeparatedByString(".")[0]
 //                }else{
 //                    //   24/05/2016 07:27:45
-                    let datestr = "\(dict["SignInAt"]!.componentsSeparatedByString(" ")[0])"
-                    let dateFormat:String!
-                    if datestr.lowercaseString.rangeOfString("/") != nil {
-                        dateFormat = "\(datestr.componentsSeparatedByString("/")[2])-\(datestr.componentsSeparatedByString("/")[1])-\(datestr.componentsSeparatedByString("/")[0])"
-                    }else{
-                        dateFormat = datestr
-                    }
-                    
-                    
-                    
-                    str = "\(dateFormat)T\(dict["SignInAt"]!.componentsSeparatedByString(" ")[1])"
-//                }
-                
-                
-                let dateFormatter: NSDateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-                dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
-                print("\(dict["SignInAt"]!)")
-                
-                let date: NSDate = dateFormatter.dateFromString(str)!
-                // create date from string
-                // change to a readable time format and change to local time zone
-                dateFormatter.dateFormat = "EEE, MMM d, yyyy - h:mm a"
-                dateFormatter.timeZone = NSTimeZone.localTimeZone()
-                let timestamp: String = dateFormatter.stringFromDate(date)
-                
-                finalStrSignInAt = "In:- \(timestamp)"
+//                    let datestr = "\(dict["SignInAt"]!.componentsSeparatedByString(" ")[0])"
+//                    let dateFormat:String!
+//                    if datestr.lowercaseString.rangeOfString("/") != nil {
+//                        dateFormat = "\(datestr.componentsSeparatedByString("/")[2])-\(datestr.componentsSeparatedByString("/")[1])-\(datestr.componentsSeparatedByString("/")[0])"
+//                    }else{
+//                        dateFormat = datestr
+//                    }
+//                    
+//                    
+//                    
+//                    str = "\(dateFormat)T\(dict["SignInAt"]!.componentsSeparatedByString(" ")[1])"
+////                }
+//                
+//                
+//                let dateFormatter: NSDateFormatter = NSDateFormatter()
+//                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+//                dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
+//                print("\(dict["SignInAt"]!)")
+//                
+//                let date: NSDate = dateFormatter.dateFromString(str)!
+//                // create date from string
+//                // change to a readable time format and change to local time zone
+//                dateFormatter.dateFormat = "EEE, MMM d, yyyy - h:mm a"
+//                dateFormatter.timeZone = NSTimeZone.localTimeZone()
+//                let timestamp: String = dateFormatter.stringFromDate(date)
+//                
+//                finalStrSignInAt = "In:- \(timestamp)"
+                finalStrSignInAt = "In:- \(dict["SignInAt"]!)"
             }
             //---
             if dict["SignInAt"] != nil && dict["SignOutAt"] != nil && "\(dict["SignOutAt"]!)" != "" && "\(dict["SignInAt"]!)" != ""{
@@ -299,7 +300,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         var alert :UIAlertController!
         alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+//        self.presentViewController(alert, animated: true, completion: nil)
         fetchTeamDataFromDatabase()
     }
     

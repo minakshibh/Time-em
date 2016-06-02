@@ -903,13 +903,13 @@ class ApiRequest: NSObject {
         return "Boundary-\(NSUUID().UUIDString)"
     }
     
-    func sendNotification(imageData: NSData, LoginId: String, Subject: String, Message: String, NotificationTypeId: String, notifyto: String, view:UIView)
+    func sendNotification(imageData: NSData, UserId: String, Subject: String, Message: String, NotificationTypeId: String, notifyto: String, view:UIView)
     {
         let notificationKey = "com.time-em.sendnotification"
         MBProgressHUD.showHUDAddedTo(view, animated: true)
         
         let param = [
-            "LoginId"                   :LoginId,
+            "UserId"                   :UserId,
             "Subject"                   :Subject,
             "Message"                   :Message,
             "NotificationTypeId"       :NotificationTypeId,
