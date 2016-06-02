@@ -334,7 +334,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
         
-         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 4.5, (timelabel.frame.origin.x + timelabel.frame.size.width ), 1))
+         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 4.5, (timelabel.frame.origin.x + timelabel.frame.size.width/2 ), 1))
         partitionlabel.backgroundColor = UIColor.lightGrayColor()
          if lines > 3 {
             partitionlabel.frame = CGRectMake(partitionlabel.frame.origin.x, partitionlabel.frame.origin.y-2, partitionlabel.frame.size.width, partitionlabel.frame.size.height)

@@ -12,6 +12,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
 
     var taskData:NSMutableDictionary! = [:]
     @IBOutlet var TextViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var TextHeadingHeightConstraint: NSLayoutConstraint!
     @IBOutlet var lblTaskDate: UILabel!
     @IBOutlet var txtComments: UITextView!
     @IBOutlet var lblHourWorked: UILabel!
@@ -82,10 +83,12 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                        self.imageView.image = UIImage(data: data!)
                     });
                 }
+            }else{
+              imageView.hidden = true
             }
             
         }else{
-            imageView.highlighted = true
+            imageView.hidden = true
         }
         
         
@@ -100,12 +103,16 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
     
     override func viewDidAppear(animated: Bool) {
         if Reachability.DeviceType.IS_IPHONE_5 {
-        scrollView.contentSize = CGSizeMake(320, 650)
+        scrollView.contentSize = CGSizeMake(320, 700)
         }
         
-        var sizeThatFitsTextView: CGSize = self.txtComments.sizeThatFits(CGSizeMake(txtComments.frame.size.width, CGFloat(MAXFLOAT)))
+        let sizeThatFitsTextView: CGSize = self.txtComments.sizeThatFits(CGSizeMake(txtComments.frame.size.width, CGFloat(MAXFLOAT)))
         TextViewHeightConstraint.constant = sizeThatFitsTextView.height
         
+        
+        let sizeThatFitsTextView1: CGSize = self.txtTaskDescription.sizeThatFits(CGSizeMake(txtTaskDescription.frame.size.width, CGFloat(MAXFLOAT)))
+        TextHeadingHeightConstraint.constant = sizeThatFitsTextView1.height
+
         
 
     }

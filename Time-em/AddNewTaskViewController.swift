@@ -386,11 +386,22 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
          if (string == "\n") {
          numberOfHoursTxt.resignFirstResponder()
-            scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+            print(scrollView.setContentOffset)
+            if scrollView.contentOffset.y == 200.0 {
+//                scrollView.setContentOffset(CGPointMake(200, 0), animated: true)
+                self.automaticallyAdjustsScrollViewInsets = false
+            }
             scrollView.contentSize = CGSizeMake(0, 0)
         }
         return true
     }
+
+//    func textFieldShouldReturn(textField: UITextField) -> Bool {   //delegate method
+//        scrollView.setContentOffset(CGPointMake(0,-200), animated: true)
+//        scrollView.contentSize = CGSizeMake(0, 0)
+//        textField.resignFirstResponder()
+//        return true
+//    }
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             uploadImageView.hidden = false
@@ -444,10 +455,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         }
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {   //delegate method
-        textField.resignFirstResponder()
-        return true
-    }
+
     
    
     
