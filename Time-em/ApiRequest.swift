@@ -1555,7 +1555,7 @@ class ApiRequest: NSObject {
     }
 //http://timeemapi.azurewebsites.net/api/notification/NotificationByUserId
     func getNotifications(UserId:String,timeStamp:String) {
-        let notificationKey = "com.time-em.getuserListByLoginCode"
+        let notificationKey = "com.time-em.getNotificationListByLoginCode"
         
         Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/notification/NotificationByUserId", parameters:  ["UserId":UserId,"timeStamp":timeStamp])
             .responseJSON { response in
@@ -1575,81 +1575,78 @@ class ApiRequest: NSObject {
                              let userInfo = ["response" : "success"]
                             NSUserDefaults.standardUserDefaults().setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "notificationsTimeStamp")
                             
-                            let dataArr = JSON.valueForKey("notificationslist") as? NSArray
-                            let database = databaseFile()
-                            
-                            for i in dataArr! {
-                            
-                                let  AttachmentFullPath:String
-                                if let field = i.valueForKey("AttachmentFullPath") as? String {
-                                    AttachmentFullPath = field
-                                }else{
-                                    AttachmentFullPath = ""
-                                }
-                                
-                                let  Message:String
-                                if let field = i.valueForKey("Message") as? String {
-                                    Message = field
-                                }else{
-                                    Message = ""
-                                }
-                                let  NotificationId: Int!
-                                if let field = i.valueForKey("NotificationId")  {
-                                    NotificationId = field as! Int
-                                }else{
-                                    NotificationId = 0
-                                }
-                                let  NotificationTypeName:String
-                                if let field = i.valueForKey("NotificationTypeName") as? String {
-                                    NotificationTypeName = field
-                                }else{
-                                    NotificationTypeName = ""
-                                }
-                                let  SenderFullName:String
-                                if let field = i.valueForKey("SenderFullName") as? String {
-                                    SenderFullName = field
-                                }else{
-                                    SenderFullName = ""
-                                }
-                                let  Senderid: Int!
-                                if let field = i.valueForKey("Senderid")  {
-                                    Senderid = field as! Int
-                                }else{
-                                    Senderid = 0
-                                }
-                                let  Subject:String
-                                if let field = i.valueForKey("Subject") as? String {
-                                    Subject = field
-                                }else{
-                                    Subject = ""
-                                }
-                                let  createdDate:String
-                                if let field = i.valueForKey("createdDate") as? String {
-                                    createdDate = field
-                                }else{
-                                    createdDate = ""
-                                }
-                                
-                                
-                                
-                                
-                                
-                                database.saveNotifications(AttachmentFullPath, Message: Message, NotificationId: "\(NotificationId!)", NotificationTypeName: NotificationTypeName, SenderFullName: SenderFullName, Senderid: "\(Senderid!)", Subject: Subject, createdDate: createdDate)
-                            
+                           
+                            if JSON.valueForKey("notificationslist") is NSNull
+                            {
+                                return
                             }
+                            let dataArr = JSON.valueForKey("notificationslist") as? NSArray
+                            if ( dataArr != nil)
+                            {
+                                let database = databaseFile()
+                                
+                                for i in dataArr! {
+                                    
+                                    let  AttachmentFullPath:String
+                                    if let field = i.valueForKey("AttachmentFullPath") as? String {
+                                        AttachmentFullPath = field
+                                    }else{
+                                        AttachmentFullPath = ""
+                                    }
+                                    
+                                    let  Message:String
+                                    if let field = i.valueForKey("Message") as? String {
+                                        Message = field
+                                    }else{
+                                        Message = ""
+                                    }
+                                    let  NotificationId: Int!
+                                    if let field = i.valueForKey("NotificationId")  {
+                                        NotificationId = field as! Int
+                                    }else{
+                                        NotificationId = 0
+                                    }
+                                    let  NotificationTypeName:String
+                                    if let field = i.valueForKey("NotificationTypeName") as? String {
+                                        NotificationTypeName = field
+                                    }else{
+                                        NotificationTypeName = ""
+                                    }
+                                    let  SenderFullName:String
+                                    if let field = i.valueForKey("SenderFullName") as? String {
+                                        SenderFullName = field
+                                    }else{
+                                        SenderFullName = ""
+                                    }
+                                    let  Senderid: Int!
+                                    if let field = i.valueForKey("Senderid")  {
+                                        Senderid = field as! Int
+                                    }else{
+                                        Senderid = 0
+                                    }
+                                    let  Subject:String
+                                    if let field = i.valueForKey("Subject") as? String {
+                                        Subject = field
+                                    }else{
+                                        Subject = ""
+                                    }
+                                    let  createdDate:String
+                                    if let field = i.valueForKey("createdDate") as? String {
+                                        createdDate = field
+                                    }else{
+                                        createdDate = ""
+                                    }
+                                    
+                                    database.saveNotifications(AttachmentFullPath, Message: Message, NotificationId: "\(NotificationId!)", NotificationTypeName: NotificationTypeName, SenderFullName: SenderFullName, Senderid: "\(Senderid!)", Subject: Subject, createdDate: createdDate)
+                                }
+                            }
+                            
                             
                              NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }else{
                              let userInfo = ["response" : "failure"]
                              NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }
-                        
-                       
-                        
-                       
-                        
-                        
-                       
                         
                     }else{
                         let userInfo = ["response" : "FAILURE"]

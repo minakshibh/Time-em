@@ -12,7 +12,7 @@ import MGSwipeTableCell
 class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDelegate {
 
     @IBOutlet var btnBack: UIButton!
-        @IBOutlet var tableView: UITableView!
+    @IBOutlet var tableView: UITableView!
     var teamDataArray:NSMutableArray! = []
     var selectedUser:String!
     var selectedUserFullname:String!

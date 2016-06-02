@@ -98,18 +98,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         else {
             NSLog("DB exists, no need to copy.")
         }
-
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }
 
