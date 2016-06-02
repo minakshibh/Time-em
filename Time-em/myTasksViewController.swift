@@ -364,13 +364,13 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             return true
         }),MGSwipeButton(title: "", icon:UIImage(named: "edit"),backgroundColor: UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1), callback: {
             (sender: MGSwipeTableCell!) -> Bool in
-            
+            print("edit: \(indexPath.row)")
 //            delay(0.001){
 //                let dataDic:NSMutableDictionary = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
                 self.selectededitRowDict = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
-            delay(0.001){
+            
             self.performSegueWithIdentifier("editNewTask", sender: self)
-            }
+            
 //                let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
 //                
 //                let AddNewTaskView = storyBoard.instantiateViewControllerWithIdentifier("AddNewTaskIdentifier") as! AddNewTaskViewController

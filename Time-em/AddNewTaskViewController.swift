@@ -72,12 +72,16 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             self.createdDate = "\(month)-\(day)-\(year)"
             
             let imageUrl = "\(editTaskDict.valueForKey("AttachmentImageFile")!)"
+            dispatch_async(dispatch_get_main_queue()) {
+        
             if let url = NSURL(string: imageUrl) {
                 if let data = NSData(contentsOfURL: url) {
-                    uploadedImage.image = UIImage(data: data)
-                    uploadImageView.hidden = false
+                    self.uploadedImage.image = UIImage(data: data)
+                    self.uploadImageView.hidden = false
                 }        
             }
+            }
+            
             self.editId = "\(editTaskDict.valueForKey("Id")!)"
             
         }
