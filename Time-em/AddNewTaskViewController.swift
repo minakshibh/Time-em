@@ -25,6 +25,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     @IBOutlet var btnplayVideo: UIButton!
     @IBOutlet var lblbackground: UIView!
     @IBOutlet var scrollView: UIScrollView!
+    @IBOutlet var titleLbl: UILabel!
     let dropDown = DropDown()
     let imagePicker = UIImagePickerController()
     var imageData = NSData()
@@ -53,7 +54,9 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         addBtn.layer.borderWidth = 1
         addBtn.layer.borderColor = UIColor(red: 207, green: 237, blue: 244, alpha: 1).CGColor
         
+        
         if isEditting == "true" {
+            self.titleLbl.text = "Edit Task"
             self.selectTaskTxt.text = "\(editTaskDict.valueForKey("TaskName")!)"
             self.commentsTxt.text = "\(editTaskDict.valueForKey("Comments")!)"
             if self.commentsTxt.text != "" {
@@ -289,6 +292,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     }
     
     @IBAction func addUpdateTask(sender: AnyObject) {
+        numberOfHoursTxt.resignFirstResponder()
+        main {
+            self.lblbackground.frame.origin.y += 150
+        }
         let taskIds:NSString = self.taskId
         var userId:String = ""
         let activityId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_ActivityId") as! String
