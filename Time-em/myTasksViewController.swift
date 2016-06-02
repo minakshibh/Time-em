@@ -26,6 +26,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     var selectedTaskData:NSMutableDictionary! = [:]
     var selectededitRowDict:NSMutableDictionary = [:]
     var count:Int = 0
+    var webservicehitCount:Int = 0
     
     @IBOutlet var btnSignIn: UIButton!
     
@@ -86,7 +87,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     }
     
     override func viewWillAppear(animated: Bool) {
-        refreshData()
+        if webservicehitCount != 0 {
+            refreshData()
+             }
         NSTimer.scheduledTimerWithTimeInterval(0.8, target: self, selector: #selector(myTasksViewController.callFunctionView), userInfo: nil, repeats: false)
     }
     
@@ -123,6 +126,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let month = dateStr.componentsSeparatedByString("-")[1]
         let year = dateStr.componentsSeparatedByString("-")[0]
         selectedDate = "\(month)-\(day)-\(year)"
+        webservicehitCount = 1
         if currentUserID != nil{
             getuserTask(currentUserID, createdDate: selectedDate)
         }else{
@@ -149,7 +153,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     func getDataFromDatabase (id:String) {
         let databaseFetch = databaseFile()
         taskDataArray = databaseFetch.getTasksForUserID(id,Date:selectedDate)
-        print(taskDataArray)
+//        print(taskDataArray)
         tableView.reloadData()
     }
     
