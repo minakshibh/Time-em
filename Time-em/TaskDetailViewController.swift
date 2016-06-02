@@ -80,7 +80,11 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                     let data = NSData(contentsOfURL: url!)
                     dispatch_async(dispatch_get_main_queue(), {
+                        if self.imageView != nil {
                        self.imageView.image = UIImage(data: data!)
+                        }
+                        let database = databaseFile()
+                        database.addImageToTask("\(self.taskData.valueForKey("AttachmentImageFile")!)", AttachmentImageData: data!)
                     });
                 }
             }else{

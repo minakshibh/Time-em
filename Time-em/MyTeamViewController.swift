@@ -74,18 +74,18 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         if "\(dict["IsSignedIn"]!)" == "0" {
             if dict["SignInAt"] != nil && dict["SignOutAt"] != nil && "\(dict["SignOutAt"]!)" != "" && "\(dict["SignInAt"]!)" != "" {
                  if Reachability.DeviceType.IS_IPHONE_5 {
-                    return 55
+                    return 58
                 }
                 return 60
             }
         }else{
             if Reachability.DeviceType.IS_IPHONE_5 {
-                return 40
+                return 43
             }
             return 60
         }
         if Reachability.DeviceType.IS_IPHONE_5 {
-            return 40
+            return 43
         }
         return 50
     }
@@ -117,11 +117,24 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         }
         
         cell.textLabel?.text = "\(dict.valueForKey("FullName")!)"
+        cell.textLabel?.textColor = UIColor(red: 23/256, green: 166/256, blue: 199/256, alpha: 1)
+
         if Reachability.DeviceType.IS_IPHONE_5 {
         let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 14.0)!
         cell.textLabel?.font = myFont
+            
         }
 
+        
+        if cell.respondsToSelector(Selector("setSeparatorInset:")) {
+            cell.separatorInset = UIEdgeInsetsZero
+        }
+        if cell.respondsToSelector(Selector("setLayoutMargins:")) {
+            cell.layoutMargins = UIEdgeInsetsZero
+        }
+        if cell.respondsToSelector(Selector("setPreservesSuperviewLayoutMargins:")) {
+            cell.preservesSuperviewLayoutMargins = false
+        }
         cell.selectionStyle = .None
         
         if "\(dict["IsNightShift"]!)" == "0" {

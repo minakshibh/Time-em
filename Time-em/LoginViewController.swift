@@ -161,10 +161,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         }else{
          alert = UIAlertController(title: "Time'em", message: "Login Failed", preferredStyle: UIAlertControllerStyle.Alert)
-        }
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+//        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//        self.presentViewController(alert, animated: true, completion: nil)
     }
+    
+    
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "homeView"{
@@ -186,7 +190,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
         
         do {
-            
             let rs = try database.executeQuery("select * from userdata", values: nil)
             while rs.next() {
                 let x = rs.stringForColumn("userId")

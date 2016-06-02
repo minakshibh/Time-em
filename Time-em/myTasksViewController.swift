@@ -239,7 +239,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let lines = Description.getNoOflines()
         if lines > 3 {
             if Reachability.DeviceType.IS_IPHONE_5 {
-                return 87
+                return 89
             }
             return 93
         }else{
@@ -320,22 +320,25 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
         let timelabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x + Description.frame.size.width , (Description.frame.size.height + Description.frame.origin.y)/3 , 65 , 45))
-        timelabel.font  = UIFont(name: "HelveticaNeue", size: 14)
+        timelabel.font  = UIFont(name: "HelveticaNeue", size: 13)
         if Reachability.DeviceType.IS_IPHONE_5 {
             timelabel.frame = CGRectMake(Description.frame.origin.x + Description.frame.size.width-10, TitleLabel.frame.origin.y+3, 60 , 40)
-            timelabel.font  = UIFont(name: "HelveticaNeue", size: 12)
+            timelabel.font  = UIFont(name: "HelveticaNeue", size: 10)
         }else if Reachability.DeviceType.IS_IPHONE_6 {
             timelabel.frame = CGRectMake(Description.frame.origin.x + Description.frame.size.width , TitleLabel.frame.origin.y, 65 , 45)
         }
         timelabel.text =  "\(dataDic.valueForKey("TimeSpent")!)\nhours"
         timelabel.numberOfLines = 2
-        timelabel.textColor = UIColor(red: 23/256, green: 166/256, blue: 199/256, alpha: 1)
+        timelabel.textAlignment = .Center
+        timelabel.textColor = UIColor.blackColor()
+//        timelabel.textColor = UIColor(red: 23/256, green: 166/256, blue: 199/256, alpha: 1)
         cell.contentView.addSubview(timelabel)
         
         
         
-         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 4.5, (timelabel.frame.origin.x + timelabel.frame.size.width/2 ), 1))
-        partitionlabel.backgroundColor = UIColor.lightGrayColor()
+         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 4.5 + 2, (timelabel.frame.origin.x + timelabel.frame.size.width/2 ), 1))
+        partitionlabel.backgroundColor = UIColor(red: 215/256, green: 215/256, blue: 215/256, alpha: 1)
+
          if lines > 3 {
             partitionlabel.frame = CGRectMake(partitionlabel.frame.origin.x, partitionlabel.frame.origin.y-2, partitionlabel.frame.size.width, partitionlabel.frame.size.height)
         }

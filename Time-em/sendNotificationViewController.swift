@@ -10,6 +10,7 @@ import UIKit
 
 class sendNotificationViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate{
 
+     @IBOutlet var txtCommentHeightConstraint: NSLayoutConstraint!
     @IBOutlet var taskDropDown: UIButton!
     let dropDown = DropDown()
     @IBOutlet var txtSelectMessage: UITextField!
