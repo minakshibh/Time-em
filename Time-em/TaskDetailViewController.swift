@@ -26,7 +26,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         super.viewDidLoad()
         
         
-        print(taskData)
+//        print(taskData)
 
     txtComments.scrollEnabled = false
         
@@ -72,6 +72,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
 //        scrollView.contentOffset.x = 0
         if taskData.valueForKey("AttachmentImageFile") != nil {
             
+            
             if taskData.valueForKey("AttachmentImageFile") as? String != "" {
              
                 
@@ -83,8 +84,9 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                         if self.imageView != nil {
                        self.imageView.image = UIImage(data: data!)
                         }
+                        let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
                         let database = databaseFile()
-                        database.addImageToTask("\(self.taskData.valueForKey("AttachmentImageFile")!)", AttachmentImageData: data!)
+                        database.addImageToTask("\(self.taskData.valueForKey("AttachmentImageFile")!)", AttachmentImageData: encodedData)
                     });
                 }
             }else{
