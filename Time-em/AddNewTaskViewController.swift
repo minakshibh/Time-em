@@ -72,25 +72,22 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             self.createdDate = "\(month)-\(day)-\(year)"
             
             let imageUrl = "\(editTaskDict.valueForKey("AttachmentImageFile")!)"
-            dispatch_async(dispatch_get_main_queue()) {
-        
-            if let url = NSURL(string: imageUrl) {
-                if let data = NSData(contentsOfURL: url) {
-                    self.uploadedImage.image = UIImage(data: data)
-                    self.uploadImageView.hidden = false
-                }        
-            }
-            }
             
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                if let url = NSURL(string: imageUrl) {
+                    if let data = NSData(contentsOfURL: url) {
+                        self.uploadedImage.image = UIImage(data: data)
+                        self.uploadImageView.hidden = false
+                    }
+                }
+                dispatch_async(dispatch_get_main_queue(), {
+                    
+                });
+            }
             self.editId = "\(editTaskDict.valueForKey("Id")!)"
             
         }
-        let assignedTasks = ApiRequest()
         
-        let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AddNewTaskViewController.getAssignedTaskIListResponse), name: "com.time-em.getAssignedTaskIList", object: nil)
-        assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
         let databaseFetch = databaseFile()
         assignedTasksArray = databaseFetch.getAssignedTasks()
         

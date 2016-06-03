@@ -271,7 +271,7 @@ class ApiRequest: NSObject {
     func getUserTask(userId:String,createdDate:String,TimeStamp:String,view:UIView) {
         
         let notificationKey = "com.time-em.usertaskResponse"
-                MBProgressHUD.showHUDAddedTo(view, animated: true)
+         MBProgressHUD.showHUDAddedTo(view, animated: true)
         Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserTask/GetUserActivityTask", parameters: ["userId":userId,"createdDate":createdDate, "TimeStamp":TimeStamp])
             .responseJSON { response in
                 print(response.request)  // original URL request
@@ -749,7 +749,7 @@ class ApiRequest: NSObject {
     
     
     func GetAssignedTaskIList(userId:String,view:UIView)  {
-        let notificationKey = "com.time-em.getAssignedTaskIList"
+        
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
         Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/Task/GetAssignedTaskIList", parameters: ["userId":userId])
@@ -766,7 +766,7 @@ class ApiRequest: NSObject {
                         
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
                             let userInfo = ["response" : "FAILURE"]
-                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             return
                         }
                         
@@ -780,21 +780,21 @@ class ApiRequest: NSObject {
                             database.insertAssignedListData(dict)
                             
                             
-                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                           
                             
                         }else{
                             let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
-                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }
                         
                         
                     }else{
                         let userInfo = ["response" : "FAILURE"]
-                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     }
                 }else if "\(response.result)" == "FAILURE"{
                     let userInfo = ["response" : "FAILURE"]
-                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     
                 }
                 

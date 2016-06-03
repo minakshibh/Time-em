@@ -187,7 +187,10 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
             
+            let assignedTasks = ApiRequest()
             
+            let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
+            assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
             
         }else{
             
@@ -340,7 +343,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
         
-         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 4.5 + 2, (timelabel.frame.origin.x + timelabel.frame.size.width/2 ), 1))
+         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 4.5, (timelabel.frame.origin.x + timelabel.frame.size.width/2 ), 1))
         partitionlabel.backgroundColor = UIColor(red: 215/256, green: 215/256, blue: 215/256, alpha: 1)
 
          if lines > 3 {
