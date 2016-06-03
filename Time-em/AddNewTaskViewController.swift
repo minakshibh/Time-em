@@ -25,6 +25,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     @IBOutlet var btnplayVideo: UIButton!
     @IBOutlet var lblbackground: UIView!
     @IBOutlet var scrollView: UIScrollView!
+    @IBOutlet var titleLbl: UILabel!
     let dropDown = DropDown()
     let imagePicker = UIImagePickerController()
     var imageData = NSData()
@@ -53,7 +54,9 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         addBtn.layer.borderWidth = 1
         addBtn.layer.borderColor = UIColor(red: 207, green: 237, blue: 244, alpha: 1).CGColor
         
+        
         if isEditting == "true" {
+            self.titleLbl.text = "Edit Task"
             self.selectTaskTxt.text = "\(editTaskDict.valueForKey("TaskName")!)"
             self.commentsTxt.text = "\(editTaskDict.valueForKey("Comments")!)"
             if self.commentsTxt.text != "" {
@@ -69,21 +72,22 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             self.createdDate = "\(month)-\(day)-\(year)"
             
             let imageUrl = "\(editTaskDict.valueForKey("AttachmentImageFile")!)"
-            if let url = NSURL(string: imageUrl) {
-                if let data = NSData(contentsOfURL: url) {
-                    uploadedImage.image = UIImage(data: data)
-                    uploadImageView.hidden = false
-                }        
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                if let url = NSURL(string: imageUrl) {
+                    if let data = NSData(contentsOfURL: url) {
+                        self.uploadedImage.image = UIImage(data: data)
+                        self.uploadImageView.hidden = false
+                    }
+                }
+                dispatch_async(dispatch_get_main_queue(), {
+                    
+                });
             }
             self.editId = "\(editTaskDict.valueForKey("Id")!)"
             
         }
-        let assignedTasks = ApiRequest()
         
-        let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AddNewTaskViewController.getAssignedTaskIListResponse), name: "com.time-em.getAssignedTaskIList", object: nil)
-        assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
         let databaseFetch = databaseFile()
         assignedTasksArray = databaseFetch.getAssignedTasks()
         
@@ -289,6 +293,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     }
     
     @IBAction func addUpdateTask(sender: AnyObject) {
+        numberOfHoursTxt.resignFirstResponder()
+        main {
+            self.lblbackground.frame.origin.y += 150
+        }
         let taskIds:NSString = self.taskId
         var userId:String = ""
         let activityId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_ActivityId") as! String
@@ -386,11 +394,22 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
          if (string == "\n") {
          numberOfHoursTxt.resignFirstResponder()
-            scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+            print(scrollView.setContentOffset)
+            if scrollView.contentOffset.y == 200.0 {
+//                scrollView.setContentOffset(CGPointMake(200, 0), animated: true)
+                self.automaticallyAdjustsScrollViewInsets = false
+            }
             scrollView.contentSize = CGSizeMake(0, 0)
         }
         return true
     }
+
+//    func textFieldShouldReturn(textField: UITextField) -> Bool {   //delegate method
+//        scrollView.setContentOffset(CGPointMake(0,-200), animated: true)
+//        scrollView.contentSize = CGSizeMake(0, 0)
+//        textField.resignFirstResponder()
+//        return true
+//    }
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             uploadImageView.hidden = false
@@ -444,10 +463,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         }
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {   //delegate method
-        textField.resignFirstResponder()
-        return true
-    }
+
     
    
     

@@ -12,6 +12,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
 
     var taskData:NSMutableDictionary! = [:]
     @IBOutlet var TextViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var TextHeadingHeightConstraint: NSLayoutConstraint!
     @IBOutlet var lblTaskDate: UILabel!
     @IBOutlet var txtComments: UITextView!
     @IBOutlet var lblHourWorked: UILabel!
@@ -25,7 +26,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         super.viewDidLoad()
         
         
-        print(taskData)
+//        print(taskData)
 
     txtComments.scrollEnabled = false
         
@@ -71,21 +72,35 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
 //        scrollView.contentOffset.x = 0
         if taskData.valueForKey("AttachmentImageFile") != nil {
             
+            
             if taskData.valueForKey("AttachmentImageFile") as? String != "" {
              
+            if taskData.valueForKey("AttachmentImageData") != nil  && "\(taskData.valueForKey("AttachmentImageData")!)" != "" {
+                let imageFile = taskData.valueForKey("AttachmentImageData") as? NSData
+                let userData = NSKeyedUnarchiver.unarchiveObjectWithData(imageFile!) as? NSData
+                self.imageView.image = UIImage(data: userData!)
+                return
+            }
                 
                 let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)")
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                     let data = NSData(contentsOfURL: url!)
                     dispatch_async(dispatch_get_main_queue(), {
+                        if self.imageView != nil {
                        self.imageView.image = UIImage(data: data!)
+                        }
+                        let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
+                        let database = databaseFile()
+                        database.addImageToTask("\(self.taskData.valueForKey("AttachmentImageFile")!)", AttachmentImageData: encodedData)
                     });
                 }
+            }else{
+              imageView.hidden = true
             }
             
         }else{
-            imageView.highlighted = true
+            imageView.hidden = true
         }
         
         
@@ -100,12 +115,16 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
     
     override func viewDidAppear(animated: Bool) {
         if Reachability.DeviceType.IS_IPHONE_5 {
-        scrollView.contentSize = CGSizeMake(320, 650)
+        scrollView.contentSize = CGSizeMake(320, 700)
         }
         
-        var sizeThatFitsTextView: CGSize = self.txtComments.sizeThatFits(CGSizeMake(txtComments.frame.size.width, CGFloat(MAXFLOAT)))
+        let sizeThatFitsTextView: CGSize = self.txtComments.sizeThatFits(CGSizeMake(txtComments.frame.size.width, CGFloat(MAXFLOAT)))
         TextViewHeightConstraint.constant = sizeThatFitsTextView.height
         
+        
+        let sizeThatFitsTextView1: CGSize = self.txtTaskDescription.sizeThatFits(CGSizeMake(txtTaskDescription.frame.size.width, CGFloat(MAXFLOAT)))
+        TextHeadingHeightConstraint.constant = sizeThatFitsTextView1.height
+
         
 
     }

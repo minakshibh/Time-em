@@ -26,6 +26,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     var selectedTaskData:NSMutableDictionary! = [:]
     var selectededitRowDict:NSMutableDictionary = [:]
     var count:Int = 0
+    var webservicehitCount:Int = 0
     
     @IBOutlet var btnSignIn: UIButton!
     
@@ -86,7 +87,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     }
     
     override func viewWillAppear(animated: Bool) {
-        refreshData()
+        if webservicehitCount != 0 {
+            refreshData()
+             }
         NSTimer.scheduledTimerWithTimeInterval(0.8, target: self, selector: #selector(myTasksViewController.callFunctionView), userInfo: nil, repeats: false)
     }
     
@@ -123,6 +126,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let month = dateStr.componentsSeparatedByString("-")[1]
         let year = dateStr.componentsSeparatedByString("-")[0]
         selectedDate = "\(month)-\(day)-\(year)"
+        webservicehitCount = 1
         if currentUserID != nil{
             getuserTask(currentUserID, createdDate: selectedDate)
         }else{
@@ -149,7 +153,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     func getDataFromDatabase (id:String) {
         let databaseFetch = databaseFile()
         taskDataArray = databaseFetch.getTasksForUserID(id,Date:selectedDate)
-        print(taskDataArray)
+//        print(taskDataArray)
         tableView.reloadData()
     }
     
@@ -183,7 +187,10 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
             
+            let assignedTasks = ApiRequest()
             
+            let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
+            assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
             
         }else{
             
@@ -239,7 +246,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let lines = Description.getNoOflines()
         if lines > 3 {
             if Reachability.DeviceType.IS_IPHONE_5 {
-                return 87
+                return 89
             }
             return 93
         }else{
@@ -320,22 +327,25 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
         let timelabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x + Description.frame.size.width , (Description.frame.size.height + Description.frame.origin.y)/3 , 65 , 45))
-        timelabel.font  = UIFont(name: "HelveticaNeue", size: 14)
+        timelabel.font  = UIFont(name: "HelveticaNeue", size: 13)
         if Reachability.DeviceType.IS_IPHONE_5 {
             timelabel.frame = CGRectMake(Description.frame.origin.x + Description.frame.size.width-10, TitleLabel.frame.origin.y+3, 60 , 40)
-            timelabel.font  = UIFont(name: "HelveticaNeue", size: 12)
+            timelabel.font  = UIFont(name: "HelveticaNeue", size: 10)
         }else if Reachability.DeviceType.IS_IPHONE_6 {
             timelabel.frame = CGRectMake(Description.frame.origin.x + Description.frame.size.width , TitleLabel.frame.origin.y, 65 , 45)
         }
         timelabel.text =  "\(dataDic.valueForKey("TimeSpent")!)\nhours"
         timelabel.numberOfLines = 2
-        timelabel.textColor = UIColor(red: 23/256, green: 166/256, blue: 199/256, alpha: 1)
+        timelabel.textAlignment = .Center
+        timelabel.textColor = UIColor.blackColor()
+//        timelabel.textColor = UIColor(red: 23/256, green: 166/256, blue: 199/256, alpha: 1)
         cell.contentView.addSubview(timelabel)
         
         
         
-         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 4.5, (timelabel.frame.origin.x + timelabel.frame.size.width ), 1))
-        partitionlabel.backgroundColor = UIColor.lightGrayColor()
+         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 4.5, (timelabel.frame.origin.x + timelabel.frame.size.width/2 ), 1))
+        partitionlabel.backgroundColor = UIColor(red: 215/256, green: 215/256, blue: 215/256, alpha: 1)
+
          if lines > 3 {
             partitionlabel.frame = CGRectMake(partitionlabel.frame.origin.x, partitionlabel.frame.origin.y-2, partitionlabel.frame.size.width, partitionlabel.frame.size.height)
         }
@@ -357,13 +367,13 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             return true
         }),MGSwipeButton(title: "", icon:UIImage(named: "edit"),backgroundColor: UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1), callback: {
             (sender: MGSwipeTableCell!) -> Bool in
-            
+            print("edit: \(indexPath.row)")
 //            delay(0.001){
 //                let dataDic:NSMutableDictionary = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
                 self.selectededitRowDict = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
-            delay(0.001){
+            
             self.performSegueWithIdentifier("editNewTask", sender: self)
-            }
+            
 //                let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
 //                
 //                let AddNewTaskView = storyBoard.instantiateViewControllerWithIdentifier("AddNewTaskIdentifier") as! AddNewTaskViewController

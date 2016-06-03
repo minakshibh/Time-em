@@ -26,6 +26,7 @@ class dashboardViewController: UIViewController {
     @IBOutlet var lblStartWorkingOnTasks: UILabel!
     @IBOutlet var btnBackgroundPopUP: UIButton!
     var val:Int = 0
+    var count:Int = 0
     var currentUser: User!
     @IBOutlet var btnUserInfo: UIButton!
     @IBOutlet var btnMenu: UIButton!
@@ -139,7 +140,26 @@ class dashboardViewController: UIViewController {
             }
         }
         
+        
     }
+    // &&&&&
+    
+    let kImageTopOffset: CGFloat = -15
+    let kTextBottomOffset: CGFloat = -25
+    
+     func centerButtonImageTopAndTextBottom(button: UIButton, frame buttonFrame: CGRect, text textString: String, textColor: UIColor, font textFont: UIFont, image: UIImage, forState buttonState: UIControlState) {
+        button.frame = buttonFrame
+        button.setTitleColor((textColor as! UIColor), forState:.Normal)
+        button.setTitle(String(textString), forState: .Normal)
+        button.titleLabel!.font = (textFont as! UIFont)
+        button.titleEdgeInsets = UIEdgeInsetsMake(0.0, -image.size.width, -25, 0.0)
+        button.setImage((image as! UIImage), forState: .Normal)
+        button.imageEdgeInsets = UIEdgeInsetsMake(-15, 0.0, 0.0, -button.titleLabel!.bounds.size.width)
+    }
+    
+    
+    
+    
     
     func iphone5UiAdjustments() {
 //        imageWorkunderConst.frame = CGRectMake(imageWorkunderConst.frame.origin.x, imageWorkunderConst.frame.origin.y, imageWorkunderConst.frame.size.width, imageWorkunderConst.frame.size.height+10)
@@ -156,6 +176,17 @@ class dashboardViewController: UIViewController {
     }
    override func viewDidAppear(animated: Bool) {
     
+    if count == 0 {
+        count += 1
+    let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 9.0)!
+    centerButtonImageTopAndTextBottom(btnMyTasks, frame: btnMyTasks.frame, text: "My Tasks", textColor: UIColor.whiteColor(), font: myFont, image: UIImage(named: "task")!, forState: .Normal)
+    
+    centerButtonImageTopAndTextBottom(btnMyTeam, frame: btnMyTeam.frame, text: "My Team", textColor: UIColor.whiteColor(), font: myFont, image: UIImage(named: "group_icon")!, forState: .Normal)
+    
+    centerButtonImageTopAndTextBottom(btnNotifications, frame: btnNotifications.frame, text: "Notifications", textColor: UIColor.whiteColor(), font: myFont, image: UIImage(named: "notification_Dashboard")!, forState: .Normal)
+    
+    centerButtonImageTopAndTextBottom(btnSetting, frame: btnSetting.frame, text: "Settings", textColor: UIColor.whiteColor(), font: myFont, image: UIImage(named: "setting")!, forState: .Normal)
+    }
     
         let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
         print(usertype)
@@ -298,19 +329,46 @@ class dashboardViewController: UIViewController {
         }
         database.close()
         
+        do {
+            try database.executeUpdate("DELETE FROM notificationtype", values: nil )
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
         
+        do {
+            try database.executeUpdate("DELETE FROM notificationActiveUserList", values: nil )
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
         
+        do {
+            try database.executeUpdate("DELETE FROM notificationsTable", values: nil )
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+        do {
+            try database.executeUpdate("DELETE FROM sync", values: nil )
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        do {
+            try database.executeUpdate("DELETE FROM assignedTaskList", values: nil )
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
     NSUserDefaults.standardUserDefaults().removeObjectForKey("UserTypeId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("userLoggedIn")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_id")
-    NSUserDefaults.standardUserDefaults().removeObjectForKey("sync")
+         NSUserDefaults.standardUserDefaults().removeObjectForKey("sync")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_IsSignIn")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_ActivityId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_LoginId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_FullName")
-    NSUserDefaults.standardUserDefaults().removeObjectForKey("activeUserListTimeStamp")
-    NSUserDefaults.standardUserDefaults().removeObjectForKey("notificationsTimeStamp")
-
+        NSUserDefaults.standardUserDefaults().removeObjectForKey("activeUserListTimeStamp")
+        NSUserDefaults.standardUserDefaults().removeObjectForKey("notificationsTimeStamp")
+        NSUserDefaults.standardUserDefaults().removeObjectForKey("teamTimeStamp")
+        
         let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")
         self.presentViewController(loginVC!, animated: true, completion: nil)
         
