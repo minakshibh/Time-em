@@ -75,6 +75,12 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
             
             if taskData.valueForKey("AttachmentImageFile") as? String != "" {
              
+            if taskData.valueForKey("AttachmentImageData") != nil  && "\(taskData.valueForKey("AttachmentImageData")!)" != "" {
+                let imageFile = taskData.valueForKey("AttachmentImageData") as? NSData
+                let userData = NSKeyedUnarchiver.unarchiveObjectWithData(imageFile!) as? NSData
+                self.imageView.image = UIImage(data: userData!)
+                return
+            }
                 
                 let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)")
                 

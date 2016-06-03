@@ -98,7 +98,7 @@ class databaseFile: NSObject {
                 dict.setObject(rs.stringForColumn("UserId"), forKey: "UserId")
                 dict.setObject(rs.stringForColumn("Id"), forKey: "Id")
                 dict.setObject(rs.stringForColumn("Comments"), forKey: "Comments")
-//                dict.setObject(rs.stringForColumn("AttachmentImageData") ?? "", forKey: "AttachmentImageData")
+                dict.setObject(rs.stringForColumn("AttachmentImageData") ?? "", forKey: "AttachmentImageData")
 
 //                print(rs.stringForColumn("UserId"))
                 if rs.stringForColumn("UserId") == ID  && rs.stringForColumn("CreatedDate")!.componentsSeparatedByString(" ")[0] == str {
