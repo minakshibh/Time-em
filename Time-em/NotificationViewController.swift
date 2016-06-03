@@ -19,10 +19,13 @@ class NotificationViewController: UIViewController {
     @IBOutlet var notificationsTableView: UITableView!
     let normalColor = UIColor(red: 32/255, green: 44/255, blue: 66/255, alpha: 1)
     let highLightedColor = UIColor(red: 35/255, green: 51/255, blue: 86/255, alpha: 1)
+    let fontSmall: UIFont = UIFont(name: "HelveticaNeue", size: 11.0)!
+    let font: UIFont = UIFont(name: "HelveticaNeue", size: 15.0)!
+
     var notificationsListArray :NSArray! = []
     var allNotificationsListArray :NSMutableArray! = []
 
-    var notificationType : NSString! = "notify"
+    var notificationType : NSString! = "Notice"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +38,7 @@ class NotificationViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     override func viewWillAppear(animated: Bool) {
-        self.dateConversion(NSDate())
+         dateTimeLbl.text = self.dateConversion(NSDate()) as String
 
         super.viewWillAppear(true)
     }
@@ -91,14 +94,14 @@ class NotificationViewController: UIViewController {
     }
     
     @IBAction func viewsBtn(sender: AnyObject) {
-        notificationType = "view"
+        notificationType = "File"
         viewsBtn.backgroundColor = highLightedColor
         notificationBtn.backgroundColor = normalColor
         messagesBtn.backgroundColor = normalColor
         self.showNotificationsInTable()
     }
     @IBAction func notificationsBtn(sender: AnyObject) {
-        notificationType = "notify"
+        notificationType = "Notice"
         viewsBtn.backgroundColor = normalColor
         notificationBtn.backgroundColor = highLightedColor
         messagesBtn.backgroundColor = normalColor
@@ -115,10 +118,7 @@ class NotificationViewController: UIViewController {
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
-        if Reachability.DeviceType.IS_IPHONE_5 {
-            return 40
-        }
-        return 50
+        return 78
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -135,21 +135,99 @@ class NotificationViewController: UIViewController {
         }
         cell.backgroundColor = UIColor.clearColor()
         let dict:NSMutableDictionary  = notificationsListArray[indexPath.row] as! NSMutableDictionary
+        cell.selectionStyle = .None
+        
+        
+        let senderNameLabel: UILabel = UILabel(frame: CGRectZero)
+        let TitleLabel: UILabel = UILabel(frame: CGRectZero)
+        let DescriptionLabel: UILabel = UILabel(frame: CGRectZero)
+        let dateTimelabel: UILabel = UILabel(frame: CGRectZero)
         
         if dict.valueForKey("SenderFullName") is NSNull
         {
-            cell.textLabel?.text = ""
+            senderNameLabel.text = ""
         }
         else{
-            cell.textLabel?.text = "\(dict.valueForKey("SenderFullName")!)"
+            senderNameLabel.text = "\(dict.valueForKey("SenderFullName")!)"
         }
+        senderNameLabel.textColor = UIColor(red: 23/256, green: 166/256, blue: 199/256, alpha: 1)
+        cell.contentView.addSubview(senderNameLabel)
         
-        if Reachability.DeviceType.IS_IPHONE_5 {
-            let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 14.0)!
-            cell.textLabel?.font = myFont
+        
+        TitleLabel.font  = font
+        if dict.valueForKey("Subject") is NSNull
+        {
+            TitleLabel.text = ""
         }
+        else{
+            TitleLabel.text = "\(dict.valueForKey("Subject")!)"
+        }
+        TitleLabel.textColor = UIColor.blackColor()
+        cell.contentView.addSubview(TitleLabel)
+
+        
+        if dict.valueForKey("Message") is NSNull
+        {
+            DescriptionLabel.text = ""
+        }
+        else{
+            DescriptionLabel.text = "\(dict.valueForKey("Message")!)"
+        }
+        DescriptionLabel.font  = font
+        DescriptionLabel.textColor = UIColor.darkGrayColor()
+        cell.contentView.addSubview(DescriptionLabel)
         
         cell.selectionStyle = .None
+        
+        var dateStr: String = ""
+        
+        if dict.valueForKey("createdDate") is NSNull
+        {
+            dateTimelabel.text = ""
+        }
+        else{
+            dateStr = "\(dict.valueForKey("createdDate")!)"
+            let dateFormatter: NSDateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
+            dateFormatter.timeZone = NSTimeZone.localTimeZone()
+            let date: NSDate = dateFormatter.dateFromString(dateStr)!
+            let currentDate: NSDate = NSDate()
+            
+            
+//            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let date1String = dateFormatter.stringFromDate(date)
+            let date2String = dateFormatter.stringFromDate(currentDate)
+            if date1String == date2String {
+                dateFormatter.dateFormat = "HH:mm"
+                dateStr = dateFormatter.stringFromDate(date)
+            }
+            else{
+                dateStr = self.dateConversion(date) as String
+            }
+            dateTimelabel.text = dateStr as String
+        }
+        
+        
+        dateTimelabel.font  = fontSmall
+        dateTimelabel.numberOfLines = 1
+        dateTimelabel.textAlignment = .Center
+        dateTimelabel.textColor = UIColor.blackColor()
+        cell.contentView.addSubview(dateTimelabel)
+        
+        let frame : CGRect = self.view!.frame
+        let padding: CGFloat = 6
+        let dateTimeLblWidth: CGFloat = 90
+        let Xposition: CGFloat = 20
+        let labelHeight : CGFloat = 30
+        let labelWidth : CGFloat = frame.width - (dateTimeLblWidth+padding*2 + Xposition)
+
+
+        senderNameLabel.frame = CGRectMake(padding, padding, labelWidth, labelHeight)
+        TitleLabel.frame = CGRectMake(padding, labelHeight - 4 , labelWidth, labelHeight)
+        DescriptionLabel.frame = CGRectMake(padding, labelHeight*2 - 13 , labelWidth, labelHeight)
+        dateTimelabel.frame = CGRectMake(frame.width - (dateTimeLblWidth + padding), TitleLabel.frame.origin.y, dateTimeLblWidth,labelHeight)
+     
         
         cell.rightButtons = [MGSwipeButton(title: "",icon:UIImage(named: "delete"),backgroundColor: UIColor(red: 209/255, green: 25/255, blue: 16/255, alpha: 1), callback: {
                 (sender: MGSwipeTableCell!) -> Bool in
@@ -161,8 +239,6 @@ class NotificationViewController: UIViewController {
             
                 return true
             })]
-        
-        
         return cell
     }
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -172,16 +248,23 @@ class NotificationViewController: UIViewController {
 //        self.performSegueWithIdentifier("myteam_mytask", sender: self)
     }
 
-    
-    func dateConversion (date:NSDate) {
-        
+    func dateConversion(date : NSDate) -> NSString {
         let dateFormatter: NSDateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "EEE d MMM,yyyy"
         dateFormatter.timeZone = NSTimeZone.localTimeZone()
         let dateStr: String = dateFormatter.stringFromDate(date)
-        
-        dateTimeLbl.text = dateStr
-        
+        return dateStr
     }
+    
+//    func dateConversion (date:NSDate) {
+//        
+//        let dateFormatter: NSDateFormatter = NSDateFormatter()
+//        dateFormatter.dateFormat = "EEE d MMM,yyyy"
+//        dateFormatter.timeZone = NSTimeZone.localTimeZone()
+//        let dateStr: String = dateFormatter.stringFromDate(date)
+//        
+//        dateTimeLbl.text = dateStr
+//        
+//    }
 
 }
