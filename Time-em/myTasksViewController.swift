@@ -31,16 +31,21 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     @IBOutlet var btnSignIn: UIButton!
     
     override func viewDidDisappear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+//        NSNotificationCenter.defaultCenter().removeObserver(self)
         
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        NSUserDefaults.standardUserDefaults().setObject("false", forKey: "isEditingOrAdding")
+        
         
         self.dateConversion(NSDate())
         // Do any additional setup after loading the view.
         
+        let assignedTasks = ApiRequest()
         
+        let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
+        assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.usertasksResponse), name: "com.time-em.usertaskResponse", object: nil)
         
@@ -154,6 +159,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let databaseFetch = databaseFile()
         taskDataArray = databaseFetch.getTasksForUserID(id,Date:selectedDate)
 //        print(taskDataArray)
+        if taskDataArray.count == 0 {
+            NSUserDefaults.standardUserDefaults().setObject("true", forKey: "isEditingOrAdding")
+        }
         tableView.reloadData()
     }
     
@@ -187,10 +195,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
             
-            let assignedTasks = ApiRequest()
             
-            let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
-            assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
             
         }else{
             
