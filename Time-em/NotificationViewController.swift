@@ -216,7 +216,7 @@ class NotificationViewController: UIViewController {
         cell.contentView.addSubview(dateTimelabel)
         
         let frame : CGRect = self.view!.frame
-        let padding: CGFloat = 6
+        let padding: CGFloat = 8
         let dateTimeLblWidth: CGFloat = 90
         let Xposition: CGFloat = 20
         let labelHeight : CGFloat = 30
