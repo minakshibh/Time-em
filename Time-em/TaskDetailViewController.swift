@@ -7,25 +7,41 @@
 //
 
 import UIKit
+import AVFoundation
+import Foundation
+import AVKit
 
 class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
 
+    var err: NSError? = nil
     var taskData:NSMutableDictionary! = [:]
     @IBOutlet var TextViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet var TextHeadingHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var imageViewVideo: UIImageView!
+    @IBOutlet var btnPlayVideo: UIButton!
     @IBOutlet var lblTaskDate: UILabel!
+    @IBOutlet var viewimageBackground: UIView!
     @IBOutlet var txtComments: UITextView!
     @IBOutlet var lblHourWorked: UILabel!
     @IBOutlet var txtTaskDescription: UITextView!
     @IBOutlet var btnBack: UIButton!
     @IBOutlet var scrollView: UIScrollView!
     @IBOutlet var imageView: UIImageView!
+    var videoStatus:Bool = false
+    var videoData:NSData!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         
+        
+        imageView.layer.cornerRadius = 4
+        imageView.clipsToBounds = true
+        
+        viewimageBackground.layer.cornerRadius = 4
+        viewimageBackground.clipsToBounds = true
+
 //        print(taskData)
 
     txtComments.scrollEnabled = false
@@ -69,18 +85,26 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         scrollView.contentSize = self.view.bounds.size
         scrollView.contentOffset = CGPoint(x: 450, y: 2000)
         
-//        scrollView.contentOffset.x = 0
+
+       // image or video processing
+        
+        
         if taskData.valueForKey("AttachmentImageFile") != nil {
-            
             
             if taskData.valueForKey("AttachmentImageFile") as? String != "" {
              
-            if taskData.valueForKey("AttachmentImageData") != nil  && "\(taskData.valueForKey("AttachmentImageData")!)" != "" {
-                let imageFile = taskData.valueForKey("AttachmentImageData") as? NSData
-                let userData = NSKeyedUnarchiver.unarchiveObjectWithData(imageFile!) as? NSData
-                self.imageView.image = UIImage(data: userData!)
-                return
-            }
+                let database = databaseFile()
+                let dataArr:NSMutableArray!
+                dataArr = database.getImageForUrl("\(taskData.valueForKey("AttachmentImageFile")!)",imageORvideo:"AttachmentImageFile")
+                
+                if dataArr.count > 0 {
+                    if "\(dataArr[0])" != "" {
+                        let data:NSData = dataArr[0] as! NSData
+                        let userImageData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
+                        self.imageView.image = UIImage(data: userImageData)
+                        return
+                    }
+                }
                 
                 let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)")
                 
@@ -92,7 +116,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                         }
                         let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
                         let database = databaseFile()
-                        database.addImageToTask("\(self.taskData.valueForKey("AttachmentImageFile")!)", AttachmentImageData: encodedData)
+                        database.addImageToTask("\(self.taskData.valueForKey("AttachmentImageFile")!)", AttachmentImageData: encodedData, imageORvideo:"AttachmentImageFile")
                     });
                 }
             }else{
@@ -103,11 +127,104 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
             imageView.hidden = true
         }
         
+        if taskData.valueForKey("AttachmentVideoFile") != nil {
+            
+            if taskData.valueForKey("AttachmentVideoFile") as? String != "" {
+                
+                // check and get image from databse
+                let database = databaseFile()
+                let dataArr:NSMutableArray!
+                dataArr = database.getImageForUrl("\(taskData.valueForKey("AttachmentVideoFile")!)",imageORvideo:"AttachmentVideoFile")
+                if dataArr.count > 0 {
+                    if "\(dataArr[0])" != "" {
+                        let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentVideoFile")!)")
+                        
+                        generateThumbnail(url!)
+                        
+                        let data:NSData = dataArr[0] as! NSData
+                        let userVideoData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
+                        videoData = userVideoData
+                        return
+                    }
+                }
+                
+                
+                
+//                downloadVideo  and save to databse
+                
+                let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentVideoFile")!)")
+                self.generateThumbnail(url!)
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                    
+                    let data = NSData(contentsOfURL: url!)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        
+                        //----
+                        let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
+                        let database = databaseFile()
+                        database.addImageToTask("\(self.taskData.valueForKey("AttachmentVideoFile")!)", AttachmentImageData: encodedData,imageORvideo:"AttachmentVideoFile")
+                        self.videoData = data!
+                    });
+                }
+                
+            }
+        }
+       
         
     }
 
+    func generateThumbnail (url:NSURL) {
+        do {
+            let asset = AVURLAsset(URL: url, options: nil)
+            let imgGenerator = AVAssetImageGenerator(asset: asset)
+            let cgImage = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
+            let uiImage = UIImage(CGImage: cgImage)
+            viewimageBackground.hidden = false
+            self.imageViewVideo.image = uiImage
+            
+        } catch let error as NSError {
+            print("Error generating thumbnail: \(error)")
+        }
+        
+    }
     
+    func playVideo(data:NSData) {
+        
+        let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
+        let temppath:String = documentDirectory.stringByAppendingString("/video.mp4")
+        videoStatus = data.writeToFile(temppath, atomically: true)
+        
+        if videoStatus {
+            let videoAsset = (AVAsset(URL: NSURL(fileURLWithPath: temppath)))
+            let playerItem = AVPlayerItem(asset:videoAsset)
+            
+            let player = AVPlayer(playerItem: playerItem)
+            let playerViewController = AVPlayerViewController()
+            playerViewController.player = player
+            
+            presentViewController(playerViewController, animated:true){
+                playerViewController.player!.play()
+            }
+
+        }
+    }
     
+    @IBAction func btnPlayVideo(sender: AnyObject) {
+        playVideo(videoData)
+    }
+    override func viewDidDisappear(animated: Bool) {
+        
+        if videoStatus {
+            let filemanager = NSFileManager.defaultManager()
+            let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .   UserDomainMask, true)[0] as String
+            let temppath:String = documentDirectory.stringByAppendingString("/video.mp4")
+            do{
+                try filemanager.removeItemAtPath(temppath)
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
+        }
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

@@ -1974,6 +1974,27 @@
                                         <color key="textColor" white="0.78425016108247425" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="axf-Zr-xEm">
+                                        <rect key="frame" x="12" y="426" width="139" height="128"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YGy-sU-Mvg">
+                                                <rect key="frame" x="0.0" y="0.0" width="139" height="128"/>
+                                            </imageView>
+                                            <button opaque="NO" alpha="0.20000000000000001" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="box-eg-r1d">
+                                                <rect key="frame" x="0.0" y="0.0" width="139" height="128"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <state key="normal" image="playVideo"/>
+                                                <connections>
+                                                    <action selector="btnPlayVideo:" destination="gKN-Fc-lOJ" eventType="touchUpInside" id="9Sj-vb-N2L"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="128" id="gSD-PJ-v0m"/>
+                                            <constraint firstAttribute="width" secondItem="axf-Zr-xEm" secondAttribute="height" multiplier="139:128" id="yc0-5u-9em"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="ggk-ba-Kya" firstAttribute="top" secondItem="faT-1D-jW0" secondAttribute="bottom" constant="15" id="0DA-bd-eF6"/>
@@ -2003,10 +2024,12 @@
                                     <constraint firstItem="mCV-DQ-Upp" firstAttribute="leading" secondItem="M4o-ox-D6p" secondAttribute="leading" id="jDm-rJ-LCB"/>
                                     <constraint firstItem="mCV-DQ-Upp" firstAttribute="trailing" secondItem="M4o-ox-D6p" secondAttribute="trailing" id="k3K-mX-0K5"/>
                                     <constraint firstAttribute="trailing" secondItem="AFP-QR-18C" secondAttribute="trailing" id="lfr-Bk-BaW"/>
+                                    <constraint firstItem="axf-Zr-xEm" firstAttribute="top" secondItem="iSH-gZ-lcV" secondAttribute="bottom" constant="10" id="pA1-42-W7F"/>
                                     <constraint firstItem="AFP-QR-18C" firstAttribute="top" secondItem="0Vv-tQ-DxI" secondAttribute="top" id="qzA-FJ-l7r"/>
                                     <constraint firstItem="Y9p-Vr-UT0" firstAttribute="top" secondItem="1Hf-tF-5gz" secondAttribute="bottom" id="si7-MZ-A0t"/>
                                     <constraint firstItem="1Hf-tF-5gz" firstAttribute="leading" secondItem="0Vv-tQ-DxI" secondAttribute="leading" constant="12" id="syb-ob-X4B"/>
                                     <constraint firstItem="mCV-DQ-Upp" firstAttribute="top" secondItem="Y9p-Vr-UT0" secondAttribute="bottom" constant="5" id="tJS-fr-zq9"/>
+                                    <constraint firstItem="axf-Zr-xEm" firstAttribute="leading" secondItem="iSH-gZ-lcV" secondAttribute="leading" id="uDH-dy-rPp"/>
                                     <constraint firstItem="M4o-ox-D6p" firstAttribute="top" secondItem="XBh-uP-qgN" secondAttribute="bottom" constant="10" id="wa8-l5-6rS"/>
                                     <constraint firstItem="Y9p-Vr-UT0" firstAttribute="leading" secondItem="kLb-wU-oOM" secondAttribute="leading" id="wzm-Va-SHW"/>
                                     <constraint firstItem="0OX-vf-4p0" firstAttribute="top" secondItem="mCV-DQ-Upp" secondAttribute="bottom" constant="8" id="xoN-wG-6yz"/>
@@ -2037,12 +2060,15 @@
                         <outlet property="TextHeadingHeightConstraint" destination="TO3-db-swK" id="mQn-DS-adD"/>
                         <outlet property="TextViewHeightConstraint" destination="biO-nW-2Kl" id="I9l-nt-Vp3"/>
                         <outlet property="btnBack" destination="uai-yB-wpx" id="Pne-vT-bSq"/>
+                        <outlet property="btnPlayVideo" destination="box-eg-r1d" id="iXA-9N-Ul0"/>
                         <outlet property="imageView" destination="kLb-wU-oOM" id="1dt-Xk-Orh"/>
+                        <outlet property="imageViewVideo" destination="YGy-sU-Mvg" id="UBq-No-MNX"/>
                         <outlet property="lblHourWorked" destination="faT-1D-jW0" id="Hqf-tf-XIp"/>
                         <outlet property="lblTaskDate" destination="AFP-QR-18C" id="OHM-OZ-LET"/>
                         <outlet property="scrollView" destination="0Vv-tQ-DxI" id="pE2-Dx-MgB"/>
                         <outlet property="txtComments" destination="XBh-uP-qgN" id="zcH-oN-Oaq"/>
                         <outlet property="txtTaskDescription" destination="Y9p-Vr-UT0" id="gwa-s8-MRE"/>
+                        <outlet property="viewimageBackground" destination="axf-Zr-xEm" id="N0b-Uv-6Xa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="s4l-CY-2sX" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2968,6 +2994,7 @@
         <image name="logo" width="132" height="29"/>
         <image name="moon" width="14" height="14"/>
         <image name="notification_Dashboard" width="18" height="17"/>
+        <image name="playVideo" width="90" height="90"/>
         <image name="previous-icon" width="15" height="15"/>
         <image name="setting" width="18" height="17"/>
         <image name="sun" width="11" height="11"/>

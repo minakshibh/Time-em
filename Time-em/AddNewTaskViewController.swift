@@ -335,7 +335,12 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         
         if status.lowercaseString == "success"{
          self.resetTheView()
+            self.navigationController?.popViewControllerAnimated(true)
+            self.dismissViewControllerAnimated(true, completion: {});
+        NSUserDefaults.standardUserDefaults().setObject("true", forKey: "isEditingOrAdding")
         }
+        
+
     }
     func getAssignedTaskIListResponse(notification:NSNotification) {
         

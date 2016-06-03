@@ -66,8 +66,49 @@ class databaseFile: NSObject {
         return dict
         
     }
+    func getImageForUrl(url:String,imageORvideo:String) -> NSMutableArray{
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        var data:NSData!
+        do {
+            let rs = try database.executeQuery("select * from tasksData where \(imageORvideo) = ?", values: [url])
+            while rs.next() {
+              data = rs.dataForColumn("AttachmentImageData")
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        let dataarrr:NSMutableArray = []
+        dataarrr.addObject(data ?? "")
+        database.close()
+        return dataarrr
+    }
     
     
+    func addImageToTask (AttachmentImageFile:String,AttachmentImageData:NSData,imageORvideo:String) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        
+        do {
+            try database.executeUpdate("UPDATE tasksData SET AttachmentImageData = ? WHERE \(imageORvideo)=?", values: [AttachmentImageData, AttachmentImageFile])
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+    }
+    
+
     func getTasksForUserID(ID:String,Date:String) -> NSMutableArray {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
@@ -98,7 +139,7 @@ class databaseFile: NSObject {
                 dict.setObject(rs.stringForColumn("UserId"), forKey: "UserId")
                 dict.setObject(rs.stringForColumn("Id"), forKey: "Id")
                 dict.setObject(rs.stringForColumn("Comments"), forKey: "Comments")
-                dict.setObject(rs.stringForColumn("AttachmentImageData") ?? "", forKey: "AttachmentImageData")
+//                dict.setObject(rs.stringForColumn("AttachmentImageData") ?? "", forKey: "AttachmentImageData")
 
 //                print(rs.stringForColumn("UserId"))
                 if rs.stringForColumn("UserId") == ID  && rs.stringForColumn("CreatedDate")!.componentsSeparatedByString(" ")[0] == str {
@@ -686,24 +727,7 @@ class databaseFile: NSObject {
         database.close()
     }
     
-    func addImageToTask (AttachmentImageFile:String,AttachmentImageData:NSData) {
-        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
-        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
-        
-        let database = FMDatabase(path: fileURL.path)
-        
-        if !database.open() {
-            print("Unable to open database")
-        }
-        
-        do {
-            try database.executeUpdate("UPDATE tasksData SET AttachmentImageData = ? WHERE AttachmentImageFile=?", values: [AttachmentImageData, AttachmentImageFile])
-        } catch let error as NSError {
-            print("failed: \(error.localizedDescription)")
-        }
-    }
-    
-    func currentUserSignIn(arr:NSArray)  {
+       func currentUserSignIn(arr:NSArray)  {
         
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")

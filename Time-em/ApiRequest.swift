@@ -271,7 +271,13 @@ class ApiRequest: NSObject {
     func getUserTask(userId:String,createdDate:String,TimeStamp:String,view:UIView) {
         
         let notificationKey = "com.time-em.usertaskResponse"
-         MBProgressHUD.showHUDAddedTo(view, animated: true)
+        
+        let status:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("isEditingOrAdding")!)"
+        if status.lowercaseString == "true" {
+            NSUserDefaults.standardUserDefaults().setObject("false", forKey:"isEditingOrAdding")
+            MBProgressHUD.showHUDAddedTo(view, animated: true)
+        }
+        
         Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserTask/GetUserActivityTask", parameters: ["userId":userId,"createdDate":createdDate, "TimeStamp":TimeStamp])
             .responseJSON { response in
                 print(response.request)  // original URL request
@@ -309,10 +315,10 @@ class ApiRequest: NSObject {
                         if dict.count > 0 {
                             //---------
                             var saveDateDict:NSMutableDictionary = [:]
-                            var user: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+                            let user: NSUserDefaults = NSUserDefaults.standardUserDefaults()
                             if user.valueForKey("taskTimeStamp") != nil {
-                                var data: NSData = (user.valueForKey("taskTimeStamp") as! NSData)
-                                var dictio = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
+                                let data: NSData = (user.valueForKey("taskTimeStamp") as! NSData)
+                                let dictio = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
                                 saveDateDict = dictio
                                 if (saveDateDict.valueForKey("\(dict[0].valueForKey("UserId"))") != nil) {
                                     
@@ -483,7 +489,7 @@ class ApiRequest: NSObject {
                                 
                                 do {
                                     //                    try database.executeUpdate("delete * from  tasksData", values: nil)
-                                    try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ])
+                                    try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData ) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,"" ])
                                     
                                 } catch let error as NSError {
                                     print("failed: \(error.localizedDescription)")
@@ -883,6 +889,8 @@ class ApiRequest: NSObject {
             
             guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
                 print("error")
+                let userInfo = ["response" : "failure"]
+                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                 return
             }
             
