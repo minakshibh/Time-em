@@ -988,10 +988,11 @@ class ApiRequest: NSObject {
             print(dataString!)
             delay(0.001){
                 MBProgressHUD.hideHUDForView(view, animated: true)
+            }
                 let msg = "successfully"
                 let userInfo = ["response" : "\(msg)"]
                 NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
-            }
+//
         }
         
         task.resume()
@@ -1419,7 +1420,7 @@ class ApiRequest: NSObject {
     
     func GetNotificationType() {
         let notificationKey = "com.time-em.NotificationTypeloginResponse"
-        
+
         Alamofire.request(.GET, "http://timeemapi.azurewebsites.net//api/notification/GetNotificationType", parameters: nil)
             .responseJSON { response in
                 print(response.request)  // original URL request
@@ -1564,7 +1565,7 @@ class ApiRequest: NSObject {
 //http://timeemapi.azurewebsites.net/api/notification/NotificationByUserId
     func getNotifications(UserId:String,timeStamp:String) {
         let notificationKey = "com.time-em.getuserListByLoginCode"
-        
+        let id = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
         Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/notification/NotificationByUserId", parameters:  ["UserId":UserId,"timeStamp":timeStamp])
             .responseJSON { response in
                 print(response.request)  // original URL request
