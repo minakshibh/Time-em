@@ -187,7 +187,10 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
             
+            let assignedTasks = ApiRequest()
             
+            let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
+            assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
             
         }else{
             
@@ -340,7 +343,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
         
-         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 4.5 + 2, (timelabel.frame.origin.x + timelabel.frame.size.width/2 ), 1))
+         let partitionlabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x , Description.frame.origin.y + Description.frame.size.height + 4.5, (timelabel.frame.origin.x + timelabel.frame.size.width/2 ), 1))
         partitionlabel.backgroundColor = UIColor(red: 215/256, green: 215/256, blue: 215/256, alpha: 1)
 
          if lines > 3 {
@@ -364,13 +367,13 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             return true
         }),MGSwipeButton(title: "", icon:UIImage(named: "edit"),backgroundColor: UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1), callback: {
             (sender: MGSwipeTableCell!) -> Bool in
-            
+            print("edit: \(indexPath.row)")
 //            delay(0.001){
 //                let dataDic:NSMutableDictionary = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
                 self.selectededitRowDict = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
-            delay(0.001){
+            
             self.performSegueWithIdentifier("editNewTask", sender: self)
-            }
+            
 //                let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
 //                
 //                let AddNewTaskView = storyBoard.instantiateViewControllerWithIdentifier("AddNewTaskIdentifier") as! AddNewTaskViewController
