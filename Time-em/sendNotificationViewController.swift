@@ -347,7 +347,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         selectedRecipientsNameArr.addObject("\(dict.valueForKey("FullName")!)")
         selectedRecipientsIdArr.addObject("\(dict.valueForKey("userid")!)")
         
-        var usernames:String!
+        var usernames:String! = ""
         for (var j=0; j<selectedRecipientsNameArr.count;j+=1) {
             if j==0 {
                 usernames = "\(selectedRecipientsNameArr[0])"

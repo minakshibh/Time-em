@@ -1464,6 +1464,42 @@ class ApiRequest: NSObject {
 
     }
 
+    func registerUserDevice(UserID:String,DeviceUId:String,DeviceOS:String) {
+        let notificationKey = "com.time-em.registerUserDevice"
+        
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/User/RegisterUserDevice", parameters: ["UserID":UserID,"DeviceUId":DeviceUId,"DeviceOS":DeviceOS])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        //                        if "\(JSON.valueForKey("isError")!)" == "0" {
+                        
+                        let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                        
+                        
+                        
+                        
+                        
+                        
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                }
+        }
+    }
+    
     func getActiveUserList(userid:String,timeStamp:String) {
         let notificationKey = "com.time-em.NotificationTypeloginResponse"
         

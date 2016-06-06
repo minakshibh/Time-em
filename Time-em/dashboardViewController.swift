@@ -76,6 +76,7 @@ class dashboardViewController: UIViewController {
         lblpopupBackground.layer.masksToBounds = true
         btnSignInOutPOPUP.layer.masksToBounds = true
 
+        registerUserDevice()
         
     }
     
@@ -212,6 +213,13 @@ class dashboardViewController: UIViewController {
             
         }
     }
+    func registerUserDevice () {
+        let uuidStr = UIDevice.currentDevice().identifierForVendor!.UUIDString
+        let currentUserId = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
+        let api = ApiRequest()
+        api.registerUserDevice(currentUserId, DeviceUId: uuidStr, DeviceOS: "IOS")
+    }
+    
     
     func refreshButtonTitleImage() {
         if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0" {
