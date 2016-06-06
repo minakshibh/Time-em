@@ -65,7 +65,6 @@ class NotificationDetailViewController: UIViewController {
             attachmentImageView.clipsToBounds = true
             
             if notificationData.valueForKey("AttachmentFullPath") as? String != "" {
-                
                 let url = NSURL(string: "\(self.notificationData.valueForKey("AttachmentFullPath")!)")
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {

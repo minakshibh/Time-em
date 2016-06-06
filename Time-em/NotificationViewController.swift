@@ -47,7 +47,6 @@ class NotificationViewController: UIViewController {
             let TimeStamp:String!
             if NSUserDefaults.standardUserDefaults().objectForKey("activeUserListTimeStamp") != nil {
                 TimeStamp = NSUserDefaults.standardUserDefaults().objectForKey("activeUserListTimeStamp") as? String
-            
             }else{
                 TimeStamp = ""
             }
@@ -56,7 +55,6 @@ class NotificationViewController: UIViewController {
     }
     override func viewWillAppear(animated: Bool) {
          dateTimeLbl.text = self.dateConversion(NSDate()) as String
-
         super.viewWillAppear(true)
     }
     override func didReceiveMemoryWarning() {
