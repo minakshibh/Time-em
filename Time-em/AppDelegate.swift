@@ -1,4 +1,4 @@
-    //
+ //
 //  AppDelegate.swift
 //  Time-em
 // self.dispatch = false
@@ -45,6 +45,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication,didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         //send this device token to server
        
+        
+        let tokenChars = UnsafePointer<CChar>(deviceToken.bytes)
+        var tokenString = ""
+        
+        for i in 0..<deviceToken.length {
+            tokenString += String(format: "%02.2hhx", arguments: [tokenChars[i]])
+        }
+        
+        print("tokenString: \(tokenString)")
+        NSUserDefaults.standardUserDefaults().setObject(tokenString, forKey: "tokenString")
     }
     func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
          application.registerForRemoteNotifications()
@@ -57,10 +67,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         print("Recived: \(userInfo)")
         //Parsing userinfo:
-        var temp : NSDictionary = userInfo
+        let temp : NSDictionary = userInfo
         if let info = userInfo["aps"] as? Dictionary<String, AnyObject>
         {
-            var alertMsg = info["alert"] as! String
+            let alertMsg = info["alert"] as! String
             var alert: UIAlertView!
             alert = UIAlertView(title: "", message: alertMsg, delegate: nil, cancelButtonTitle: "OK")
             alert.show()

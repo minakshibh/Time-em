@@ -14,11 +14,14 @@ class NotificationDetailViewController: UIViewController {
     @IBOutlet var notification_subject_lbl: UITextView!
     @IBOutlet var notification_messageLbl: UITextView!
     @IBOutlet var sender_name_Lbl: UILabel!
+    @IBOutlet var attachmentImageView: UIImageView!
+    @IBOutlet var attachmentLbl: UILabel!
+    @IBOutlet var attachmentImgBackView: UIView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self .displayData()
-
     }
     
     func displayData() {
@@ -47,6 +50,37 @@ class NotificationDetailViewController: UIViewController {
         else{
             notification_messageLbl.text = "\(notificationData.valueForKey("Message")!)"
         }
+        
+        
+        attachmentLbl.hidden = true
+        attachmentImgBackView.hidden = true
+        
+        if notificationData.valueForKey("AttachmentFullPath") is NSNull
+        {
+            attachmentLbl.hidden = true
+            attachmentImageView.hidden = true
+        }
+        else{
+            attachmentImageView.layer.cornerRadius = 4
+            attachmentImageView.clipsToBounds = true
+            
+            if notificationData.valueForKey("AttachmentFullPath") as? String != "" {
+                
+                let url = NSURL(string: "\(self.notificationData.valueForKey("AttachmentFullPath")!)")
+                
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                    let data = NSData(contentsOfURL: url!)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        if self.attachmentImageView != nil {
+                            self.attachmentImageView.image = UIImage(data: data!)
+                            self.attachmentLbl.hidden = false
+                            self.attachmentImgBackView.hidden = false
+                        }
+                    });
+                }
+            }
+        }
+
         
         var dateStr: String = ""
         

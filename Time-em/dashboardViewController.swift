@@ -214,7 +214,8 @@ class dashboardViewController: UIViewController {
         }
     }
     func registerUserDevice () {
-        let uuidStr = UIDevice.currentDevice().identifierForVendor!.UUIDString
+        let uuidStr =  "\( NSUserDefaults.standardUserDefaults().valueForKey("tokenString")!)"
+
         let currentUserId = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
         let api = ApiRequest()
         api.registerUserDevice(currentUserId, DeviceUId: uuidStr, DeviceOS: "IOS")
