@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18527EF71D0550A20079A6F8 /* NotificationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18527EF61D0550A20079A6F8 /* NotificationDetailViewController.swift */; };
 		CF8C3A7207A9E1766E908182 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B46B6A6CC4439FFDFDB3D8D0 /* Pods.framework */; };
 		D92804A01CF5AE0100F99D28 /* BarCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D928049F1CF5AE0100F99D28 /* BarCodeViewController.swift */; };
 		D93AC0BD1CF47F08009E73F5 /* Website-Under-Construction.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D93AC0BC1CF47F08009E73F5 /* Website-Under-Construction.jpg */; };
@@ -79,6 +80,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		18527EF61D0550A20079A6F8 /* NotificationDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationDetailViewController.swift; sourceTree = "<group>"; };
 		87F93E81A9465F77B7D4BC43 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		B46B6A6CC4439FFDFDB3D8D0 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D928049F1CF5AE0100F99D28 /* BarCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarCodeViewController.swift; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				D965A2081CF82EF000AB11C0 /* NotificationViewController.swift */,
+				18527EF61D0550A20079A6F8 /* NotificationDetailViewController.swift */,
 				D965A20B1CF8334C00AB11C0 /* sendNotificationViewController.swift */,
 			);
 			name = notifications;
@@ -555,6 +558,7 @@
 				D9DA400F1CE9AE4900D6B572 /* myTasksViewController.swift in Sources */,
 				D97004FB1CE31A1F0036B5EA /* AppDelegate.swift in Sources */,
 				D976610E1CF6C9E7004E4552 /* BarcodeDetailViewController.swift in Sources */,
+				18527EF71D0550A20079A6F8 /* NotificationDetailViewController.swift in Sources */,
 				D9D378031CEC92C8002E24D9 /* TaskData.swift in Sources */,
 				F9F0129C1CF334A2003698C6 /* DropDown.swift in Sources */,
 				D9DA40291CE9B28A00D6B572 /* UIColor+CL.m in Sources */,
