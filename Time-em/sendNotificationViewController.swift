@@ -291,14 +291,17 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         if status.lowercaseString.rangeOfString("successfully") != nil {
             var alert :UIAlertController!
             alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-//            self.presentViewController(alert, animated: true, completion: nil)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
+                main {
+                    self.dismissViewControllerAnimated(true, completion: {});
+                    self.navigationController?.popViewControllerAnimated(true)
+                }
+            }))
+            self.presentViewController(alert, animated: true, completion: nil)
 //            delay(0.001){
             JLToast.makeText("Notification added Successfully!", duration: JLToastDelay.ShortDelay)
-            main {
-            self.dismissViewControllerAnimated(true, completion: {});
-            self.navigationController?.popViewControllerAnimated(true)
-            }
+            
 //            }
         }else{
             var alert :UIAlertController!

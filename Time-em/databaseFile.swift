@@ -865,7 +865,7 @@ class databaseFile: NSObject {
         }
         let userDict = NSKeyedArchiver.archivedDataWithRootObject(data)
         do {
-            try database.executeUpdate("delete * from  notificationtype", values: nil)
+            try database.executeUpdate("delete from  notificationtype", values: nil)
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
