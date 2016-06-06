@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import JLToast
 
 class sendNotificationViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate{
 
@@ -40,27 +41,9 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         btnSend.layer.cornerRadius = 4
         btnUploadImage.layer.cornerRadius = 4
         
-        let userIdStr = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
         
-        let api = ApiRequest()
-        api.GetNotificationType()
         
-        let TimeStamp:String!
-        if NSUserDefaults.standardUserDefaults().objectForKey("activeUserListTimeStamp") != nil {
-//            let data: NSString = (NSUserDefaults.standardUserDefaults().objectForKey("taskTimeStamp") as? NSString)!
-//            let dict = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
-            
-//            if dict.valueForKey(userId) != nil {
-//                TimeStamp = "\(dict.valueForKey(userId)!)"
-//            }else{
-//                TimeStamp = ""
-//            }
-            TimeStamp = NSUserDefaults.standardUserDefaults().objectForKey("activeUserListTimeStamp") as? String
-            
-        }else{
-            TimeStamp = ""
-        }
-        api.getActiveUserList(userIdStr!,timeStamp:TimeStamp)
+        
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.GetNotificationTypeResponse), name: "com.time-em.NotificationTypeloginResponse", object: nil)
         
@@ -309,10 +292,13 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             var alert :UIAlertController!
             alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+//            self.presentViewController(alert, animated: true, completion: nil)
 //            delay(0.001){
+            JLToast.makeText("Notification added Successfully!", duration: JLToastDelay.ShortDelay)
+            main {
             self.dismissViewControllerAnimated(true, completion: {});
-                self.navigationController?.popViewControllerAnimated(true)
+            self.navigationController?.popViewControllerAnimated(true)
+            }
 //            }
         }else{
             var alert :UIAlertController!

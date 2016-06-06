@@ -120,13 +120,19 @@ class dashboardViewController: UIViewController {
             self.menuSlideBack()
         }
         
-        let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
-        print(usertype)
-        
-        
+        let usertype = "\(NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!)"
+//        print(usertype)
         if "\(usertype)" == "4" {
             btnMyTeam.hidden = true
-            btnMyTeam.frame = CGRectMake(btnMyTeam.frame.origin.x,btnMyTeam.frame.origin.y, 0, btnMyTeam.frame.size.height)
+            btnNotifications.hidden = true
+//            delay(0.001) {
+//                print(self.btnMyTeam.frame)
+//
+//            self.btnMyTeam.frame = CGRectMake(self.btnMyTeam.frame.origin.x,self.btnMyTeam.frame.origin.y, 0, self.btnMyTeam.frame.size.height)
+//            self.btnNotifications.frame = CGRectMake(self.view.frame.size.width/2-self.btnNotifications.frame.size.width/2,self.btnNotifications.frame.origin.y, self.btnNotifications.frame.size.width, self.btnNotifications.frame.size.height)
+//            print(self.btnMyTeam.frame)
+//            }
+//
         }
         
         
@@ -191,7 +197,12 @@ class dashboardViewController: UIViewController {
         let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
         print(usertype)
         if "\(usertype)" == "4" {
-            btnNotifications.frame = CGRectMake(self.view.frame.size.width/2-btnNotifications.frame.size.width/2,btnNotifications.frame.origin.y, btnNotifications.frame.size.width, btnNotifications.frame.size.height)
+            btnMyTeam.hidden = true
+            self.btnMyTeam.frame = CGRectMake(self.btnMyTeam.frame.origin.x,self.btnMyTeam.frame.origin.y, 0, self.btnMyTeam.frame.size.height)
+            delay(0.001) {
+            self.btnNotifications.frame = CGRectMake(self.view.frame.size.width/2-self.btnNotifications.frame.size.width/2,self.btnNotifications.frame.origin.y, self.btnNotifications.frame.size.width, self.btnNotifications.frame.size.height)
+                self.btnNotifications.hidden = false
+            }
         }
         if val == 0 {
             val += 1
@@ -329,45 +340,72 @@ class dashboardViewController: UIViewController {
         }
         database.close()
         
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
         do {
             try database.executeUpdate("DELETE FROM notificationtype", values: nil )
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
+        database.close()
         
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
         do {
             try database.executeUpdate("DELETE FROM notificationActiveUserList", values: nil )
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
+        database.close()
         
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
         do {
             try database.executeUpdate("DELETE FROM notificationsTable", values: nil )
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
+        database.close()
         
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
         do {
             try database.executeUpdate("DELETE FROM sync", values: nil )
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
         }
         do {
             try database.executeUpdate("DELETE FROM assignedTaskList", values: nil )
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
+        database.close()
     NSUserDefaults.standardUserDefaults().removeObjectForKey("UserTypeId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("userLoggedIn")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_id")
-         NSUserDefaults.standardUserDefaults().removeObjectForKey("sync")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("sync")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_IsSignIn")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_ActivityId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_LoginId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_FullName")
-        NSUserDefaults.standardUserDefaults().removeObjectForKey("activeUserListTimeStamp")
-        NSUserDefaults.standardUserDefaults().removeObjectForKey("notificationsTimeStamp")
-        NSUserDefaults.standardUserDefaults().removeObjectForKey("teamTimeStamp")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("activeUserListTimeStamp")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("notificationsTimeStamp")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("teamTimeStamp")
         
         let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")
         self.presentViewController(loginVC!, animated: true, completion: nil)

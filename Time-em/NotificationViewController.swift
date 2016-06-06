@@ -36,6 +36,20 @@ class NotificationViewController: UIViewController {
         notificationBtn.backgroundColor = highLightedColor
         
         // Do any additional setup after loading the view.
+        main {
+            let api = ApiRequest()
+            api.GetNotificationType()
+            
+            let userIdStr = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+            let TimeStamp:String!
+            if NSUserDefaults.standardUserDefaults().objectForKey("activeUserListTimeStamp") != nil {
+                TimeStamp = NSUserDefaults.standardUserDefaults().objectForKey("activeUserListTimeStamp") as? String
+            
+            }else{
+                TimeStamp = ""
+            }
+            api.getActiveUserList(userIdStr!,timeStamp:TimeStamp)
+        }
     }
     override func viewWillAppear(animated: Bool) {
          dateTimeLbl.text = self.dateConversion(NSDate()) as String
@@ -133,6 +147,10 @@ class NotificationViewController: UIViewController {
         {
             cell = MGSwipeTableCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: reuseIdentifier)
         }
+        for object: AnyObject in cell.contentView.subviews {
+            object.removeFromSuperview()
+        }
+        
         cell.backgroundColor = UIColor.clearColor()
         let dict:NSMutableDictionary  = notificationsListArray[indexPath.row] as! NSMutableDictionary
         cell.selectionStyle = .None
