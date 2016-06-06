@@ -20,7 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         window?.backgroundColor = UIColor.blackColor()
         self.createCopyOfDatabaseIfNeeded()
-        
+        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+
         let storyboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let navigationController:UINavigationController = storyboard.instantiateInitialViewController() as! UINavigationController
         let rootViewController:UIViewController!

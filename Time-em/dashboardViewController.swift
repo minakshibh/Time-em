@@ -42,6 +42,7 @@ class dashboardViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         sideView.hidden = true
+
         if fromPassCodeView != "yes" {
             if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
         
@@ -93,6 +94,8 @@ class dashboardViewController: UIViewController {
         btnMyTasks.backgroundColor = UIColor.clearColor()
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
+//        setNotificationButton()
+
     }
     func checkActiveInacive() {
         if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
@@ -135,7 +138,6 @@ class dashboardViewController: UIViewController {
 //            }
 //
         }
-        
         
         if NSUserDefaults.standardUserDefaults().valueForKey("sync") != nil {
             let syncStr = "\(NSUserDefaults.standardUserDefaults().valueForKey("sync"))"
@@ -195,16 +197,7 @@ class dashboardViewController: UIViewController {
     centerButtonImageTopAndTextBottom(btnSetting, frame: btnSetting.frame, text: "Settings", textColor: UIColor.whiteColor(), font: myFont, image: UIImage(named: "setting")!, forState: .Normal)
     }
     
-        let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
-        print(usertype)
-        if "\(usertype)" == "4" {
-            btnMyTeam.hidden = true
-            self.btnMyTeam.frame = CGRectMake(self.btnMyTeam.frame.origin.x,self.btnMyTeam.frame.origin.y, 0, self.btnMyTeam.frame.size.height)
-            delay(0.001) {
-            self.btnNotifications.frame = CGRectMake(self.view.frame.size.width/2-self.btnNotifications.frame.size.width/2,self.btnNotifications.frame.origin.y, self.btnNotifications.frame.size.width, self.btnNotifications.frame.size.height)
-                self.btnNotifications.hidden = false
-            }
-        }
+    setNotificationButton()
         if val == 0 {
             val += 1
             if Reachability.DeviceType.IS_IPHONE_5 {
@@ -213,6 +206,20 @@ class dashboardViewController: UIViewController {
             
         }
     }
+    
+    func setNotificationButton () {
+        let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
+        print(usertype)
+        if "\(usertype)" == "4" {
+            btnMyTeam.hidden = true
+            self.btnMyTeam.frame = CGRectMake(self.btnMyTeam.frame.origin.x,self.btnMyTeam.frame.origin.y, 0, self.btnMyTeam.frame.size.height)
+            delay(0.001) {
+                self.btnNotifications.frame = CGRectMake(self.view.frame.size.width/2-self.btnNotifications.frame.size.width/2,self.btnNotifications.frame.origin.y, self.btnNotifications.frame.size.width, self.btnNotifications.frame.size.height)
+                self.btnNotifications.hidden = false
+            }
+        }
+    }
+    
     func registerUserDevice () {
         let uuidStr =  "\( NSUserDefaults.standardUserDefaults().valueForKey("tokenString")!)"
 
