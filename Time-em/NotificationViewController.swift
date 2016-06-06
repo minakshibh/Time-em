@@ -17,6 +17,9 @@ class NotificationViewController: UIViewController {
     @IBOutlet var messagesBtn: UIButton!
     @IBOutlet var viewsBtn: UIButton!
     @IBOutlet var notificationsTableView: UITableView!
+    var selectedNotificationData:NSMutableDictionary! = [:]
+
+    
     let normalColor = UIColor(red: 32/255, green: 44/255, blue: 66/255, alpha: 1)
     let highLightedColor = UIColor(red: 35/255, green: 51/255, blue: 86/255, alpha: 1)
     let fontSmall: UIFont = UIFont(name: "HelveticaNeue", size: 11.0)!
@@ -260,10 +263,23 @@ class NotificationViewController: UIViewController {
         return cell
     }
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let dict:NSMutableDictionary  = notificationsListArray[indexPath.row] as! NSMutableDictionary
+            delay(0.001){
+                let dict:NSMutableDictionary  = self.notificationsListArray[indexPath.row] as! NSMutableDictionary
+                self.selectedNotificationData = dict
+                self.performSegueWithIdentifier("notificationDetail", sender: self)
+            }
+        
+        
 //        selectedUser =  "\(dict["Id"]!)"
 //        selectedUserFullname = "\(dict["FullName"]!)"
 //        self.performSegueWithIdentifier("myteam_mytask", sender: self)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "notificationDetail"{
+            let nDetail = (segue.destinationViewController as! NotificationDetailViewController)
+            nDetail.notificationData = self.selectedNotificationData
+        }
     }
 
     func dateConversion(date : NSDate) -> NSString {
