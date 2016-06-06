@@ -82,7 +82,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             if Reachability.DeviceType.IS_IPHONE_5 {
                 return 43
             }
-            return 60
+            return 53
         }
         if Reachability.DeviceType.IS_IPHONE_5 {
             return 43
@@ -186,6 +186,8 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
                 let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
                 cell.detailTextLabel?.font = myFont
                 
+              }else if Reachability.DeviceType.IS_IPHONE_6 {
+                cell.detailTextLabel?.frame = CGRectMake((cell.detailTextLabel?.frame.origin.x)!, (cell.detailTextLabel?.frame.origin.y)!, (cell.detailTextLabel?.frame.size.width)!+150, (cell.detailTextLabel?.frame.size.height)!+25)
                 }
                 cell.detailTextLabel?.numberOfLines = 2
             }
@@ -257,8 +259,12 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             cell.detailTextLabel?.text = "\(finalStrSignInAt)\n\(finalStrSignOutAt)"
             if  Reachability.DeviceType.IS_IPHONE_5 {
             let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
-            cell.detailTextLabel?.font = myFont
-                
+                cell.detailTextLabel?.font = myFont
+            }else if Reachability.DeviceType.IS_IPHONE_6 {
+                cell.detailTextLabel?.frame = CGRectMake((cell.detailTextLabel?.frame.origin.x)!, (cell.detailTextLabel?.frame.origin.y)!, (cell.detailTextLabel?.frame.size.width)!+150, (cell.detailTextLabel?.frame.size.height)!+25)
+                let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
+                cell.detailTextLabel?.font = myFont
+
             }
             cell.detailTextLabel?.numberOfLines = 2
             }

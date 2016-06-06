@@ -18,7 +18,7 @@ class resetPinAndPassword: UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    btnSend.layer.cornerRadius = 4
+        
         if resetType == "Password" {
             resetInfoLbl.text = "Enter your email to reset your password."
             titleBar.text = "Forgot Password?"
@@ -27,6 +27,9 @@ class resetPinAndPassword: UIViewController
             titleBar.text = "Forgot Pin?"
         }
         
+    }
+    override func viewWillAppear(animated: Bool) {
+        btnSend.layer.cornerRadius = 4
     }
     @IBAction func send(sender: AnyObject) {
         let emailIs = self.emailTxt.text!

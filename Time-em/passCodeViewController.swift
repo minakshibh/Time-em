@@ -60,7 +60,7 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
     @IBAction func btnForgotPin(sender: AnyObject) {
         let resetPinAndPasswordView = resetPinAndPassword()
        
-        self.navigationController?.pushViewController(resetPinAndPasswordView, animated: true)
+//        self.navigationController?.pushViewController(resetPinAndPasswordView, animated: true)
     }
 
     
