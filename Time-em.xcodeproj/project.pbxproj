@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		18527EF71D0550A20079A6F8 /* NotificationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18527EF61D0550A20079A6F8 /* NotificationDetailViewController.swift */; };
+		188F3EC01D069EAA00AC73DC /* UserGraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188F3EBF1D069EAA00AC73DC /* UserGraphViewController.swift */; };
+		188F3EC41D069F6F00AC73DC /* UserGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 188F3EC31D069F6F00AC73DC /* UserGraphViewController.xib */; };
+		188F3EC61D06A02300AC73DC /* CAPSPageMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188F3EC51D06A02300AC73DC /* CAPSPageMenu.swift */; };
+		188F3EC91D06A03400AC73DC /* WeekView.m in Sources */ = {isa = PBXBuildFile; fileRef = 188F3EC81D06A03400AC73DC /* WeekView.m */; };
+		188F3ECB1D06A19500AC73DC /* UserLoginGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 188F3ECA1D06A19500AC73DC /* UserLoginGraphViewController.xib */; };
+		188F3ECD1D06A1A900AC73DC /* UserLoginGraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188F3ECC1D06A1A900AC73DC /* UserLoginGraphViewController.swift */; };
 		CF8C3A7207A9E1766E908182 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B46B6A6CC4439FFDFDB3D8D0 /* Pods.framework */; };
 		D92804A01CF5AE0100F99D28 /* BarCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D928049F1CF5AE0100F99D28 /* BarCodeViewController.swift */; };
 		D93AC0BD1CF47F08009E73F5 /* Website-Under-Construction.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D93AC0BC1CF47F08009E73F5 /* Website-Under-Construction.jpg */; };
@@ -81,6 +87,13 @@
 
 /* Begin PBXFileReference section */
 		18527EF61D0550A20079A6F8 /* NotificationDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationDetailViewController.swift; sourceTree = "<group>"; };
+		188F3EBF1D069EAA00AC73DC /* UserGraphViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserGraphViewController.swift; sourceTree = "<group>"; };
+		188F3EC31D069F6F00AC73DC /* UserGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserGraphViewController.xib; sourceTree = "<group>"; };
+		188F3EC51D06A02300AC73DC /* CAPSPageMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAPSPageMenu.swift; sourceTree = "<group>"; };
+		188F3EC71D06A03400AC73DC /* WeekView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeekView.h; sourceTree = "<group>"; };
+		188F3EC81D06A03400AC73DC /* WeekView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeekView.m; sourceTree = "<group>"; };
+		188F3ECA1D06A19500AC73DC /* UserLoginGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserLoginGraphViewController.xib; sourceTree = "<group>"; };
+		188F3ECC1D06A1A900AC73DC /* UserLoginGraphViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserLoginGraphViewController.swift; sourceTree = "<group>"; };
 		87F93E81A9465F77B7D4BC43 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		B46B6A6CC4439FFDFDB3D8D0 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D928049F1CF5AE0100F99D28 /* BarCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarCodeViewController.swift; sourceTree = "<group>"; };
@@ -170,6 +183,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		188F3EBE1D069E7300AC73DC /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */,
+				188F3EBF1D069EAA00AC73DC /* UserGraphViewController.swift */,
+				188F3EC31D069F6F00AC73DC /* UserGraphViewController.xib */,
+				188F3ECC1D06A1A900AC73DC /* UserLoginGraphViewController.swift */,
+				188F3ECA1D06A19500AC73DC /* UserLoginGraphViewController.xib */,
+				188F3EC51D06A02300AC73DC /* CAPSPageMenu.swift */,
+				188F3EC71D06A03400AC73DC /* WeekView.h */,
+				188F3EC81D06A03400AC73DC /* WeekView.m */,
+			);
+			name = Dashboard;
+			sourceTree = "<group>";
+		};
 		2179CA4CC73A2FC955B7E10B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -246,8 +274,6 @@
 				D9AD39151CE5A26D005D5029 /* modal classes */,
 				D97005131CE3357D0036B5EA /* API Data */,
 				D97005121CE3357B0036B5EA /* Controller */,
-				D97004FA1CE31A1E0036B5EA /* AppDelegate.swift */,
-				D97004FE1CE31A1F0036B5EA /* Main.storyboard */,
 				D93AC0BC1CF47F08009E73F5 /* Website-Under-Construction.jpg */,
 				D97005011CE31A1F0036B5EA /* Assets.xcassets */,
 				D97005031CE31A1F0036B5EA /* LaunchScreen.storyboard */,
@@ -261,13 +287,15 @@
 		D97005121CE3357B0036B5EA /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				D97004FE1CE31A1F0036B5EA /* Main.storyboard */,
+				D97004FA1CE31A1E0036B5EA /* AppDelegate.swift */,
+				D970050E1CE31B150036B5EA /* LoginViewController.swift */,
+				188F3EBE1D069E7300AC73DC /* Dashboard */,
 				D965A2071CF82ECD00AB11C0 /* notifications */,
 				D928049D1CF5ADC000F99D28 /* BarCodeScanning */,
 				F947CF461CF309C8009635B4 /* Reset Pin/Password */,
 				D9DA400D1CE9933C00D6B572 /* my-Tasks */,
 				D9963C281CFC3E1000537699 /* passCodeView */,
-				D970050E1CE31B150036B5EA /* LoginViewController.swift */,
-				D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -463,6 +491,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				188F3EC41D069F6F00AC73DC /* UserGraphViewController.xib in Resources */,
+				188F3ECB1D06A19500AC73DC /* UserLoginGraphViewController.xib in Resources */,
 				D97005051CE31A1F0036B5EA /* LaunchScreen.storyboard in Resources */,
 				D97005021CE31A1F0036B5EA /* Assets.xcassets in Resources */,
 				D94A421B1CF33EFC002EF50B /* Time-em.sqlite in Resources */,
@@ -538,6 +568,7 @@
 				D965A2091CF82EF000AB11C0 /* NotificationViewController.swift in Sources */,
 				D9DA402A1CE9B28A00D6B572 /* UIImage+CL.m in Sources */,
 				F9F012961CF33489003698C6 /* DPDKeyboardListener.swift in Sources */,
+				188F3ECD1D06A1A900AC73DC /* UserLoginGraphViewController.swift in Sources */,
 				F9F0129D1CF334A2003698C6 /* DropDownCell.swift in Sources */,
 				F947CF481CF30A03009635B4 /* resetPinAndPassword.swift in Sources */,
 				F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */,
@@ -547,6 +578,7 @@
 				F9F012951CF33489003698C6 /* DPDConstants.swift in Sources */,
 				D9AD391F1CE5CD8D005D5029 /* dashboardViewController.swift in Sources */,
 				D9DA40281CE9B28A00D6B572 /* NSDictionary+CL.m in Sources */,
+				188F3EC01D069EAA00AC73DC /* UserGraphViewController.swift in Sources */,
 				D9DA401A1CE9B27100D6B572 /* DayTitleLabel.m in Sources */,
 				D92804A01CF5AE0100F99D28 /* BarCodeViewController.swift in Sources */,
 				F9F0129F1CF33DA5003698C6 /* TaskDetailViewController.swift in Sources */,
@@ -557,6 +589,7 @@
 				D9AD39171CE5A2B9005D5029 /* User.swift in Sources */,
 				D9DA400F1CE9AE4900D6B572 /* myTasksViewController.swift in Sources */,
 				D97004FB1CE31A1F0036B5EA /* AppDelegate.swift in Sources */,
+				188F3EC61D06A02300AC73DC /* CAPSPageMenu.swift in Sources */,
 				D976610E1CF6C9E7004E4552 /* BarcodeDetailViewController.swift in Sources */,
 				18527EF71D0550A20079A6F8 /* NotificationDetailViewController.swift in Sources */,
 				D9D378031CEC92C8002E24D9 /* TaskData.swift in Sources */,
@@ -564,6 +597,7 @@
 				D9DA40291CE9B28A00D6B572 /* UIColor+CL.m in Sources */,
 				D9D378051CECAC6D002E24D9 /* MyTeamViewController.swift in Sources */,
 				D9DA401D1CE9B27800D6B572 /* CLWeeklyCalendarView.m in Sources */,
+				188F3EC91D06A03400AC73DC /* WeekView.m in Sources */,
 				D965A20C1CF8334C00AB11C0 /* sendNotificationViewController.swift in Sources */,
 				F95985EA1CEDC022002582C4 /* AddNewTaskViewController.swift in Sources */,
 				D97661191CF706DF004E4552 /* Reachability.swift in Sources */,

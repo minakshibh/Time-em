@@ -38,7 +38,8 @@ class dashboardViewController: UIViewController {
     @IBOutlet var imagePersonMenu: UIImageView!
     var fromPassCodeView:String!
     @IBOutlet var lblNameSlideMenu: UILabel!
-    
+    var pageMenu : CAPSPageMenu?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         sideView.hidden = true
@@ -78,8 +79,44 @@ class dashboardViewController: UIViewController {
         btnSignInOutPOPUP.layer.masksToBounds = true
 
         registerUserDevice()
-        
+        self.implementGraphViews()
     }
+    
+    func implementGraphViews(){
+        // MARK: - Scroll menu setup
+        
+        // Initialize view controllers to display and place in array
+        var controllerArray : [UIViewController] = []
+        
+        let controller1 : UserGraphViewController = UserGraphViewController(nibName: "UserGraphViewController", bundle: nil)
+        controller1.title = "UserGraph"
+        controllerArray.append(controller1)
+        
+        let controller2 : UserLoginGraphViewController = UserLoginGraphViewController(nibName: "UserLoginGraphViewController", bundle: nil)
+        controller2.title = "UserLoginGraph"
+        controllerArray.append(controller2)
+        
+        // Customize menu (Optional)
+        let parameters: [CAPSPageMenuOption] = [
+            .ScrollMenuBackgroundColor(UIColor(red: 30.0/255.0, green: 30.0/255.0, blue: 30.0/255.0, alpha: 1.0)),
+            .ViewBackgroundColor(UIColor.whiteColor()),
+            .SelectionIndicatorColor(UIColor(red: 60.0/255.0, green: 177.0/255.0, blue: 203.0/255.0, alpha: 1.0)),
+            .BottomMenuHairlineColor(UIColor(red: 70.0/255.0, green: 70.0/255.0, blue: 80.0/255.0, alpha: 1.0)),
+            .MenuItemFont(UIFont(name: "HelveticaNeue", size: 15.0)!),
+            .MenuHeight(40.0),
+            .MenuItemWidth(self.view.frame.size.width/2 - 40),
+            .CenterMenuItems(true)
+        ]
+        
+        // Initialize scroll menu
+        pageMenu = CAPSPageMenu(viewControllers: controllerArray, frame: CGRectMake(0.0, btnSignInOut2.frame.size.height + btnSignInOut2.frame.origin.y, self.view.frame.width, 270), pageMenuOptions: parameters)
+        
+        self.addChildViewController(pageMenu!)
+        self.view.addSubview(pageMenu!.view)
+        
+        pageMenu!.didMoveToParentViewController(self)
+    }
+    
     
     func showMenuFunction() {
         
@@ -530,6 +567,13 @@ class dashboardViewController: UIViewController {
 
     }
     
+    // MARK: - Container View Controller
+    override func shouldAutomaticallyForwardAppearanceMethods() -> Bool {
+        return true
+    }
     
+    override func shouldAutomaticallyForwardRotationMethods() -> Bool {
+        return true
+    }
 
 }
