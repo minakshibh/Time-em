@@ -20,8 +20,8 @@ class NotificationViewController: UIViewController {
     var selectedNotificationData:NSMutableDictionary! = [:]
 
     
-    let normalColor = UIColor(red: 32/255, green: 44/255, blue: 66/255, alpha: 1)
-    let highLightedColor = UIColor(red: 35/255, green: 51/255, blue: 86/255, alpha: 1)
+    let normalColor = UIColor(red: 146/255, green: 146/255, blue: 146/255, alpha: 1)
+    let highLightedColor = UIColor.darkGrayColor()
     let fontSmall: UIFont = UIFont(name: "HelveticaNeue", size: 11.0)!
     let font: UIFont = UIFont(name: "HelveticaNeue", size: 15.0)!
 

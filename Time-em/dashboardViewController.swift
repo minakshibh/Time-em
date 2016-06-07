@@ -93,7 +93,7 @@ class dashboardViewController: UIViewController {
         btnNotifications.backgroundColor = UIColor.clearColor()
         btnMyTasks.backgroundColor = UIColor.clearColor()
         
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+//        NSNotificationCenter.defaultCenter().removeObserver(self)
 //        setNotificationButton()
 
     }
@@ -221,9 +221,13 @@ class dashboardViewController: UIViewController {
     }
     
     func registerUserDevice () {
-        let uuidStr =  "\( NSUserDefaults.standardUserDefaults().valueForKey("tokenString")!)"
-
-        let currentUserId = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
+        print( NSUserDefaults.standardUserDefaults().valueForKey("tokenString"))
+        var uuidStr:String = ""
+        if NSUserDefaults.standardUserDefaults().valueForKey("tokenString") != nil {
+         uuidStr =  "\(NSUserDefaults.standardUserDefaults().valueForKey("tokenString")!)"
+        }
+        print(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id"))
+        let currentUserId:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
         let api = ApiRequest()
         api.registerUserDevice(currentUserId, DeviceUId: uuidStr, DeviceOS: "IOS")
     }

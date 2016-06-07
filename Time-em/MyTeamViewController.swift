@@ -64,7 +64,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
 
         let databaseFetch = databaseFile()
         teamDataArray = databaseFetch.getTeamForUserID(logedInUserId!)
-        print(teamDataArray)
+//        print(teamDataArray)
         tableView.reloadData()
     }
     

@@ -11,6 +11,7 @@ import JLToast
 
 class sendNotificationViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate{
 
+    @IBOutlet var heightConstraintFortxtComment: NSLayoutConstraint!
      @IBOutlet var txtCommentHeightConstraint: NSLayoutConstraint!
     @IBOutlet var taskDropDown: UIButton!
     let dropDown = DropDown()

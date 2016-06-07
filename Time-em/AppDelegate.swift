@@ -62,6 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     //Called if unable to register for APNS.
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+
         print(error)
     }
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
@@ -73,7 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         {
             let alertMsg = info["alert"] as! String
             var alert: UIAlertView!
-            alert = UIAlertView(title: "", message: alertMsg, delegate: nil, cancelButtonTitle: "OK")
+            alert = UIAlertView(title: "Time-em", message: alertMsg, delegate: nil, cancelButtonTitle: "OK")
             alert.show()
         }
     }
