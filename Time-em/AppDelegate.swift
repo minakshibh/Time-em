@@ -8,14 +8,16 @@
 
 import UIKit
 import AVFoundation
-
+import TSMessages
+ 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var storyboard:UIStoryboard?
     let navigator:UINavigationController? = nil
-
+    
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         window?.backgroundColor = UIColor.blackColor()
@@ -72,7 +74,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let temp : NSDictionary = userInfo
         if let info = userInfo["aps"] as? Dictionary<String, AnyObject>
         {
-            let alertMsg = info["alert"] as! String
+              let alertMsg = info["alert"] as! String
+//            TSMessage.showNotificationWithTitle("Time'em", subtitle: alertMsg, type:TSMessageNotificationType.Warning)
+          
             var alert: UIAlertView!
             alert = UIAlertView(title: "Time-em", message: alertMsg, delegate: nil, cancelButtonTitle: "OK")
             alert.show()

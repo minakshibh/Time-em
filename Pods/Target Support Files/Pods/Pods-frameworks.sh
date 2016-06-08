@@ -86,20 +86,24 @@ strip_invalid_archs() {
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/Alamofire.framework"
   install_framework "Pods/FMDB.framework"
+  install_framework "Pods/HexColors.framework"
   install_framework "Pods/JLToast.framework"
   install_framework "Pods/KGModal.framework"
   install_framework "Pods/MBProgressHUD.framework"
   install_framework "Pods/MGSwipeTableCell.framework"
   install_framework "Pods/RSBarcodes_Swift.framework"
   install_framework "Pods/SCRecorder.framework"
+  install_framework "Pods/TSMessages.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/Alamofire.framework"
   install_framework "Pods/FMDB.framework"
+  install_framework "Pods/HexColors.framework"
   install_framework "Pods/JLToast.framework"
   install_framework "Pods/KGModal.framework"
   install_framework "Pods/MBProgressHUD.framework"
   install_framework "Pods/MGSwipeTableCell.framework"
   install_framework "Pods/RSBarcodes_Swift.framework"
   install_framework "Pods/SCRecorder.framework"
+  install_framework "Pods/TSMessages.framework"
 fi

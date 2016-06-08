@@ -213,8 +213,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         var alert :UIAlertController!
         if status.lowercaseString.rangeOfString("success") != nil {
             alert = UIAlertController(title: "Time'em", message: "Successfull", preferredStyle: UIAlertControllerStyle.Alert)
-            self.dismissViewControllerAnimated(true, completion: {});
-            self.navigationController?.popViewControllerAnimated(true)
+            self.performSegueWithIdentifier("barcodeToTeam", sender: self)
 
         }else{
             alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
@@ -224,4 +223,10 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         getDataFromDatabse()
     }
 
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+         if segue.identifier == "barcodeToTeam"{
+            let teamView = segue.destinationViewController as! MyTeamViewController
+            teamView.fromBarcode = "true"
+        }
+    }
 }
