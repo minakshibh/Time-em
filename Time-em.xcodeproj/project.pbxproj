@@ -185,6 +185,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		18B5C3331D084902009EA870 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */,
+				18CBF1201D07EE9C0072DF12 /* UserGraphViewController.swift */,
+				18CBF1211D07EE9C0072DF12 /* UserGraphViewController.xib */,
+				18CBF1221D07EE9C0072DF12 /* UserLoginGraphViewController.swift */,
+				18CBF1231D07EE9C0072DF12 /* UserLoginGraphViewController.xib */,
+				18CBF1281D07EEA90072DF12 /* WeekView.h */,
+				18CBF1291D07EEA90072DF12 /* WeekView.m */,
+				18CBF12B1D07EEBD0072DF12 /* CAPSPageMenu.swift */,
+			);
+			name = Dashboard;
+			sourceTree = "<group>";
+		};
 		2179CA4CC73A2FC955B7E10B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -260,9 +275,9 @@
 				D9DA40141CE9B26500D6B572 /* Calander */,
 				D9AD39151CE5A26D005D5029 /* modal classes */,
 				D97005131CE3357D0036B5EA /* API Data */,
-				D97005121CE3357B0036B5EA /* Controller */,
 				D97004FA1CE31A1E0036B5EA /* AppDelegate.swift */,
 				D97004FE1CE31A1F0036B5EA /* Main.storyboard */,
+				D97005121CE3357B0036B5EA /* Controller */,
 				D93AC0BC1CF47F08009E73F5 /* Website-Under-Construction.jpg */,
 				D97005011CE31A1F0036B5EA /* Assets.xcassets */,
 				D97005031CE31A1F0036B5EA /* LaunchScreen.storyboard */,
@@ -276,21 +291,14 @@
 		D97005121CE3357B0036B5EA /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				D970050E1CE31B150036B5EA /* LoginViewController.swift */,
+				18B5C3331D084902009EA870 /* Dashboard */,
 				D965A2071CF82ECD00AB11C0 /* notifications */,
 				D928049D1CF5ADC000F99D28 /* BarCodeScanning */,
 				F947CF461CF309C8009635B4 /* Reset Pin/Password */,
 				D9DA400D1CE9933C00D6B572 /* my-Tasks */,
 				D9963C281CFC3E1000537699 /* passCodeView */,
 				D9E38F401D069E5200064802 /* MY PROFILE */,
-				D970050E1CE31B150036B5EA /* LoginViewController.swift */,
-				D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */,
-				18CBF1281D07EEA90072DF12 /* WeekView.h */,
-				18CBF1291D07EEA90072DF12 /* WeekView.m */,
-				18CBF12B1D07EEBD0072DF12 /* CAPSPageMenu.swift */,
-				18CBF1201D07EE9C0072DF12 /* UserGraphViewController.swift */,
-				18CBF1211D07EE9C0072DF12 /* UserGraphViewController.xib */,
-				18CBF1221D07EE9C0072DF12 /* UserLoginGraphViewController.swift */,
-				18CBF1231D07EE9C0072DF12 /* UserLoginGraphViewController.xib */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
