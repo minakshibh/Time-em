@@ -49,6 +49,7 @@
 		D9DA40281CE9B28A00D6B572 /* NSDictionary+CL.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40221CE9B28A00D6B572 /* NSDictionary+CL.m */; };
 		D9DA40291CE9B28A00D6B572 /* UIColor+CL.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40241CE9B28A00D6B572 /* UIColor+CL.m */; };
 		D9DA402A1CE9B28A00D6B572 /* UIImage+CL.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40261CE9B28A00D6B572 /* UIImage+CL.m */; };
+		D9E38F421D069EA000064802 /* myProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E38F411D069EA000064802 /* myProfileViewController.swift */; };
 		F947CF481CF30A03009635B4 /* resetPinAndPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = F947CF471CF30A03009635B4 /* resetPinAndPassword.swift */; };
 		F95985EA1CEDC022002582C4 /* AddNewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */; };
 		F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */; };
@@ -134,6 +135,7 @@
 		D9DA40241CE9B28A00D6B572 /* UIColor+CL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+CL.m"; sourceTree = "<group>"; };
 		D9DA40251CE9B28A00D6B572 /* UIImage+CL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+CL.h"; sourceTree = "<group>"; };
 		D9DA40261CE9B28A00D6B572 /* UIImage+CL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+CL.m"; sourceTree = "<group>"; };
+		D9E38F411D069EA000064802 /* myProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = myProfileViewController.swift; sourceTree = "<group>"; };
 		D9E9D44030C43EDD49F563DA /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		F947CF471CF30A03009635B4 /* resetPinAndPassword.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = resetPinAndPassword.swift; sourceTree = "<group>"; };
 		F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewTaskViewController.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 				F947CF461CF309C8009635B4 /* Reset Pin/Password */,
 				D9DA400D1CE9933C00D6B572 /* my-Tasks */,
 				D9963C281CFC3E1000537699 /* passCodeView */,
+				D9E38F401D069E5200064802 /* MY PROFILE */,
 				D970050E1CE31B150036B5EA /* LoginViewController.swift */,
 				D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */,
 			);
@@ -350,6 +353,14 @@
 				D9DA40261CE9B28A00D6B572 /* UIImage+CL.m */,
 			);
 			name = Misc;
+			sourceTree = "<group>";
+		};
+		D9E38F401D069E5200064802 /* MY PROFILE */ = {
+			isa = PBXGroup;
+			children = (
+				D9E38F411D069EA000064802 /* myProfileViewController.swift */,
+			);
+			name = "MY PROFILE";
 			sourceTree = "<group>";
 		};
 		F947CF461CF309C8009635B4 /* Reset Pin/Password */ = {
@@ -532,6 +543,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9E38F421D069EA000064802 /* myProfileViewController.swift in Sources */,
 				D9963C271CFC3E0400537699 /* DigitField.swift in Sources */,
 				D9DA40191CE9B27100D6B572 /* DailyCalendarView.m in Sources */,
 				D9DA40271CE9B28A00D6B572 /* NSDate+CL.m in Sources */,

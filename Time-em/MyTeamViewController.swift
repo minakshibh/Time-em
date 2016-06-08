@@ -16,6 +16,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     var teamDataArray:NSMutableArray! = []
     var selectedUser:String!
     var selectedUserFullname:String!
+    var fromBarcode:String!
     
     @IBOutlet var btnUserDetail: UIButton!
     
@@ -307,6 +308,14 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     
     
     @IBAction func btnBack(sender: AnyObject) {
+        if fromBarcode != nil {
+            if fromBarcode == "true" {
+                self.performSegueWithIdentifier("teamTodashboard", sender: self)
+                
+                return
+            }
+        }
+        
         self.dismissViewControllerAnimated(true, completion: {});
         
     }
@@ -331,7 +340,12 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             mytask.currentUserID = selectedUser
             mytask.currentUserFullName = selectedUserFullname
             
+        }else if segue.identifier == "teamTodashboard"{
+            let dash = (segue.destinationViewController as! dashboardViewController)
+            
+            
         }
+        
     }
     
     func signInOutResponse(notification:NSNotification) {

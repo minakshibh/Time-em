@@ -477,8 +477,22 @@ class ApiRequest: NSObject {
                                 UserId = 0
                             }
                             
+                            let  isActive: Int!
+                            if let field = dict[i].valueForKey("isActive")  {
+                                isActive = field as! Int
+                            }else{
+                                isActive = 0
+                            }
+                            
+                            
+                            
                             
                             if TaskIdsArr.containsObject("\(Id!)") {
+                                if isActive == 0 {
+                                    let databse = databaseFile()
+                                    databse.deleteTaskFromDatabse("\(TaskId!)")
+                                    continue
+                                }
                                 do {
                                     try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId , Id])
                                 } catch let error as NSError {
@@ -486,6 +500,9 @@ class ApiRequest: NSObject {
                                 }
                                 
                             }else{
+                                if isActive == 0 {
+                                    continue
+                                }
                                 
                                 do {
                                     //                    try database.executeUpdate("delete * from  tasksData", values: nil)

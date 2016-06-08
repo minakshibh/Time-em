@@ -1031,5 +1031,23 @@ class databaseFile: NSObject {
         }
         database.close()
     }
+    
+    func deleteTaskFromDatabse(id:String) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("delete  from  tasksData WHERE TaskId=?", values: [id])
+        } catch let error as NSError {
+            print("### failed: \(error.localizedDescription)")
+        }
+        database.close()
+    }
 }
 
