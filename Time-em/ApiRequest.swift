@@ -48,9 +48,9 @@ class ApiRequest: NSObject {
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Id)", forKey: "currentUser_id")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.IsSignIn)", forKey: "currentUser_IsSignIn")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.ActivityId)", forKey: "currentUser_ActivityId")
-             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginId)", forKey: "currentUser_LoginId")
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginId)", forKey: "currentUser_LoginId")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.FullName)", forKey: "currentUser_FullName")
-             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserTypeId)", forKey: "UserTypeId")
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserTypeId)", forKey: "UserTypeId")
             
             var dictionary:NSMutableDictionary = [:]
             dictionary = currentUsers.returnDict()
@@ -109,6 +109,13 @@ class ApiRequest: NSObject {
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
+            
+            do {
+                try database.executeUpdate("create table TasksList(timespent text, date text)", values: nil)
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
+            
             
             do {
                 try database.executeUpdate("insert into UserData (userId, userData, loggedInUser) values (?, ?, ?)", values: [currentUsers.LoginId, encodedData, "true"])
@@ -740,6 +747,59 @@ class ApiRequest: NSObject {
                 MBProgressHUD.hideHUDForView(view, animated: true)
         }
     }
+    
+    func fetchUserTaskGraphDataFromAPI(userId:String,view:UIView)  {
+        let notificationKey = "com.time-em.getUserTaskGraphData"
+        
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/usertask/UserTaskGraph", parameters: ["userId":userId])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
+                            let userInfo = ["response" : "FAILURE"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            return
+                        }
+                        
+                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
+                            
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            let dict = JSON.valueForKey("TasksList") as! NSArray
+                            
+                            let database = databaseFile()
+                            database.insertUserTaskGraphData(dict)
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+                        }else{
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+    }
+    
+    
     //                        let user = NSUserDefaults.standardUserDefaults()
     //                        user.setObject("\(JSON.valueForKey("ActivityId") ?? "")", forKey: "ActivityId")
     //                        user.setObject("\(JSON.valueForKey("Company") ?? "")", forKey: "Company")

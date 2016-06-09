@@ -458,6 +458,103 @@ class databaseFile: NSObject {
         database.close()
     }
     
+    
+    
+    func insertUserTaskGraphData(dataArr:NSArray)  {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        
+        let taskListArr:NSMutableArray = []
+        do {
+            let rs = try database.executeQuery("select * from TasksList", values: nil)
+            while rs.next() {
+                let x = rs.stringForColumn("date")
+                taskListArr.addObject(x)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+        for i in 0 ..< dataArr.count
+        {
+            let dict = dataArr[i]
+
+            
+            let  timespent:Int!
+            if let field = dict.valueForKey("timespent")  {
+                timespent = field as! Int
+            }else{
+                timespent = 0
+            }
+            
+            
+            
+            let  dateStr:String
+            if let field = dict.valueForKey("date") as? String {
+                dateStr = field
+            }else{
+                dateStr = ""
+            }
+            
+            
+            if taskListArr.containsObject("\(dateStr)") {
+                do {
+                    try database.executeUpdate("UPDATE TasksList SET timespent=?, date=? WHERE date=?", values: [timespent,dateStr,dateStr])
+                } catch let error as NSError {
+                    print("failed: \(error.localizedDescription)")
+                }
+                
+            }else{
+                do {
+                    try database.executeUpdate("insert into TasksList (timespent , date ) values (?, ?)", values: [timespent , dateStr])
+                    
+                } catch let error as NSError {
+                    print("failed: \(error.localizedDescription)")
+                }
+            }
+        }
+        database.close()
+    }
+    
+    
+    func getUserTaskGraphData() -> NSMutableArray{
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        var array:NSMutableArray = []
+        do {
+            let rs = try database.executeQuery("select * from TasksList", values: nil)
+            
+            while rs.next() {
+                let dict:NSMutableDictionary = [:]
+                let timespent = rs.stringForColumn("timespent")
+                let dateStr = rs.stringForColumn("date")
+                
+                dict.setValue(timespent, forKey: "timespent")
+                dict.setValue(dateStr, forKey: "date")
+                array.addObject(dict)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+            array = []
+        }
+        database.close()
+        return array
+    }
+    
+    
+    
     func insertAssignedListData(dataArr:NSArray)  {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")

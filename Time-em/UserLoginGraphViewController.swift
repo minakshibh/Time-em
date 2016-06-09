@@ -23,7 +23,10 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
     var scrollView: UIScrollView!
     var bottomLine: UILabel!
     var dateArray : NSArray!
-    
+    var currentDateLbl: UILabel!
+    var linesBackView : UIView!
+    var shiftsLblBackView : UIView!
+
     
     override func viewDidLoad() {
         //print("Second VC will appear")
@@ -59,29 +62,43 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
         
         scrollView = UIScrollView.init(frame: CGRectMake(20, 0, self.view.frame.size.width-20, 200))
         scrollView.backgroundColor = UIColor.clearColor()
-        dateArray = WeekView.showdates()
+        
+//        dateArray = WeekView.showdatesWithStartDate(startDateStr as String, endDate: endDateStr as String)
         
         if (dateArray == nil || dateArray.count == 0) {
             return
         }
+        
+        let timeSpentArray : NSMutableArray = []
+        
+        for num in 0 ..< dateArray.count
+        {
+            timeSpentArray.addObject(dateArray[num].valueForKey("timespent")!)
+        }
+        
+        let intMax = timeSpentArray.valueForKeyPath("@max.self")!
+        let maxTimeSpentvalue = CGFloat(intMax as! NSNumber)
+        
+        var maxHours: CGFloat = CGFloat(maxTimeSpentvalue as NSNumber)
+        let partsOfYaxix : CGFloat = 6
+        
+        if (maxTimeSpentvalue % partsOfYaxix != 0)
+        {
+            maxHours = CGFloat( Int(maxTimeSpentvalue/partsOfYaxix) * Int(partsOfYaxix)) + partsOfYaxix
+        }
+        
         var Xaxis: CGFloat = 10
         var bottomLineY :CGFloat = 100
         let dateViewWidth: CGFloat = scrollView.frame.size.width/7
         let maxHeightGraph: CGFloat = 120.0
-        let signInHeightGraph: CGFloat = 100.0
-        let signOutHeightGraph: CGFloat = 80.0
-        
-        let maxHours: CGFloat = 120.0
-        let partsOfYaxix : CGFloat = 6
         let YaxixRatio : CGFloat = maxHours/partsOfYaxix
         let ratio: CGFloat = maxHeightGraph/partsOfYaxix
         var scrollXaxis: CGFloat = 10
-        
-        
-        
+        let signInHeightGraph: CGFloat = 100.0
+        let signOutHeightGraph: CGFloat = 80.0
+                
         for i in 0 ..< dateArray.count {
             let DateView = UIView.init(frame: CGRectMake(Xaxis, 0, dateViewWidth, scrollView.frame.size.height))
-            //DateView.backgroundColor = UIColor.grayColor()
             scrollView.addSubview(DateView)
             DateView.tag = i
             Xaxis = Xaxis+dateViewWidth
@@ -114,8 +131,6 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
                 DateLabel.textColor = UIColor.whiteColor()
             }
             
-            
-            
             DateView.addSubview(DateLabel)
             
             let dayName = UILabel.init(frame: CGRectMake(0,28, DateView.frame.size.width, 25))
@@ -125,35 +140,37 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
             dayName.font = UIFont.systemFontOfSize(12.0)
             DateView.addSubview(dayName)
             
-            //            let maxBarHeight : CGFloat = 24.0
-            //            let diceRoll = Int(arc4random_uniform(24) + 1)
-            //            let barheight : CGFloat = CGFloat(5 * maxBarHeight)
+            let signInHours :CGFloat = CGFloat(((dateArray.objectAtIndex(i).valueForKey("timespent")!) as? NSNumber)!)
+            let signInHeightGraph : CGFloat = CGFloat(signInHours * (maxHeightGraph/maxHours))
+            
             let signInBarView  = UIView.init(frame: CGRectMake(DateView.frame.size.width/2-5, DateView.frame.size.height-signInHeightGraph, 10, signInHeightGraph))
             signInBarView.layer.cornerRadius = 3
             signInBarView.backgroundColor = UIColor(red: 210.0/255.0, green: 52.0/255.0, blue: 53.0/255.0, alpha: 1.0)
             DateView.addSubview(signInBarView)
             
-            
+            let signOutHours :CGFloat = CGFloat(((dateArray.objectAtIndex(i).valueForKey("timespent")!) as? NSNumber)!)
+            let signOutHeightGraph : CGFloat = CGFloat(signOutHours * (maxHeightGraph/maxHours))
+
             let signOutBarView  = UIView.init(frame: CGRectMake(signInBarView.frame.size.width + signInBarView.frame.origin.x, DateView.frame.size.height-signOutHeightGraph, 10, signOutHeightGraph))
             signOutBarView.layer.cornerRadius = 3
             signOutBarView.backgroundColor = UIColor(red: 219.0/255.0, green: 219.0/255.0, blue: 219.0/255.0, alpha: 1.0)
             DateView.addSubview(signOutBarView)
-            
+
             bottomLineY = DateView.frame.size.height
             
         }
         
         scrollView.showsHorizontalScrollIndicator = false
-        //        scrollView.setContentOffset(CGPoint(x: scrollXaxis, y: 150), animated: true)
-        
         scrollView.contentSize = CGSizeMake(Xaxis,150)
         
+        ///// scroll view moves to current date /////
         let toVisible :CGRect = CGRectMake(scrollXaxis, 0, scrollView.frame.size.width, scrollView.frame.size.height);
-        
         scrollView .scrollRectToVisible(toVisible, animated: true)
-        //        [scrollView scrollRectToVisible:toVisible animated:YES];
         
         
+        
+        //// bottom line of scale showx x-axis ////
+
         bottomLine = UILabel.init(frame: CGRectMake(scrollView.frame.origin.x, bottomLineY, self.view.frame.size.width - scrollView.frame.origin.x, 1))
         bottomLine.backgroundColor = UIColor(red: 204.0/255.0, green: 204.0/255.0, blue: 204.0/255.0, alpha: 1.0)
         
@@ -161,7 +178,10 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
         bgLabel.backgroundColor = UIColor(red: 219.0/255.0, green: 219.0/255.0, blue: 219.0/255.0, alpha: 1.0)
         self.view.addSubview(bgLabel)
         
-        let currentDateLbl = UILabel.init(frame: CGRectMake(0,50, self.view.frame.size.width, 20))
+       
+        //// Current date label in center ////
+
+        currentDateLbl = UILabel.init(frame: CGRectMake(0,50, self.view.frame.size.width, 20))
         currentDateLbl.textColor = UIColor.blackColor()
         currentDateLbl.textAlignment = .Center
         currentDateLbl.font = UIFont.systemFontOfSize(11.0)
@@ -171,13 +191,19 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
         let dateStr: String = dateFormatter.stringFromDate(NSDate())
         currentDateLbl.text = "\(dateStr)"
         
+        
+        //// Shifts label with color symbols ////
+        
         var firstLblposition :CGFloat = 11
-        let labelY :CGFloat = bottomLine.frame.origin.y + 4
+        let viewFrameY :CGFloat = bottomLine.frame.origin.y + 4
+        let labelY :CGFloat = 0
         let labelWidth :CGFloat = 50
         let padding :CGFloat = 7
         let colorLblSize :CGFloat = 11
-        let colorLblY :CGFloat = bottomLine.frame.origin.y + 8
+        let colorLblY :CGFloat = 4
         
+        shiftsLblBackView = UIView.init(frame: CGRectMake(0, viewFrameY, self.view.frame.size.width, 20))
+        shiftsLblBackView.backgroundColor = UIColor.clearColor()
         
         for j in 0 ..< 2 {
             
@@ -191,7 +217,7 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
             colorLbl.backgroundColor = UIColor.blackColor()
             
             if j == 0 {
-                nameLbl.frame = CGRectMake(self.view!.frame.size.width - padding - labelWidth, labelY, labelWidth, 20)
+                nameLbl.frame = CGRectMake(shiftsLblBackView.frame.size.width - padding - labelWidth, labelY, labelWidth, shiftsLblBackView.frame.size.height)
                 colorLbl.frame = CGRectMake(nameLbl.frame.origin.x - padding - colorLblSize , colorLblY, colorLblSize, colorLblSize)
                 firstLblposition = colorLbl.frame.origin.x
                 
@@ -206,10 +232,15 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
                 nameLbl.text = "Sign in"
                 colorLbl.backgroundColor = UIColor(red: 210.0/255.0, green: 52.0/255.0, blue: 53.0/255.0, alpha: 1.0)
             }
-            self.view.addSubview(nameLbl)
-            self.view.addSubview(colorLbl)
+            shiftsLblBackView.addSubview(nameLbl)
+            shiftsLblBackView.addSubview(colorLbl)
             
         }
+        
+       //// Measurement divider lines ////
+        
+        linesBackView = UIView.init(frame: CGRectMake(0, 0, 25, scrollView.frame.size.height))
+        linesBackView.backgroundColor = UIColor.clearColor()
         
         bottomLineY = bottomLine.frame.origin.y
         var Yaxis : CGFloat = bottomLineY
@@ -220,28 +251,31 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
             lineLbl.backgroundColor = UIColor.blackColor()
             
             lineLbl.frame = CGRectMake(0,Yaxis, 10, 0.5)
-            lineNumberLbl.frame = CGRectMake(10,Yaxis-5, 15, 10)
+            lineNumberLbl.frame = CGRectMake(10,Yaxis-5, 20, 10)
             lineNumberLbl .text = "\(k * Int(YaxixRatio))"
-            lineNumberLbl.font = UIFont.systemFontOfSize(6.0)
-            
-            
+            lineNumberLbl.font = UIFont.systemFontOfSize(7.0)
+            lineNumberLbl.minimumScaleFactor = 0.2
+            lineNumberLbl.adjustsFontSizeToFitWidth = true;
             Yaxis = Yaxis - ratio
             
-            self.view.addSubview(lineLbl)
-            self.view.addSubview(lineNumberLbl)
+            linesBackView.addSubview(lineLbl)
+            linesBackView.addSubview(lineNumberLbl)
         }
         
-        
         self.view.addSubview(currentDateLbl)
+        self.view.addSubview(shiftsLblBackView)
         self.view.addSubview(bottomLine)
         self.view.addSubview(scrollView)
-        
+        self.view.addSubview(linesBackView)
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        scrollView.removeFromSuperview()
-        bottomLine.removeFromSuperview()
+        if (scrollView != nil){  scrollView.removeFromSuperview() }
+        if (bottomLine != nil){  bottomLine.removeFromSuperview() }
+        if (currentDateLbl != nil){  currentDateLbl.removeFromSuperview() }
+        if (linesBackView != nil){  linesBackView.removeFromSuperview() }
+        if (shiftsLblBackView != nil){  shiftsLblBackView.removeFromSuperview() }
         print("Second VC will disappear")
     }
     

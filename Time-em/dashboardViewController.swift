@@ -43,6 +43,9 @@ class dashboardViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         sideView.hidden = true
+        
+//        self.fetchUserTaskGraphDataFromAPI()
+//        self.fetchUserTaskGraphDataFromDatabase()
 
         if fromPassCodeView != "yes" {
             if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
@@ -69,7 +72,6 @@ class dashboardViewController: UIViewController {
                     }, completion: nil)
                 }
             }
-        
         }
        
 //        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(dashboardViewController.showMenuFunction), userInfo: nil, repeats: false)
@@ -115,6 +117,8 @@ class dashboardViewController: UIViewController {
         self.view.addSubview(pageMenu!.view)
         
         pageMenu!.didMoveToParentViewController(self)
+        self.view.sendSubviewToBack(pageMenu!.view)
+//        self.view.bringSubviewToFront( self.sideView)
     }
     
     
@@ -150,6 +154,9 @@ class dashboardViewController: UIViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
+        self.fetchUserTaskGraphDataFromAPI()
+        self.fetchUserTaskGraphDataFromDatabase()
+
         let currentUserName = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_FullName")  as? String
         lblNameSlideMenu.text = currentUserName!
         self.checkActiveInacive()
@@ -195,11 +202,11 @@ class dashboardViewController: UIViewController {
     
      func centerButtonImageTopAndTextBottom(button: UIButton, frame buttonFrame: CGRect, text textString: String, textColor: UIColor, font textFont: UIFont, image: UIImage, forState buttonState: UIControlState) {
         button.frame = buttonFrame
-        button.setTitleColor((textColor as! UIColor), forState:.Normal)
+        button.setTitleColor((textColor ), forState:.Normal)
         button.setTitle(String(textString), forState: .Normal)
-        button.titleLabel!.font = (textFont as! UIFont)
+        button.titleLabel!.font = (textFont )
         button.titleEdgeInsets = UIEdgeInsetsMake(0.0, -image.size.width, -25, 0.0)
-        button.setImage((image as! UIImage), forState: .Normal)
+        button.setImage((image ), forState: .Normal)
         button.imageEdgeInsets = UIEdgeInsetsMake(-15, 0.0, 0.0, -button.titleLabel!.bounds.size.width)
     }
     
@@ -269,7 +276,22 @@ class dashboardViewController: UIViewController {
         api.registerUserDevice(currentUserId, DeviceUId: uuidStr, DeviceOS: "IOS")
     }
     
+    func fetchUserTaskGraphDataFromAPI () {
+        let currentUserId:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
+        let api = ApiRequest()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.displayGraphResponse), name: "com.time-em.getUserTaskGraphData", object: nil)
+        api.fetchUserTaskGraphDataFromAPI(currentUserId ,view: self.view)
+    }
+    func fetchUserTaskGraphDataFromDatabase() {
+        let databaseFetch = databaseFile()
+        let userTaskGraphDataArray : NSMutableArray = databaseFetch.getUserTaskGraphData()
+        print("\(userTaskGraphDataArray)")
+    }
+
     
+    func displayGraphResponse() {
+        self.fetchUserTaskGraphDataFromDatabase()
+    }
     func refreshButtonTitleImage() {
         if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0" {
             self.btnSignInOutPOPUP.setTitle("SIGN IN", forState: .Normal)
@@ -452,6 +474,20 @@ class dashboardViewController: UIViewController {
             print("failed: \(error.localizedDescription)")
         }
         database.close()
+        
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("DELETE FROM TasksList", values: nil )
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+        
     NSUserDefaults.standardUserDefaults().removeObjectForKey("UserTypeId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("userLoggedIn")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_id")
@@ -474,19 +510,16 @@ class dashboardViewController: UIViewController {
     }
     func menuSlideBack() {
         UIView.animateWithDuration(0.3, delay: 0.1, options: .CurveEaseIn, animations: {() -> Void in
-            //   sideView.hidden=YES;
             var frame: CGRect = self.sideView.frame
             frame.origin.y = self.sideView.frame.origin.y
             frame.origin.x = self.view.frame.origin.x - self.sideView.frame.size.width
             self.sideView.frame = frame
-//            var btnmenu_frame: CGRect = self.btnMenu.frame
-//            btnmenu_frame.origin.x = self.btnMenu.frame.origin.x - self.sideView.frame.size.width
-//            self.btnMenu.frame = btnmenu_frame
             }, completion: {(finished: Bool) -> Void in
                 NSLog("Completed")
         })
     }
     @IBAction func btnMenu(sender: AnyObject) {
+        
         if sideView.frame.origin.x == 0 {
             self.menuSlideBack()
         }

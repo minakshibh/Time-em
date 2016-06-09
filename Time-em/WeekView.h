@@ -10,5 +10,6 @@
 
 @property (nonatomic, strong) NSMutableArray *weekViewDays;
 
-+ (NSMutableArray*) showdates;
++ (NSMutableArray*) showdates :(NSMutableArray*)array;
+
 @end
