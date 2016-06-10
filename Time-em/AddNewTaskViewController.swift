@@ -58,7 +58,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         addBtn.layer.borderColor = UIColor(red: 207, green: 237, blue: 244, alpha: 1).CGColor
         
         if createdDate != nil {
-            lblDate.text = createdDate!
+            lblDate.text = createdDate
         }else{
              lblDate.text = ""
         }

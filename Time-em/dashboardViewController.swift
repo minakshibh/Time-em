@@ -56,6 +56,7 @@ class dashboardViewController: UIViewController {
         self.view.bringSubviewToFront(btnNotifications)
         self.view.bringSubviewToFront(btnSetting)
         self.view.bringSubviewToFront(self.sideView)
+        self.view.bringSubviewToFront(btnMenu)
         
         if fromPassCodeView != "yes" {
             if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {

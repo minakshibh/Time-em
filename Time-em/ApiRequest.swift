@@ -689,8 +689,13 @@ class ApiRequest: NSObject {
                         if "\(JSON.valueForKey("isError")!)" == "0" {
                             
                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
-                            
-                            
+                            if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("user already signed in.") != nil{
+                                 let database = databaseFile()
+                                database.currentUserSignInSync()
+                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                MBProgressHUD.hideHUDForView(view, animated: true)
+                                return
+                            }
                             NSUserDefaults.standardUserDefaults().setObject("\(1)", forKey: "currentUser_IsSignIn")
                             let arr = JSON.valueForKey("SignedinUser") as? NSArray
                             
@@ -1159,19 +1164,21 @@ class ApiRequest: NSObject {
             let data, let response, let error) in
             
             guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
-                print("error")
+                print("error in sending notification")
                 print(response)
                   // original URL request
                 let msg = "failed"
                 let userInfo = ["response" : "\(msg)"]
                 NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                delay(0.00) {
                 MBProgressHUD.hideHUDForView(view, animated: true)
+                }
                 return
             }
             
             let dataString = NSString(data: data!, encoding: NSUTF8StringEncoding)
             
-            print(dataString!)
+            print(dataString)
             delay(0.001){
                 MBProgressHUD.hideHUDForView(view, animated: true)
                 if "\(dataString!.lowercaseString)".rangeOfString("an error occured") != nil{
