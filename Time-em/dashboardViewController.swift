@@ -155,7 +155,9 @@ class dashboardViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         self.fetchUserTaskGraphDataFromAPI()
+        self.fetchUserSignedGraphDataFromAPI()
         self.fetchUserTaskGraphDataFromDatabase()
+        self.fetchUserSignedGraphDataFromDatabase()
 
         let currentUserName = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_FullName")  as? String
         lblNameSlideMenu.text = currentUserName!
@@ -288,10 +290,29 @@ class dashboardViewController: UIViewController {
         print("\(userTaskGraphDataArray)")
     }
 
-    
     func displayGraphResponse() {
         self.fetchUserTaskGraphDataFromDatabase()
     }
+    
+    
+    
+    func fetchUserSignedGraphDataFromAPI () {
+        let currentUserId:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
+        let api = ApiRequest()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.displayUserSignedGraphResponse), name: "com.time-em.getUserSignedGraphData", object: nil)
+        api.fetchUserSignedGraphDataFromAPI(currentUserId ,view: self.view)
+    }
+    func fetchUserSignedGraphDataFromDatabase() {
+        let databaseFetch = databaseFile()
+        let userSignedGraphDataArray : NSMutableArray = databaseFetch.getUserSignedGraphData()
+        print("\(userSignedGraphDataArray)")
+    }
+    
+    func displayUserSignedGraphResponse() {
+        self.fetchUserSignedGraphDataFromDatabase()
+    }
+    
+    
     func refreshButtonTitleImage() {
         if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0" {
             self.btnSignInOutPOPUP.setTitle("SIGN IN", forState: .Normal)
@@ -470,6 +491,19 @@ class dashboardViewController: UIViewController {
         }
         do {
             try database.executeUpdate("DELETE FROM assignedTaskList", values: nil )
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
+        
+        
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("DELETE FROM UserSignedList", values: nil )
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }

@@ -25,7 +25,10 @@
 
 @synthesize weekViewDays;
 
-+ (NSMutableArray*) showdates :(NSMutableArray*)array{
+//+ (NSMutableArray*) showdates :(NSMutableArray*)array{
++ (NSMutableArray*) showdates :(NSMutableArray*)array graphTypeIsTasks:(BOOL)isTaskGraphType{
+
+    
 //+ (NSMutableArray*) showdates{
 //    NSString *startDateStr = [array.firstObject valueForKey:@"date"];
 //    NSString *endDateStr = [array.lastObject valueForKey:@"date"];
@@ -72,9 +75,6 @@
         newComponents.day = i;
         NSDate *date = [f dateFromString:[array[i]valueForKey:@"date"]];
         
-//        NSDate *date = [gregorianCalendar dateByAddingComponents:newComponents
-//                                                          toDate:startDate
-//                                                         options:0];
         NSDateFormatter *dateNameFormatter = [[NSDateFormatter alloc] init];
         [dateNameFormatter setDateFormat:@"EEEEE"];
         
@@ -89,8 +89,20 @@
         
         NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
         f.numberStyle = NSNumberFormatterDecimalStyle;
-        NSNumber *timespent = [f numberFromString:[NSString stringWithFormat:@"%@",[array[i]valueForKey:@"timespent" ]]];
-        [DateData setObject:timespent forKey:@"timespent"];
+        if (isTaskGraphType)
+        {
+            NSNumber *timespent = [f numberFromString:[NSString stringWithFormat:@"%@",[array[i]valueForKey:@"timespent" ]]];
+            [DateData setObject:timespent forKey:@"timespent"];
+
+        }
+        else{
+            NSNumber *signedin = [f numberFromString:[NSString stringWithFormat:@"%@",[array[i]valueForKey:@"signedin" ]]];
+            [DateData setObject:signedin forKey:@"signedin"];
+            
+            NSNumber *signedout = [f numberFromString:[NSString stringWithFormat:@"%@",[array[i]valueForKey:@"signedout" ]]];
+            [DateData setObject:signedout forKey:@"signedout"];
+        }
+        
         BOOL today = [[NSCalendar currentCalendar] isDateInToday:date];
         [DateData setObject:[NSNumber numberWithBool:today]forKey:@"isCurrentDate"];
         [dates addObject:DateData];

@@ -10,6 +10,6 @@
 
 @property (nonatomic, strong) NSMutableArray *weekViewDays;
 
-+ (NSMutableArray*) showdates :(NSMutableArray*)array;
++ (NSMutableArray*) showdates :(NSMutableArray*)array graphTypeIsTasks:(BOOL)isTaskGraphType;
 
 @end

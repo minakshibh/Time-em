@@ -522,6 +522,105 @@ class databaseFile: NSObject {
         database.close()
     }
     
+    func insertUserSignedGraphData(dataArr:NSArray)  {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        
+        let taskListArr:NSMutableArray = []
+        do {
+            let rs = try database.executeQuery("select * from UserSignedList", values: nil)
+            while rs.next() {
+                let x = rs.stringForColumn("date")
+                taskListArr.addObject(x)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+        for i in 0 ..< dataArr.count
+        {
+            let dict = dataArr[i]
+            
+            
+            let  signedin:Int!
+            if let field = dict.valueForKey("signedin")  {
+                signedin = field as! Int
+            }else{
+                signedin = 0
+            }
+            
+            let  signedout:Int!
+            if let field = dict.valueForKey("signedout")  {
+                signedout = field as! Int
+            }else{
+                signedout = 0
+            }
+            
+            
+            let  dateStr:String
+            if let field = dict.valueForKey("date") as? String {
+                dateStr = field
+            }else{
+                dateStr = ""
+            }
+            
+            
+            if taskListArr.containsObject("\(dateStr)") {
+                do {
+                    try database.executeUpdate("UPDATE UserSignedList SET signedin=?, signedout=?, date=? WHERE date=?", values: [signedin,signedout,dateStr,dateStr])
+                } catch let error as NSError {
+                    print("failed: \(error.localizedDescription)")
+                }
+                
+            }else{
+                do {
+                    try database.executeUpdate("insert into UserSignedList (signedin ,signedout , date ) values (?, ? ,?)", values: [signedin , signedout , dateStr])
+                    
+                } catch let error as NSError {
+                    print("failed: \(error.localizedDescription)")
+                }
+            }
+        }
+        database.close()
+    }
+    
+    func getUserSignedGraphData() -> NSMutableArray{
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        var array:NSMutableArray = []
+        do {
+            let rs = try database.executeQuery("select * from UserSignedList", values: nil)
+            
+            while rs.next() {
+                let dict:NSMutableDictionary = [:]
+                let dateStr = rs.stringForColumn("date")
+                let signedin = rs.stringForColumn("signedin")
+                let signedout = rs.stringForColumn("signedout")
+
+                dict.setValue(signedin, forKey: "signedin")
+                dict.setValue(signedout, forKey: "signedout")
+                dict.setValue(dateStr, forKey: "date")
+                array.addObject(dict)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+            array = []
+        }
+        database.close()
+        return array
+    }
     
     func getUserTaskGraphData() -> NSMutableArray{
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)

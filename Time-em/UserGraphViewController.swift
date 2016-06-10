@@ -70,7 +70,8 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
 //        let endDateStr : NSString = ((userTaskGraphDataArray.lastObject!["date"])! as? NSString)!
         
 //        dateArray = WeekView.showdatesWithStartDate(startDateStr as String, endDate: endDateStr as String)
-        dateArray = WeekView.showdates(userTaskGraphDataArray .mutableCopy() as! NSMutableArray)
+//        dateArray = WeekView.showdates(userTaskGraphDataArray .mutableCopy() as! NSMutableArray)
+        dateArray = WeekView.showdates(userTaskGraphDataArray .mutableCopy() as! NSMutableArray, graphTypeIsTasks: true)
 
         if (dateArray == nil || dateArray.count == 0) {
             return

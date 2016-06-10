@@ -11,7 +11,8 @@ import UIKit
 class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBOutlet var titleLabel: UILabel!
-    
+    var userSignedGraphDataArray : NSMutableArray = []
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
@@ -63,21 +64,39 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
         scrollView = UIScrollView.init(frame: CGRectMake(20, 0, self.view.frame.size.width-20, 200))
         scrollView.backgroundColor = UIColor.clearColor()
         
-//        dateArray = WeekView.showdatesWithStartDate(startDateStr as String, endDate: endDateStr as String)
-        
+        self.fetchUserSignedGraphDataFromDatabase()
+        if userSignedGraphDataArray.count == 0 { return }
+
+//        dateArray = WeekView.showdates(userSignedGraphDataArray .mutableCopy() as! NSMutableArray) 
+        dateArray = WeekView.showdates(userSignedGraphDataArray .mutableCopy() as! NSMutableArray, graphTypeIsTasks: false)
         if (dateArray == nil || dateArray.count == 0) {
             return
         }
         
-        let timeSpentArray : NSMutableArray = []
-        
+        let signedinArray : NSMutableArray = []
+        let signedoutArray : NSMutableArray = []
+
         for num in 0 ..< dateArray.count
         {
-            timeSpentArray.addObject(dateArray[num].valueForKey("timespent")!)
+            signedinArray.addObject(dateArray[num].valueForKey("signedin")!)
+            signedoutArray.addObject(dateArray[num].valueForKey("signedout")!)
         }
         
-        let intMax = timeSpentArray.valueForKeyPath("@max.self")!
-        let maxTimeSpentvalue = CGFloat(intMax as! NSNumber)
+        let signedinIntMax = signedinArray.valueForKeyPath("@max.self")!
+        let signedoutIntMax = signedoutArray.valueForKeyPath("@max.self")!
+        var maxTimeSpentvalue : CGFloat = 0
+        
+        
+        if CGFloat(signedinIntMax as! NSNumber) > CGFloat(signedoutIntMax as! NSNumber) {
+            let intMax = signedinArray.valueForKeyPath("@max.self")!
+            maxTimeSpentvalue = CGFloat(intMax as! NSNumber)
+
+        }
+        else{
+            let intMax = signedoutArray.valueForKeyPath("@max.self")!
+            maxTimeSpentvalue = CGFloat(intMax as! NSNumber)
+
+        }
         
         var maxHours: CGFloat = CGFloat(maxTimeSpentvalue as NSNumber)
         let partsOfYaxix : CGFloat = 6
@@ -94,9 +113,9 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
         let YaxixRatio : CGFloat = maxHours/partsOfYaxix
         let ratio: CGFloat = maxHeightGraph/partsOfYaxix
         var scrollXaxis: CGFloat = 10
-        let signInHeightGraph: CGFloat = 100.0
-        let signOutHeightGraph: CGFloat = 80.0
-                
+//        let signInHeightGraph: CGFloat = 100.0
+//        let signOutHeightGraph: CGFloat = 80.0
+        
         for i in 0 ..< dateArray.count {
             let DateView = UIView.init(frame: CGRectMake(Xaxis, 0, dateViewWidth, scrollView.frame.size.height))
             scrollView.addSubview(DateView)
@@ -140,7 +159,7 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
             dayName.font = UIFont.systemFontOfSize(12.0)
             DateView.addSubview(dayName)
             
-            let signInHours :CGFloat = CGFloat(((dateArray.objectAtIndex(i).valueForKey("timespent")!) as? NSNumber)!)
+            let signInHours :CGFloat = CGFloat(((dateArray.objectAtIndex(i).valueForKey("signedin")!) as? NSNumber)!)
             let signInHeightGraph : CGFloat = CGFloat(signInHours * (maxHeightGraph/maxHours))
             
             let signInBarView  = UIView.init(frame: CGRectMake(DateView.frame.size.width/2-5, DateView.frame.size.height-signInHeightGraph, 10, signInHeightGraph))
@@ -148,7 +167,7 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
             signInBarView.backgroundColor = UIColor(red: 210.0/255.0, green: 52.0/255.0, blue: 53.0/255.0, alpha: 1.0)
             DateView.addSubview(signInBarView)
             
-            let signOutHours :CGFloat = CGFloat(((dateArray.objectAtIndex(i).valueForKey("timespent")!) as? NSNumber)!)
+            let signOutHours :CGFloat = CGFloat(((dateArray.objectAtIndex(i).valueForKey("signedout")!) as? NSNumber)!)
             let signOutHeightGraph : CGFloat = CGFloat(signOutHours * (maxHeightGraph/maxHours))
 
             let signOutBarView  = UIView.init(frame: CGRectMake(signInBarView.frame.size.width + signInBarView.frame.origin.x, DateView.frame.size.height-signOutHeightGraph, 10, signOutHeightGraph))
@@ -279,4 +298,9 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
         print("Second VC will disappear")
     }
     
+    func fetchUserSignedGraphDataFromDatabase() {
+        let databaseFetch = databaseFile()
+        userSignedGraphDataArray = databaseFetch.getUserSignedGraphData()
+        print("\(userSignedGraphDataArray)")
+    }
 }
