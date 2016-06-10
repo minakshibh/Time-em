@@ -1,4 +1,4 @@
-//
+//30 45 68
 //  dashboardViewController.swift
 //  Time-em
 //
@@ -39,6 +39,7 @@ class dashboardViewController: UIViewController {
     var fromPassCodeView:String!
     @IBOutlet var lblNameSlideMenu: UILabel!
     var pageMenu : CAPSPageMenu?
+    var lblBackground:UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,9 +48,17 @@ class dashboardViewController: UIViewController {
 //        self.fetchUserTaskGraphDataFromAPI()
 //        self.fetchUserTaskGraphDataFromDatabase()
 
+         lblBackground = UILabel(frame: CGRectMake(0, self.view.bounds.height-btnMyTasks.frame.size.height, self.view.bounds.width, btnMyTasks.frame.size.height))
+        lblBackground.backgroundColor = UIColor(red: 30.0/255.0, green: 45.0/255.0, blue: 68.0/255.0, alpha: 1.0)
+        self.view.addSubview(lblBackground)
+        self.view.bringSubviewToFront(btnMyTasks)
+        self.view.bringSubviewToFront(btnMyTeam)
+        self.view.bringSubviewToFront(btnNotifications)
+        self.view.bringSubviewToFront(btnSetting)
+        self.view.bringSubviewToFront(self.sideView)
+        
         if fromPassCodeView != "yes" {
             if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
-        
             if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0" {
                 
                 self.viewStartWorking.alpha = 0
@@ -233,6 +242,8 @@ class dashboardViewController: UIViewController {
    override func viewDidAppear(animated: Bool) {
     
     if count == 0 {
+    
+   
         count += 1
     let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 9.0)!
     centerButtonImageTopAndTextBottom(btnMyTasks, frame: btnMyTasks.frame, text: "My Tasks", textColor: UIColor.whiteColor(), font: myFont, image: UIImage(named: "task")!, forState: .Normal)
@@ -242,7 +253,8 @@ class dashboardViewController: UIViewController {
     centerButtonImageTopAndTextBottom(btnNotifications, frame: btnNotifications.frame, text: "Notifications", textColor: UIColor.whiteColor(), font: myFont, image: UIImage(named: "notification_Dashboard")!, forState: .Normal)
     
     centerButtonImageTopAndTextBottom(btnSetting, frame: btnSetting.frame, text: "Settings", textColor: UIColor.whiteColor(), font: myFont, image: UIImage(named: "setting")!, forState: .Normal)
-    }
+        
+        lblBackground.frame = CGRectMake(0, self.view.bounds.height-btnMyTasks.frame.size.height, self.view.bounds.width, btnMyTasks.frame.size.height)    }
     
     setNotificationButton()
         if val == 0 {
