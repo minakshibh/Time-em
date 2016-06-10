@@ -26,6 +26,7 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
     var bottomLine: UILabel!
     var currentDateLbl: UILabel!
     var linesBackView : UIView!
+    var bgLabel : UILabel!
     var dateArray : NSMutableArray!
 
     
@@ -66,11 +67,10 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
         self.fetchUserTaskGraphDataFromDatabase()
         if userTaskGraphDataArray.count == 0 { return }
         
-//        let startDateStr : NSString = ((userTaskGraphDataArray.objectAtIndex(0)["date"])! as? NSString)!
-//        let endDateStr : NSString = ((userTaskGraphDataArray.lastObject!["date"])! as? NSString)!
-        
-//        dateArray = WeekView.showdatesWithStartDate(startDateStr as String, endDate: endDateStr as String)
-//        dateArray = WeekView.showdates(userTaskGraphDataArray .mutableCopy() as! NSMutableArray)
+        bgLabel = UILabel.init(frame: CGRectMake(0, 0, self.view.frame.size.width, 50))
+        bgLabel.backgroundColor = UIColor(red: 219.0/255.0, green: 219.0/255.0, blue: 219.0/255.0, alpha: 1.0)
+        self.view.addSubview(bgLabel)
+
         dateArray = WeekView.showdates(userTaskGraphDataArray .mutableCopy() as! NSMutableArray, graphTypeIsTasks: true)
 
         if (dateArray == nil || dateArray.count == 0) {
@@ -180,11 +180,6 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
         bottomLine = UILabel.init(frame: CGRectMake(scrollView.frame.origin.x, bottomLineY, self.view.frame.size.width - scrollView.frame.origin.x, 1))
         bottomLine.backgroundColor = UIColor(red: 204.0/255.0, green: 204.0/255.0, blue: 204.0/255.0, alpha: 1.0)
         
-        let bgLabel = UILabel.init(frame: CGRectMake(0, 0, self.view.frame.size.width, 50))
-        bgLabel.backgroundColor = UIColor(red: 219.0/255.0, green: 219.0/255.0, blue: 219.0/255.0, alpha: 1.0)
-        self.view.addSubview(bgLabel)
-        
-        
         //// Current date label in center ////
         currentDateLbl = UILabel.init(frame: CGRectMake(0,50, self.view.frame.size.width, 20))
         currentDateLbl.textColor = UIColor.blackColor()
@@ -233,6 +228,8 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
         if (bottomLine != nil){  bottomLine.removeFromSuperview() }
         if (currentDateLbl != nil){  currentDateLbl.removeFromSuperview() }
         if (linesBackView != nil){  linesBackView.removeFromSuperview() }
+        if (bgLabel != nil){  bgLabel.removeFromSuperview() }
+
         print("Second VC will disappear")
     }
     

@@ -81,7 +81,6 @@ class dashboardViewController: UIViewController {
         btnSignInOutPOPUP.layer.masksToBounds = true
 
         registerUserDevice()
-        self.implementGraphViews()
     }
     
     func implementGraphViews(){
@@ -253,6 +252,8 @@ class dashboardViewController: UIViewController {
             }
             
         }
+    self.implementGraphViews()
+
     }
     
     func setNotificationButton () {
@@ -602,7 +603,6 @@ class dashboardViewController: UIViewController {
         do {
             let rs = try database.executeQuery("select * from userdata", values: nil)
             while rs.next() {
-                let x = rs.stringForColumn("userId")
                 let y = rs.dataForColumn("userData")
                 let userDict:NSMutableDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSMutableDictionary
                 print(userDict)
@@ -620,7 +620,7 @@ class dashboardViewController: UIViewController {
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
         
-        var alert :UIAlertController!
+//        var alert :UIAlertController!
         
 //            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
         self.view.makeToast("\(status)")
