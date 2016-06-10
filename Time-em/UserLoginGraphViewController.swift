@@ -27,6 +27,7 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
     var currentDateLbl: UILabel!
     var linesBackView : UIView!
     var shiftsLblBackView : UIView!
+    var bgLabel : UILabel!
 
     
     override func viewDidLoad() {
@@ -193,7 +194,7 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
         bottomLine = UILabel.init(frame: CGRectMake(scrollView.frame.origin.x, bottomLineY, self.view.frame.size.width - scrollView.frame.origin.x, 1))
         bottomLine.backgroundColor = UIColor(red: 204.0/255.0, green: 204.0/255.0, blue: 204.0/255.0, alpha: 1.0)
         
-        let bgLabel = UILabel.init(frame: CGRectMake(0, 0, self.view.frame.size.width, 50))
+        bgLabel = UILabel.init(frame: CGRectMake(0, 0, self.view.frame.size.width, 50))
         bgLabel.backgroundColor = UIColor(red: 219.0/255.0, green: 219.0/255.0, blue: 219.0/255.0, alpha: 1.0)
         self.view.addSubview(bgLabel)
         
@@ -295,6 +296,8 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
         if (currentDateLbl != nil){  currentDateLbl.removeFromSuperview() }
         if (linesBackView != nil){  linesBackView.removeFromSuperview() }
         if (shiftsLblBackView != nil){  shiftsLblBackView.removeFromSuperview() }
+        if (bgLabel != nil){  bgLabel.removeFromSuperview() }
+        
         print("Second VC will disappear")
     }
     
