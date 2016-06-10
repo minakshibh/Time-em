@@ -138,16 +138,8 @@ class dashboardViewController: UIViewController {
 //            }
 //
         }
-        
-        if NSUserDefaults.standardUserDefaults().valueForKey("sync") != nil {
-            let syncStr = "\(NSUserDefaults.standardUserDefaults().valueForKey("sync"))"
-            if syncStr == "yes" {
-                imageSyncMenu.image = UIImage(named: "sync- red")
-            }else{
-                imageSyncMenu.image = UIImage(named: "sync - green")
-
-            }
-        }
+        refreshsyncImage()
+       
         
         
     }
@@ -168,7 +160,17 @@ class dashboardViewController: UIViewController {
     
     
     
-    
+    func refreshsyncImage (){
+        if NSUserDefaults.standardUserDefaults().valueForKey("sync") != nil {
+            let syncStr = "\(NSUserDefaults.standardUserDefaults().valueForKey("sync")!)"
+            if syncStr == "yes" {
+                imageSyncMenu.image = UIImage(named: "sync- red")
+            }else{
+                imageSyncMenu.image = UIImage(named: "sync - green")
+                
+            }
+        }
+    }
     
     func iphone5UiAdjustments() {
 //        imageWorkunderConst.frame = CGRectMake(imageWorkunderConst.frame.origin.x, imageWorkunderConst.frame.origin.y, imageWorkunderConst.frame.size.width, imageWorkunderConst.frame.size.height+10)
@@ -305,12 +307,17 @@ class dashboardViewController: UIViewController {
         
         
         if buttontitle.lowercaseString == "sign in" {
+            main{
             let api = ApiRequest()
             api.signInUser(userId, LoginId: loginid, view: self.view)
+            }
         }else{
+            main{
+
             let api = ApiRequest()
             
             api.signOutUser(userId, LoginId: loginid, ActivityId: ActivityId, view: self.view)
+            }
         }
         
         
@@ -511,11 +518,11 @@ class dashboardViewController: UIViewController {
         
         var alert :UIAlertController!
         
-            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
-            
+//            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+        self.view.makeToast("\(status)")
         
-        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+//        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//        self.presentViewController(alert, animated: true, completion: nil)
         
         viewStartWorking.alpha = 1
         
@@ -527,7 +534,7 @@ class dashboardViewController: UIViewController {
         })
         self.checkActiveInacive()
         refreshButtonTitleImage()
-
+        refreshsyncImage()
     }
     
     

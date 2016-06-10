@@ -10,6 +10,8 @@ import Foundation
 import MobileCoreServices
 import AVKit
 import AVFoundation
+import JLToast
+import Toast_Swift
 
 class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate{
     
@@ -26,6 +28,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     @IBOutlet var lblbackground: UIView!
     @IBOutlet var scrollView: UIScrollView!
     @IBOutlet var titleLbl: UILabel!
+     @IBOutlet var lblDate: UILabel!
     let dropDown = DropDown()
     let imagePicker = UIImagePickerController()
     var imageData = NSData()
@@ -54,8 +57,14 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         addBtn.layer.borderWidth = 1
         addBtn.layer.borderColor = UIColor(red: 207, green: 237, blue: 244, alpha: 1).CGColor
         
+        if createdDate != nil {
+            lblDate.text = createdDate!
+        }else{
+             lblDate.text = ""
+        }
         
         if isEditting == "true" {
+            lblDate.hidden = true
             self.titleLbl.text = "Edit Task"
             self.selectTaskTxt.text = "\(editTaskDict.valueForKey("TaskName")!)"
             self.commentsTxt.text = "\(editTaskDict.valueForKey("Comments")!)"
@@ -70,21 +79,107 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             let month = dateStr.componentsSeparatedByString("/")[1]
             let year = dateStr.componentsSeparatedByString("/")[2]
             self.createdDate = "\(month)-\(day)-\(year)"
-            
-            let imageUrl = "\(editTaskDict.valueForKey("AttachmentImageFile")!)"
-            
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                if let url = NSURL(string: imageUrl) {
-                    if let data = NSData(contentsOfURL: url) {
-                        self.uploadedImage.image = UIImage(data: data)
-                        self.uploadImageView.hidden = false
-                    }
-                }
-                dispatch_async(dispatch_get_main_queue(), {
-                    
-                });
-            }
             self.editId = "\(editTaskDict.valueForKey("Id")!)"
+            
+            //--------
+            if editTaskDict.valueForKey("AttachmentImageFile") != nil {
+                
+                if editTaskDict.valueForKey("AttachmentImageFile") as? String != "" {
+                    
+                    let database = databaseFile()
+                    let dataArr:NSMutableArray!
+                    dataArr = database.getImageForUrl("\(editTaskDict.valueForKey("AttachmentImageFile")!)",imageORvideo:"AttachmentImageFile")
+                    
+                    if dataArr.count > 0 {
+                        if "\(dataArr[0])" != "" {
+                            let data:NSData = dataArr[0] as! NSData
+                            let userImageData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
+                            self.uploadedImage.image = UIImage(data: userImageData)
+                            self.uploadImageView.hidden = false
+                            return
+                        }
+                    }
+                    
+                    let url = NSURL(string: "\(self.editTaskDict.valueForKey("AttachmentImageFile")!)")
+                    
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                        let data = NSData(contentsOfURL: url!)
+                        dispatch_async(dispatch_get_main_queue(), {
+                            if self.uploadedImage != nil && data != nil {
+                                self.uploadedImage.image = UIImage(data: data!)
+                                self.uploadImageView.hidden = false
+                            }
+                            let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
+                            let database = databaseFile()
+                            database.addImageToTask("\(self.editTaskDict.valueForKey("AttachmentImageFile")!)", AttachmentImageData: encodedData, imageORvideo:"AttachmentImageFile")
+                        });
+                    }
+                }else{
+                    uploadedImage.hidden = true
+                }
+                
+            }else{
+                uploadedImage.hidden = true
+            }
+            
+            
+            
+            if editTaskDict.valueForKey("AttachmentVideoFile") != nil {
+                
+                if editTaskDict.valueForKey("AttachmentVideoFile") as? String != "" {
+                    
+                    // check and get image from databse
+                    let database = databaseFile()
+                    let dataArr:NSMutableArray!
+                    dataArr = database.getImageForUrl("\(editTaskDict.valueForKey("AttachmentVideoFile")!)",imageORvideo:"AttachmentVideoFile")
+                    if dataArr.count > 0 {
+                        if "\(dataArr[0])" != "" {
+                            let url = NSURL(string: "\(self.editTaskDict.valueForKey("AttachmentVideoFile")!)")
+                            
+                            
+                            let data:NSData = dataArr[0] as! NSData
+                            let userVideoData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
+                            videoData = userVideoData
+                            return
+                        }
+                    }
+                    
+                    
+                    
+                    //                downloadVideo  and save to databse
+                    
+                    let url = NSURL(string: "\(self.editTaskDict.valueForKey("AttachmentVideoFile")!)")
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                        
+                        let data = NSData(contentsOfURL: url!)
+                        dispatch_async(dispatch_get_main_queue(), {
+                            
+                            //----
+                            let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
+                            let database = databaseFile()
+                            database.addImageToTask("\(self.editTaskDict.valueForKey("AttachmentVideoFile")!)", AttachmentImageData: encodedData,imageORvideo:"AttachmentVideoFile")
+                            self.videoData = data!
+                        });
+                    }
+                    
+                }
+            }
+            //------
+//            let imageUrl = "\(editTaskDict.valueForKey("AttachmentImageFile")!)"
+//            
+//            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+//                if let url = NSURL(string: imageUrl) {
+//                    if let data = NSData(contentsOfURL: url) {
+//                        self.uploadedImage.image = UIImage(data: data)
+//                        self.uploadImageView.hidden = false
+//                    }
+//                }
+//                dispatch_async(dispatch_get_main_queue(), {
+//                    
+//                });
+//            }
+            
+            
             
         }
         
@@ -154,6 +249,26 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         scrollView.scrollEnabled = false
         scrollView.delegate = self
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        
+        let numberToolbar: UIToolbar = UIToolbar(frame: CGRectMake(0, 0, 320, 50))
+        numberToolbar.barStyle = .BlackTranslucent
+        numberToolbar.items = [UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(myProfileViewController.cancelNumberPad)), UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil), UIBarButtonItem(title: "Done", style: .Done, target: self, action: #selector(myProfileViewController.doneWithNumberPad))]
+        numberToolbar.sizeToFit()
+        numberOfHoursTxt.inputAccessoryView = numberToolbar
+    }
+    func cancelNumberPad() {
+        numberOfHoursTxt.resignFirstResponder()
+        scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+        scrollView.scrollEnabled = false
+        numberOfHoursTxt.text = ""
+    }
+    
+    func doneWithNumberPad() {
+        numberOfHoursTxt.resignFirstResponder()
+        scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+        scrollView.scrollEnabled = false
+        
     }
     
     func getDataFUnction(){
@@ -297,7 +412,29 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         main {
             self.lblbackground.frame.origin.y += 150
         }
+        if self.taskId == "" {
+            let alert = UIAlertController(title: "Time'em", message: "Select notification type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
         let taskIds:NSString = self.taskId
+        if commentsTxt.text.characters.count == 0 {
+            let alert = UIAlertController(title: "Time'em", message: "Enter some comments  before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+         let comments = self.commentsTxt.text! as String
+        
+        if numberOfHoursTxt.text?.characters.count == 0 {
+            let alert = UIAlertController(title: "Time'em", message: "Enter hours for tasks before continue", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        let timespend = self.numberOfHoursTxt.text! as String
+
         var userId:String = ""
         let activityId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_ActivityId") as! String
         if let field = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")
@@ -307,8 +444,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             userId = ""
         }
         let  taskName = self.selectTaskTxt.text! as String
-        let timespend = self.numberOfHoursTxt.text! as String
-        let comments = self.commentsTxt.text! as String
+       
         let createdDates = self.createdDate! as String
         print(createdDates)
         let assignedTasks =  ApiRequest()
@@ -317,8 +453,11 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             imageData = UIImagePNGRepresentation(uploadedImage.image!)!
         }
         var videoRecordedData = NSData()
-        if isVideoRecorded {
+//        if isVideoRecorded {
+        let count = videoData.length / sizeof(UInt8)
+        if count > 0 {
             videoRecordedData = videoData
+            isVideoRecorded = true
         }
         assignedTasks.AddUpdateNewTask(imageData,videoData: videoRecordedData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: editId as String, view: self.view, isVideoRecorded:isVideoRecorded)
         
@@ -338,6 +477,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             self.navigationController?.popViewControllerAnimated(true)
             self.dismissViewControllerAnimated(true, completion: {});
         NSUserDefaults.standardUserDefaults().setObject("true", forKey: "isEditingOrAdding")
+        }else{
+            let alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
         }
         
 
@@ -397,6 +540,29 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
 //        scrollView.contentSize = CGSizeMake(0, 0)
     }
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+       
+//        limit for not data entered more than 24
+        if textField == numberOfHoursTxt {
+//            if Int(string) > 2 && numberOfHoursTxt.text?.characters.count == 0{
+//                JLToast.makeText("maximum hours allowed is 24hrs", duration: JLToastDelay.ShortDelay)
+//                return false
+//            }
+            if numberOfHoursTxt.text?.characters.count == 1 {
+                let str = "\(numberOfHoursTxt.text!)\(string)"
+                if Int(str) > 24 {
+                    self.view.makeToast("maximum hours allowed is 24hrs", duration: 2.0, position: .Top)
+                  JLToast.makeText("maximum hours allowed is 24hrs", duration: JLToastDelay.ShortDelay)
+                    return false
+                    
+                }
+            }
+            
+            if numberOfHoursTxt.text?.characters.count == 2 && string != ""{
+                self.view.makeToast("maximum hours allowed is 24hrs", duration: 2.0, position: .Top)
+                return false
+            }
+        }
+        
          if (string == "\n") {
          numberOfHoursTxt.resignFirstResponder()
             print(scrollView.setContentOffset)

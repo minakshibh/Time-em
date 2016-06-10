@@ -54,9 +54,12 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         if taskData.valueForKey("TaskName") != nil {
         
         var dateStr = "\(taskData.valueForKey("CreatedDate")!)".componentsSeparatedByString(" ")[0]
-        var dateArr = dateStr.componentsSeparatedByString("/") as? NSArray
+        let dateArr = dateStr.componentsSeparatedByString("/") as? NSArray
+            if dateStr.componentsSeparatedByString(" ").count == 1 {
+               dateStr = "\(dateArr![2])-\(dateArr![1])-\(dateArr![0])T00:00:00"
+            }else{
         dateStr = "\(dateArr![2])-\(dateArr![1])-\(dateArr![0])T\("\(taskData.valueForKey("CreatedDate")!)".componentsSeparatedByString(" ")[1])"
-        
+            }
         
                         let dateFormatter: NSDateFormatter = NSDateFormatter()
                         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
@@ -111,7 +114,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                     let data = NSData(contentsOfURL: url!)
                     dispatch_async(dispatch_get_main_queue(), {
-                        if self.imageView != nil {
+                        if self.imageView != nil && data != nil {
                        self.imageView.image = UIImage(data: data!)
                         }
                         let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
@@ -175,6 +178,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
 
     func generateThumbnail (url:NSURL) {
         do {
+            viewimageBackground.hidden = false
             let asset = AVURLAsset(URL: url, options: nil)
             let imgGenerator = AVAssetImageGenerator(asset: asset)
             let cgImage = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)

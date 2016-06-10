@@ -10,13 +10,17 @@ import UIKit
 import Alamofire
 import MBProgressHUD
 import FMDB
-import JLToast
+import Toast_Swift
 
 class ApiRequest: NSObject {
     
     func loginApi(loginId:String,password:String,view:UIView) {
         let notificationKey = "com.time-em.loginResponse"
-        
+        if Reachability.isConnectedToNetwork() == true {
+            print("Internet connection OK")
+        } else {
+           return
+        }
         MBProgressHUD.showHUDAddedTo(view, animated: true)
         
         Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/User/GetValidateUser", parameters: ["loginId":loginId,"password":password])
@@ -68,7 +72,7 @@ class ApiRequest: NSObject {
             }
             
             do {
-                try database.executeUpdate("create table tasksData(ActivityId text, AttachmentImageFile text, AttachmentVideoFile text ,Comments text, CreatedDate text, EndTime text,Id text, SelectedDate text, SignedInHours text,StartTime text, TaskId text, TaskName text,TimeSpent text, Token text, UserId text, AttachmentImageData text)", values: nil)
+                try database.executeUpdate("create table tasksData(ActivityId text, AttachmentImageFile text, AttachmentVideoFile text ,Comments text, CreatedDate text, EndTime text,Id text, SelectedDate text, SignedInHours text,StartTime text, TaskId text, TaskName text,TimeSpent text, Token text, UserId text, AttachmentImageData text,isVideoRecorded text)", values: nil)
                 } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
                 }
@@ -547,7 +551,7 @@ class ApiRequest: NSObject {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            view.makeToast("Internet connection FAILED. Request saved in sync")
             let array:NSMutableArray = []
             array.addObject(userId)
             array.addObject(LoginId)
@@ -558,8 +562,11 @@ class ApiRequest: NSObject {
             database.addDataToSync("signOutUser", data: array)
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
             
-            NSUserDefaults.standardUserDefaults().setObject("\(0)", forKey: "currentUser_IsSignIn")
+            NSUserDefaults.standardUserDefaults().setObject("0", forKey: "currentUser_IsSignIn")
             database.currentUserSignOutSync()
+            
+            let userInfo = ["response" : "Sign out successfully"]
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             return
         }
         
@@ -580,6 +587,19 @@ class ApiRequest: NSObject {
                         
                         
                         if "\(JSON.valueForKey("isError")!)" == "0" {
+                            
+                            if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("user already signed out.") != nil{
+                                let database = databaseFile()
+                                NSUserDefaults.standardUserDefaults().setObject("0", forKey: "currentUser_IsSignIn")
+                                database.currentUserSignOutSync()
+                                let userInfo = ["response" : "\(JSON.valueForKey("successfull")!)"]
+                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                MBProgressHUD.hideHUDForView(view, animated: true)
+
+                                return
+                            }
+                            
+                            
                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             NSUserDefaults.standardUserDefaults().setObject("\(0)", forKey: "currentUser_IsSignIn")
                             
@@ -622,7 +642,8 @@ class ApiRequest: NSObject {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            view.makeToast("Internet connection FAILED. Request saved in sync")
+
             let array:NSMutableArray = []
             array.addObject(userId)
             array.addObject(LoginId)
@@ -633,8 +654,10 @@ class ApiRequest: NSObject {
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
             
             
-            NSUserDefaults.standardUserDefaults().setObject("\(1)", forKey: "currentUser_IsSignIn")
+            NSUserDefaults.standardUserDefaults().setObject("1", forKey: "currentUser_IsSignIn")
             database.currentUserSignInSync()
+            let userInfo = ["response" : "Sign in successfully"]
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             return
         }
         
@@ -772,8 +795,6 @@ class ApiRequest: NSObject {
     
     
     func GetAssignedTaskIList(userId:String,view:UIView)  {
-        
-        
         MBProgressHUD.showHUDAddedTo(view, animated: true)
         Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/Task/GetAssignedTaskIList", parameters: ["userId":userId])
             .responseJSON { response in
@@ -828,6 +849,40 @@ class ApiRequest: NSObject {
     func AddUpdateNewTask(imageData: NSData, videoData: NSData, ActivityId: String, TaskId: String, UserId: String, TaskName: String, TimeSpent: String, Comments: String, CreatedDate: String, ID:String, view:UIView, isVideoRecorded:Bool)
     {
         let notificationKey = "com.time-em.addTaskResponse"
+        //--
+        
+        if Reachability.isConnectedToNetwork() == true {
+            print("Internet connection OK")
+        } else {
+            print("Internet connection FAILED")
+            view.makeToast("Internet connection FAILED. Request saved in sync")
+
+            let array:NSMutableArray = []
+            array.addObject(imageData)
+            array.addObject(videoData)
+            array.addObject(ActivityId)
+            array.addObject(TaskId)
+            array.addObject(UserId)
+            array.addObject(TaskName)
+            array.addObject(TimeSpent)
+            array.addObject(Comments)
+            array.addObject(CreatedDate)
+            array.addObject(ID)
+            array.addObject(view)
+            array.addObject(isVideoRecorded)
+            
+            let database = databaseFile()
+            database.addDataToSync("AddUpdateNewTask", data: array)
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+            
+            
+            database.addTaskSync(imageData, videoData: videoData, ActivityId: ActivityId, TaskId: TaskId, UserId: UserId, TaskName: TaskName, TimeSpent: TimeSpent, Comments: Comments, CreatedDate: CreatedDate, ID: ID, isVideoRecorded: "\(isVideoRecorded)")
+            let userInfo = ["response" : "success"]
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            return
+        }
+
+        //--
         MBProgressHUD.showHUDAddedTo(view, animated: true)
         
         let param = [
@@ -913,9 +968,14 @@ class ApiRequest: NSObject {
             
             let dataString = NSString(data: data!, encoding: NSUTF8StringEncoding)
             
-            print(dataString)
+                         print(dataString)
             delay(0.001){
                 MBProgressHUD.hideHUDForView(view, animated: true)
+                if "\(dataString!.lowercaseString)".rangeOfString("activity id does not exist") != nil{
+                    let userInfo = ["response" : "please signin before adding task"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    return
+                }
                 let userInfo = ["response" : "SUCCESS"]
                 NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             }
@@ -931,6 +991,31 @@ class ApiRequest: NSObject {
     func sendNotification(imageData: NSData, UserId: String, Subject: String, Message: String, NotificationTypeId: String, notifyto: String, view:UIView)
     {
         let notificationKey = "com.time-em.sendnotification"
+        
+        if Reachability.isConnectedToNetwork() == true {
+            print("Internet connection OK")
+        } else {
+            print("Internet connection FAILED")
+            view.makeToast("Internet connection FAILED. Request saved in sync")
+
+            let array:NSMutableArray = []
+            array.addObject(imageData)
+            array.addObject(UserId)
+            array.addObject(Subject)
+            array.addObject(Message)
+            array.addObject(NotificationTypeId)
+            array.addObject(notifyto)
+            array.addObject(view)
+            
+            let database = databaseFile()
+            database.addDataToSync("sendNotification", data: array)
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+            
+            let userInfo = ["response" : "success"]
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            return
+        }
+        
         MBProgressHUD.showHUDAddedTo(view, animated: true)
         
         let param = [
@@ -1005,6 +1090,10 @@ class ApiRequest: NSObject {
             print(dataString!)
             delay(0.001){
                 MBProgressHUD.hideHUDForView(view, animated: true)
+                if "\(dataString!.lowercaseString)".rangeOfString("an error occured") != nil{
+                    let userInfo = ["response" : "faild to post notification"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                }
                 let msg = "successfully"
                 let userInfo = ["response" : "\(msg)"]
                 NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -1092,7 +1181,8 @@ class ApiRequest: NSObject {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            view.makeToast("Internet connection FAILED. Request saved in sync")
+
             let array:NSMutableArray = []
             array.addObject(userId)
             array.addObject(LoginId)
@@ -1102,6 +1192,10 @@ class ApiRequest: NSObject {
             database.addDataToSync("teamUserSignIn", data: array)
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
             
+            database.teamSignInUpdate(userId)
+             let userInfo = ["response" : "successfull"]
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            return
         }
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
@@ -1185,7 +1279,8 @@ class ApiRequest: NSObject {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            view.makeToast("Internet connection FAILED. Request saved in sync")
+
             let array:NSMutableArray = []
             array.addObject(userId)
             array.addObject(LoginId)
@@ -1196,6 +1291,10 @@ class ApiRequest: NSObject {
             database.addDataToSync("teamUserSignOut", data: array)
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
             
+            database.teamSignOutbyId(userId)
+            let userInfo = ["response" : "successfull"]
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            return
         }
         
         
@@ -1260,7 +1359,8 @@ class ApiRequest: NSObject {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            view.makeToast("Internet connection FAILED. Request saved in sync")
+
             let array:NSMutableArray = []
             array.addObject(userId)
             array.addObject(view)
@@ -1345,7 +1445,8 @@ class ApiRequest: NSObject {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            JLToast.makeText("Internet connection FAILED. Request saved in sync", duration: JLToastDelay.ShortDelay)
+            view.makeToast("Internet connection FAILED. Request saved in sync")
+
             let array:NSMutableArray = []
             array.addObject(userId)
             array.addObject(view)

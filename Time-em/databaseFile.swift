@@ -109,7 +109,7 @@ class databaseFile: NSObject {
     }
     
 
-    func getTasksForUserID(ID:String,Date:String) -> NSMutableArray {
+    func getTasksForUserID(USERID:String,Date:String) -> NSMutableArray {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
@@ -142,7 +142,7 @@ class databaseFile: NSObject {
 //                dict.setObject(rs.stringForColumn("AttachmentImageData") ?? "", forKey: "AttachmentImageData")
 
 //                print(rs.stringForColumn("UserId"))
-                if rs.stringForColumn("UserId") == ID  && rs.stringForColumn("CreatedDate")!.componentsSeparatedByString(" ")[0] == str {
+                if rs.stringForColumn("UserId") == USERID  && rs.stringForColumn("CreatedDate")!.componentsSeparatedByString(" ")[0] == str {
                 dataArray.addObject(dict)
                 }
             }
@@ -559,9 +559,22 @@ class databaseFile: NSObject {
             print("failed: \(error.localizedDescription)")
         }
         database.close()
-        
-               
-        
+    }
+    
+    func teamSignOutbyId (userId:String) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        let database = FMDatabase(path: fileURL.path)
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("UPDATE teamData SET IsSignedIn=?WHERE Id=?", values: ["0", userId])
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
     }
     
     func signOutUpdate (userId:String) {
@@ -642,10 +655,8 @@ class databaseFile: NSObject {
             print("Unable to open database")
             return
         }
-        
         let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data)
-        
-        do {
+        do{
             try database.executeUpdate("insert into sync (type , data) values (?, ?)", values: [type , encodedData])
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
@@ -1048,6 +1059,214 @@ class databaseFile: NSObject {
             print("### failed: \(error.localizedDescription)")
         }
         database.close()
+    }
+    
+    func addTaskSync(imageData:NSData,videoData:NSData,ActivityId:String,TaskId:String,UserId:String,TaskName:String,TimeSpent:String,Comments:String,CreatedDate:String,ID:String,isVideoRecorded:String){
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        
+        // get already added tasks taskids
+        var TaskIdsArr:NSMutableArray = []
+        do {
+            let rs = try database.executeQuery("select * from tasksData", values: nil)
+            while rs.next() {
+                let x = rs.stringForColumn("Id")
+                TaskIdsArr.addObject(x)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+        let dict:NSMutableDictionary = [:]
+        dict.setValue("\(ActivityId)", forKey: "ActivityId")
+        dict.setValue(TaskId, forKey: "TaskId")
+        dict.setValue(TaskName, forKey: "TaskName")
+        dict.setValue(TimeSpent, forKey: "TimeSpent")
+        dict.setValue(Comments, forKey: "Comments")
+        dict.setValue(CreatedDate, forKey: "CreatedDate")
+        dict.setValue(UserId, forKey: "UserId")
+        dict.setValue(ID, forKey: "Id")
+
+        if "\(isVideoRecorded.lowercaseString)".rangeOfString("false") != nil{
+            let count = imageData.length / sizeof(UInt8)
+            if count > 0 {
+                dict.setValue("\(UserId)-\(ID)-AttachmentImageFile", forKey: "AttachmentImageFile")
+                let encodedData = NSKeyedArchiver.archivedDataWithRootObject(imageData)
+                dict.setValue(encodedData, forKey: "AttachmentImageData")
+            }
+        }else {
+            let count = videoData.length / sizeof(UInt8)
+            if count > 0 {
+                dict.setValue("\(UserId)-\(ID)-AttachmentVideoFile", forKey: "AttachmentVideoFile")
+                let encodedData = NSKeyedArchiver.archivedDataWithRootObject(videoData)
+                dict.setValue(encodedData, forKey: "AttachmentImageData")
+            }
+        }
+
+        
+//        for (var i = 0; i<dict.count;i+=1){
+        
+            let  ActivityId:String!
+            if let field = dict.valueForKey("ActivityId")  as? String {
+                ActivityId = field
+            }else{
+                ActivityId = ""
+            }
+            
+            let  AttachmentImageFile:String!
+            if let field = dict.valueForKey("AttachmentImageFile")  as? String{
+                AttachmentImageFile = field
+            }else{
+                AttachmentImageFile = ""
+            }
+            
+            let  AttachmentVideoFile:String
+            if let field = dict.valueForKey("AttachmentVideoFile") as? String {
+                AttachmentVideoFile = field
+            }else{
+                AttachmentVideoFile = ""
+            }
+            
+            let  Comments:String!
+            if let field = dict.valueForKey("Comments") as? String {
+                Comments = field
+            }else{
+                Comments = ""
+            }
+            
+            let  CreatedDate:String!
+            if let field = dict.valueForKey("CreatedDate") as? String {
+                let dateStr = "\(field.componentsSeparatedByString("-")[1])/\(field.componentsSeparatedByString("-")[0])/\(field.componentsSeparatedByString("-")[2])"
+                CreatedDate = dateStr
+            }else{
+                CreatedDate = ""
+            }
+            
+            let  EndTime:String!
+            if let field = dict.valueForKey("EndTime") as? String {
+                EndTime = field
+            }else{
+                EndTime = ""
+            }
+            
+            let  Id: String!
+            if let field = dict.valueForKey("Id") as? String  {
+                Id = field
+            }else{
+                Id = ""
+            }
+            
+            let  SelectedDate:String!
+            if let field = dict.valueForKey("SelectedDate")   as? String{
+                SelectedDate = field
+            }else{
+                SelectedDate = ""
+            }
+            
+            let  SignedInHours: String!
+            if let field = dict.valueForKey("SignedInHours")  as? String{
+                SignedInHours = field
+            }else{
+                SignedInHours = ""
+            }
+            
+            let  StartTime:String!
+            if let field = dict.valueForKey("StartTime") as? String  {
+                StartTime = field
+            }else{
+                StartTime = ""
+            }
+            
+            let  TaskId:String!
+            if let field = dict.valueForKey("TaskId") as? String {
+                TaskId = field
+            }else{
+                TaskId = ""
+            }
+            
+            
+            let  TaskName :String!
+            if let field = dict.valueForKey("TaskName") as? String {
+                TaskName = field
+            }else{
+                TaskName = ""
+            }
+            
+            let  TimeSpent:String!
+            if let field = dict.valueForKey("TimeSpent") as? String {
+                TimeSpent = field
+            }else{
+                TimeSpent = ""
+            }
+            
+            
+            let  Token: String!
+            if let field = dict.valueForKey("Token") as? String {
+                Token = field
+            }else{
+                Token = ""
+            }
+            
+            
+            let  UserId: String!
+            if let field = dict.valueForKey("UserId") as? String {
+                UserId = field
+            }else{
+                UserId = ""
+            }
+            
+            let  isActive: String!
+            if let field = dict.valueForKey("isActive") as? String  {
+                isActive = field
+            }else{
+                isActive = "true"
+            }
+            
+            
+            
+            
+            if TaskIdsArr.containsObject("\(TaskId!)") {
+                if isActive == "false" {
+                    let databse = databaseFile()
+                    databse.deleteTaskFromDatabse("\(TaskId!)")
+                    
+                }else{
+                do {
+                    if dict.valueForKey("AttachmentImageData") != nil {
+                        try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, AttachmentImageData = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, dict.valueForKey("AttachmentImageData")!,Id])
+                    }else{
+                    try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, Id])
+                    }
+                } catch let error as NSError {
+                    print("failed: \(error.localizedDescription)")
+                }
+        }
+            }else{
+                if isActive == "false" {
+                    
+                }else {
+                
+                do {
+                      if dict.valueForKey("AttachmentImageData") != nil {
+                        try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,isVideoRecorded ) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,dict.valueForKey("AttachmentImageData")!,isVideoRecorded ])
+                      }else{
+                    try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,isVideoRecorded ) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,"",isVideoRecorded ])
+                    }
+                } catch let error as NSError {
+                    print("failed: \(error.localizedDescription)")
+                }
+            }
+    }
+//        }
+        database.close()
+
     }
 }
 
