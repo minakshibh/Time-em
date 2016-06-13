@@ -165,8 +165,8 @@ class dashboardViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         self.fetchUserTaskGraphDataFromAPI()
         self.fetchUserSignedGraphDataFromAPI()
-        self.fetchUserTaskGraphDataFromDatabase()
-        self.fetchUserSignedGraphDataFromDatabase()
+//        self.fetchUserTaskGraphDataFromDatabase()
+//        self.fetchUserSignedGraphDataFromDatabase()
 
         let currentUserName = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_FullName")  as? String
         lblNameSlideMenu.text = currentUserName!
@@ -300,14 +300,14 @@ class dashboardViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.displayGraphResponse), name: "com.time-em.getUserTaskGraphData", object: nil)
         api.fetchUserTaskGraphDataFromAPI(currentUserId ,view: self.view)
     }
-    func fetchUserTaskGraphDataFromDatabase() {
-        let databaseFetch = databaseFile()
-        let userTaskGraphDataArray : NSMutableArray = databaseFetch.getUserTaskGraphData()
-        print("\(userTaskGraphDataArray)")
-    }
+//    func fetchUserTaskGraphDataFromDatabase() {
+//        let databaseFetch = databaseFile()
+//        let userTaskGraphDataArray : NSMutableArray = databaseFetch.getUserTaskGraphData()
+//        print("\(userTaskGraphDataArray)")
+//    }
 
     func displayGraphResponse() {
-        self.fetchUserTaskGraphDataFromDatabase()
+//        self.fetchUserTaskGraphDataFromDatabase()
         let userGraph = UserGraphViewController()
         userGraph.viewWillAppear(true)
     }
@@ -318,14 +318,16 @@ class dashboardViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.displayUserSignedGraphResponse), name: "com.time-em.getUserSignedGraphData", object: nil)
         api.fetchUserSignedGraphDataFromAPI(currentUserId ,view: self.view)
     }
-    func fetchUserSignedGraphDataFromDatabase() {
-        let databaseFetch = databaseFile()
-        let userSignedGraphDataArray : NSMutableArray = databaseFetch.getUserSignedGraphData()
-        print("\(userSignedGraphDataArray)")
-    }
+//    func fetchUserSignedGraphDataFromDatabase() {
+//        let databaseFetch = databaseFile()
+//        let userSignedGraphDataArray : NSMutableArray = databaseFetch.getUserSignedGraphData()
+//        print("\(userSignedGraphDataArray)")
+//    }
     
     func displayUserSignedGraphResponse() {
-        self.fetchUserSignedGraphDataFromDatabase()
+        let userGraph = UserLoginGraphViewController()
+        userGraph.viewWillAppear(true)
+//        self.fetchUserSignedGraphDataFromDatabase()
     }
     
     
