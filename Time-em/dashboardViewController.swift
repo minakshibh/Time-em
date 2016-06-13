@@ -13,6 +13,7 @@ import FMDB
 class dashboardViewController: UIViewController {
 
     @IBOutlet var btnMyTasks: UIButton!
+    @IBOutlet var btnNotificationSecond: UIButton!
     @IBOutlet var btnMyTeam: UIButton!
     @IBOutlet var btnNotifications: UIButton!
     @IBOutlet var btnSetting: UIButton!
@@ -40,7 +41,7 @@ class dashboardViewController: UIViewController {
     @IBOutlet var lblNameSlideMenu: UILabel!
     var pageMenu : CAPSPageMenu?
     var lblBackground:UILabel!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         sideView.hidden = true
@@ -55,6 +56,7 @@ class dashboardViewController: UIViewController {
         self.view.bringSubviewToFront(btnMyTeam)
         self.view.bringSubviewToFront(btnNotifications)
         self.view.bringSubviewToFront(btnSetting)
+        self.view.bringSubviewToFront(btnNotificationSecond)
         self.view.bringSubviewToFront(self.sideView)
         self.view.bringSubviewToFront(btnMenu)
         
@@ -91,6 +93,10 @@ class dashboardViewController: UIViewController {
         btnSignInOutPOPUP.layer.masksToBounds = true
 
         registerUserDevice()
+        
+        btnNotificationSecond.hidden = true
+        
+        
     }
     
     func implementGraphViews(){
@@ -139,6 +145,7 @@ class dashboardViewController: UIViewController {
     
     override func viewDidDisappear(animated: Bool) {
         btnSetting.backgroundColor = UIColor.clearColor()
+        btnNotificationSecond.backgroundColor = UIColor.clearColor()
         btnMyTeam.backgroundColor = UIColor.clearColor()
         btnNotifications.backgroundColor = UIColor.clearColor()
         btnMyTasks.backgroundColor = UIColor.clearColor()
@@ -181,10 +188,11 @@ class dashboardViewController: UIViewController {
         
         let usertype = "\(NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!)"
 //        print(usertype)
-        if "\(usertype)" == "4" {
-            btnMyTeam.hidden = true
-            btnNotifications.hidden = true
-//            delay(0.001) {
+//        if "\(usertype)" == "4" {
+//            btnMyTeam.hidden = true
+//            btnNotifications.hidden = true
+//            self.btnNotificationSecond.hidden = false
+////            delay(0.001) {
 //                print(self.btnMyTeam.frame)
 //
 //            self.btnMyTeam.frame = CGRectMake(self.btnMyTeam.frame.origin.x,self.btnMyTeam.frame.origin.y, 0, self.btnMyTeam.frame.size.height)
@@ -192,7 +200,7 @@ class dashboardViewController: UIViewController {
 //            print(self.btnMyTeam.frame)
 //            }
 //
-        }
+//        }
         refreshsyncImage()
        
         
@@ -255,9 +263,13 @@ class dashboardViewController: UIViewController {
     
     centerButtonImageTopAndTextBottom(btnSetting, frame: btnSetting.frame, text: "Settings", textColor: UIColor.whiteColor(), font: myFont, image: UIImage(named: "setting")!, forState: .Normal)
         
-        lblBackground.frame = CGRectMake(0, self.view.bounds.height-btnMyTasks.frame.size.height, self.view.bounds.width, btnMyTasks.frame.size.height)    }
-    
+        lblBackground.frame = CGRectMake(0, self.view.bounds.height-btnMyTasks.frame.size.height, self.view.bounds.width, btnMyTasks.frame.size.height)
+        
+        
+    }
     setNotificationButton()
+    
+    
         if val == 0 {
             val += 1
             if Reachability.DeviceType.IS_IPHONE_5 {
@@ -270,15 +282,22 @@ class dashboardViewController: UIViewController {
     }
     
     func setNotificationButton () {
+        let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 9.0)!
+
+        delay(0.001) {
+            self.btnNotificationSecond.frame =  CGRectMake(self.view.frame.size.width/2-self.btnNotifications.frame.size.width/2, self.btnNotifications.frame.origin.y, self.btnNotifications.frame.size.width, self.btnNotifications.frame.size.height)
+        }
+        centerButtonImageTopAndTextBottom(btnNotificationSecond, frame: btnNotificationSecond.frame, text: "Notifications", textColor: UIColor.whiteColor(), font: myFont, image: UIImage(named: "notification_Dashboard")!, forState: .Normal)
+        
         let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
         print(usertype)
         if "\(usertype)" == "4" {
             btnMyTeam.hidden = true
-            self.btnMyTeam.frame = CGRectMake(self.btnMyTeam.frame.origin.x,self.btnMyTeam.frame.origin.y, 0, self.btnMyTeam.frame.size.height)
-            delay(0.001) {
-                self.btnNotifications.frame = CGRectMake(self.view.frame.size.width/2-self.btnNotifications.frame.size.width/2,self.btnNotifications.frame.origin.y, self.btnNotifications.frame.size.width, self.btnNotifications.frame.size.height)
-                self.btnNotifications.hidden = false
-            }
+            
+            self.btnNotifications.hidden = true
+           
+           self.btnNotificationSecond.hidden = false
+            
         }
     }
     
@@ -339,6 +358,15 @@ class dashboardViewController: UIViewController {
         }
     }
     
+    @IBAction func btnNotificationSecond(sender: AnyObject) {
+        self.performSegueWithIdentifier("notification", sender: self)
+        
+        btnNotificationSecond.backgroundColor = UIColor(red: 35/255, green: 51/255, blue: 86/255, alpha: 1)
+        btnMyTeam.backgroundColor = UIColor.clearColor()
+        btnMyTasks.backgroundColor = UIColor.clearColor()
+        btnSetting.backgroundColor = UIColor.clearColor()
+    }
+    
     @IBAction func btnMyTasks(sender: AnyObject) {
         btnMyTasks.backgroundColor = UIColor(red: 35/255, green: 51/255, blue: 86/255, alpha: 1)
         btnMyTeam.backgroundColor = UIColor.clearColor()
@@ -366,6 +394,8 @@ class dashboardViewController: UIViewController {
         btnSetting.backgroundColor = UIColor.clearColor()
     }
     @IBAction func btnNotifications(sender: AnyObject) {
+        self.performSegueWithIdentifier("notification", sender: self)
+
         btnNotifications.backgroundColor = UIColor(red: 35/255, green: 51/255, blue: 86/255, alpha: 1)
         btnMyTeam.backgroundColor = UIColor.clearColor()
         btnMyTasks.backgroundColor = UIColor.clearColor()
@@ -634,7 +664,8 @@ class dashboardViewController: UIViewController {
         let status: String = (userInfo["response"] as! String)
         
 //        var alert :UIAlertController!
-        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.signInOutResponse", object:nil)
+
 //            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
         self.view.makeToast("\(status)")
         

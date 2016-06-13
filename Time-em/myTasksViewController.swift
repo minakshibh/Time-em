@@ -47,7 +47,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
         assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.usertasksResponse), name: "com.time-em.usertaskResponse", object: nil)
+        
         
         
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "commentCellss")
@@ -182,7 +182,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         }else{
             TimeStamp = ""
         }
-        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.usertasksResponse), name: "com.time-em.usertaskResponse", object: nil)
         apiCall.getUserTask(userId, createdDate: createdDate,TimeStamp: TimeStamp, view: self.view)
         
     }
@@ -193,6 +193,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let status: String = (userInfo["response"] as! String)
         
         var alert :UIAlertController!
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.usertaskResponse", object:nil)
         if status.lowercaseString == "success"{
             
             
@@ -412,6 +413,8 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let status: String = (userInfo["response"] as! String)
         
         var alert :UIAlertController!
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.deleteResponse", object:nil)
+
         if status.lowercaseString == "success"{
             
             

@@ -50,6 +50,13 @@ class resetPinAndPassword: UIViewController
     func displayResponse(notification:NSNotification) {
         self.emailTxt.text = ""
         
+        if resetType == "Password" {
+            NSNotificationCenter.defaultCenter().removeObserver(self, name:passwordNotificationKey, object:nil)
+        }else{
+            NSNotificationCenter.defaultCenter().removeObserver(self, name:pinNotificationKey, object:nil)
+        }
+
+
         var messages: String!
         if resetType == "Password" {
             messages = "Password has been sent to your email address."

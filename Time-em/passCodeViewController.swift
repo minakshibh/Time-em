@@ -45,13 +45,6 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
         }
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        
-    }
-    
-
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -149,7 +142,8 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
         txtFieldtwo.text = ""
         txtFieldthree.text = ""
         txtFieldFour.text = ""
-        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.passcodeloginResponse", object:nil)
+
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
             alert = UIAlertController(title: "Time'em", message: "Login Successfull", preferredStyle: UIAlertControllerStyle.Alert)

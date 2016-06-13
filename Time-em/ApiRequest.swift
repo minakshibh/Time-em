@@ -351,7 +351,7 @@ class ApiRequest: NSObject {
                                 saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId"))")
                                 
                             }
-                            var data1: NSData = NSKeyedArchiver.archivedDataWithRootObject(saveDateDict)
+                            let data1: NSData = NSKeyedArchiver.archivedDataWithRootObject(saveDateDict)
                             user.setObject(data1,forKey:"taskTimeStamp")
                             //-------------
                         }
@@ -898,14 +898,14 @@ class ApiRequest: NSObject {
                     if "\(response.result)" == "SUCCESS"{
                         
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
-                            let userInfo = ["response" : "FAILURE"]
+//                            let userInfo = ["response" : "FAILURE"]
 //                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             return
                         }
                         
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
                             
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+//                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
                             
                             let dict = JSON.valueForKey("ReturnKeyValueViewModel") as! NSArray
                             
@@ -916,17 +916,17 @@ class ApiRequest: NSObject {
                            
                             
                         }else{
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+//                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
 //                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }
                         
                         
                     }else{
-                        let userInfo = ["response" : "FAILURE"]
+//                        let userInfo = ["response" : "FAILURE"]
 //                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     }
                 }else if "\(response.result)" == "FAILURE"{
-                    let userInfo = ["response" : "FAILURE"]
+//                    let userInfo = ["response" : "FAILURE"]
 //                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     
                 }

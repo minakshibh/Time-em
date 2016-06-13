@@ -929,7 +929,6 @@
                                 <state key="normal" title="Notification" image="notification_Dashboard"/>
                                 <connections>
                                     <action selector="btnNotifications:" destination="fx4-25-jVh" eventType="touchUpInside" id="nRu-OL-X5d"/>
-                                    <segue destination="ijX-px-2J7" kind="show" id="etS-8x-WAP"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uca-i3-8xx">
@@ -947,6 +946,18 @@
                                 <state key="normal" title="Setting" image="setting"/>
                                 <connections>
                                     <action selector="btnSetting:" destination="fx4-25-jVh" eventType="touchUpInside" id="dcT-5Z-Sxn"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zhF-Br-1GY">
+                                <rect key="frame" x="157" y="680" width="100" height="60"/>
+                                <color key="backgroundColor" red="0.1176470588" green="0.1764705882" blue="0.2666666667" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="9"/>
+                                <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="8"/>
+                                <inset key="titleEdgeInsets" minX="-15" minY="28" maxX="0.0" maxY="0.0"/>
+                                <inset key="imageEdgeInsets" minX="28" minY="0.0" maxX="0.0" maxY="9"/>
+                                <state key="normal" title="Notification" image="notification_Dashboard"/>
+                                <connections>
+                                    <action selector="btnNotificationSecond:" destination="fx4-25-jVh" eventType="touchUpInside" id="JMV-QS-MQE"/>
                                 </connections>
                             </button>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aWV-hG-SI0">
@@ -1294,6 +1305,7 @@
                         <outlet property="btnMenu" destination="L0l-bu-kOa" id="1vI-I2-EFu"/>
                         <outlet property="btnMyTasks" destination="1hR-QB-H8M" id="dLb-w2-bNq"/>
                         <outlet property="btnMyTeam" destination="miJ-fG-ExM" id="qid-Xt-G1M"/>
+                        <outlet property="btnNotificationSecond" destination="zhF-Br-1GY" id="jiJ-t8-rTP"/>
                         <outlet property="btnNotifications" destination="Yir-bw-SE1" id="wdb-2u-cy1"/>
                         <outlet property="btnSetting" destination="Uca-i3-8xx" id="q4d-Wz-kut"/>
                         <outlet property="btnSignInOut2" destination="JMp-Wf-1Wz" id="pxO-PG-FyM"/>
@@ -1308,6 +1320,7 @@
                         <outlet property="lblpopupBackground" destination="vLr-cf-bqJ" id="zG6-uH-R1V"/>
                         <outlet property="sideView" destination="U3k-kh-LlF" id="zM9-Cm-Ss6"/>
                         <outlet property="viewStartWorking" destination="aWV-hG-SI0" id="pbP-Z3-lGD"/>
+                        <segue destination="ijX-px-2J7" kind="show" identifier="notification" id="3j9-Xp-MLF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hCQ-dD-aZo" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3529,10 +3542,10 @@
         <image name="user_inactive" width="17" height="17"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="UpT-7q-7gD"/>
         <segue reference="Bms-hq-Ruj"/>
         <segue reference="t3F-eT-UCv"/>
         <segue reference="9mw-38-tLx"/>
         <segue reference="sXm-1h-J69"/>
+        <segue reference="UpT-7q-7gD"/>
     </inferredMetricsTieBreakers>
 </document>

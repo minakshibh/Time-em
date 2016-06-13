@@ -39,7 +39,6 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     }
     
     override func viewDidDisappear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
         
     }
     
@@ -325,6 +324,8 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
         
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.getTeamResponse", object:nil)
+
         var alert :UIAlertController!
         alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
@@ -354,7 +355,10 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         let status: String = (userInfo["response"] as! String)
         
         var alert :UIAlertController!
-//        if status.lowercaseString == "success"{
+
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-teamUserSignInOutResponse", object:nil)
+
+        //        if status.lowercaseString == "success"{
 //            alert = UIAlertController(title: "Time'em", message: "Login Successfull", preferredStyle: UIAlertControllerStyle.Alert)
 //            self.performSegueWithIdentifier("homeView", sender: self)
 //            

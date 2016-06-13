@@ -472,6 +472,8 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
         
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:notificationKey, object:nil)
+
         if status.lowercaseString == "success"{
          self.resetTheView()
             self.navigationController?.popViewControllerAnimated(true)

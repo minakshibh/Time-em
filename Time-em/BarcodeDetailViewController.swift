@@ -32,7 +32,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         
         getDataFromDatabse()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarcodeDetailViewController.displayResponse), name: "com.time-em.signInOutAllResponse", object: nil)
+        
 
     }
     
@@ -108,6 +108,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
                 }
             
         }
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarcodeDetailViewController.displayResponse), name: "com.time-em.signInOutAllResponse", object: nil)
         let api = ApiRequest()
         api.teamSignInAll(userids, view: self.view)
         
@@ -125,6 +126,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
             }
             
         }
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarcodeDetailViewController.displayResponse), name: "com.time-em.signInOutAllResponse", object: nil)
         let api = ApiRequest()
         api.teamSignOutAll(userids, view: self.view)
     }
@@ -187,6 +189,8 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
         
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.getuserListByLoginCode", object:nil)
+
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
             alert = UIAlertController(title: "Time'em", message: "Successfull", preferredStyle: UIAlertControllerStyle.Alert)
@@ -210,6 +214,8 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
         
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.signInOutAllResponse", object:nil)
+
         var alert :UIAlertController!
         if status.lowercaseString.rangeOfString("success") != nil {
             alert = UIAlertController(title: "Time'em", message: "Successfull", preferredStyle: UIAlertControllerStyle.Alert)

@@ -46,7 +46,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         
         
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.GetNotificationTypeResponse), name: "com.time-em.NotificationTypeloginResponse", object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.GetNotificationTypeResponse), name: "com.time-em.NotificationTypeloginResponse", object: nil)
         
         btnSelectRecipients.setTitleColor(UIColor.blackColor(), forState: .Normal)
         uploadedImage.hidden = true
@@ -143,6 +143,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         setDropDown()
         
        recipientsArray = database.getNotificationActiveUserList()
+        tableView.reloadData()
     }
     
     override func didReceiveMemoryWarning() {
@@ -206,6 +207,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.sendnotification", object:nil)
+
         getDataFromDatabase()
     }
     
@@ -214,6 +217,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         self.navigationController?.popViewControllerAnimated(true)
     }
     @IBAction func btnSelectRecipients(sender: AnyObject) {
+        getDataFromDatabase()
         txtComment.resignFirstResponder()
         txtSubject.resignFirstResponder()
         if tableView.hidden {
@@ -289,6 +293,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
         
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.sendnotification", object:nil)
+
         if status.lowercaseString.rangeOfString("successfully") != nil {
             var alert :UIAlertController!
             alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
