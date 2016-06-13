@@ -470,16 +470,22 @@ class databaseFile: NSObject {
             print("Unable to open database")
         }
         
-        let taskListArr:NSMutableArray = []
+//        let taskListArr:NSMutableArray = []
+//        do {
+//            let rs = try database.executeQuery("select * from TasksList", values: nil)
+//            while rs.next() {
+//                let x = rs.stringForColumn("date")
+//                taskListArr.addObject(x)
+//            }
+//        } catch let error as NSError {
+//            print("failed: \(error.localizedDescription)")
+//        }
         do {
-            let rs = try database.executeQuery("select * from TasksList", values: nil)
-            while rs.next() {
-                let x = rs.stringForColumn("date")
-                taskListArr.addObject(x)
-            }
+            try database.executeUpdate("DELETE FROM TasksList", values: nil )
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
+
         
         for i in 0 ..< dataArr.count
         {
@@ -493,8 +499,6 @@ class databaseFile: NSObject {
                 timespent = 0
             }
             
-            
-            
             let  dateStr:String
             if let field = dict.valueForKey("date") as? String {
                 dateStr = field
@@ -502,22 +506,29 @@ class databaseFile: NSObject {
                 dateStr = ""
             }
             
-            
-            if taskListArr.containsObject("\(dateStr)") {
-                do {
-                    try database.executeUpdate("UPDATE TasksList SET timespent=?, date=? WHERE date=?", values: [timespent,dateStr,dateStr])
-                } catch let error as NSError {
-                    print("failed: \(error.localizedDescription)")
-                }
+            do {
+                try database.executeUpdate("insert into TasksList (timespent , date ) values (?, ?)", values: [timespent , dateStr])
                 
-            }else{
-                do {
-                    try database.executeUpdate("insert into TasksList (timespent , date ) values (?, ?)", values: [timespent , dateStr])
-                    
-                } catch let error as NSError {
-                    print("failed: \(error.localizedDescription)")
-                }
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
             }
+
+
+//            if taskListArr.containsObject("\(dateStr)") {
+//                do {
+//                    try database.executeUpdate("UPDATE TasksList SET timespent=?, date=? WHERE date=?", values: [timespent,dateStr,dateStr])
+//                } catch let error as NSError {
+//                    print("failed: \(error.localizedDescription)")
+//                }
+//                
+//            }else{
+//                do {
+//                    try database.executeUpdate("insert into TasksList (timespent , date ) values (?, ?)", values: [timespent , dateStr])
+//                    
+//                } catch let error as NSError {
+//                    print("failed: \(error.localizedDescription)")
+//                }
+//            }
         }
         database.close()
     }
@@ -532,16 +543,23 @@ class databaseFile: NSObject {
             print("Unable to open database")
         }
         
-        let taskListArr:NSMutableArray = []
         do {
-            let rs = try database.executeQuery("select * from UserSignedList", values: nil)
-            while rs.next() {
-                let x = rs.stringForColumn("date")
-                taskListArr.addObject(x)
-            }
+            try database.executeUpdate("DELETE FROM UserSignedList", values: nil )
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
+        
+        
+//        let taskListArr:NSMutableArray = []
+//        do {
+//            let rs = try database.executeQuery("select * from UserSignedList", values: nil)
+//            while rs.next() {
+//                let x = rs.stringForColumn("date")
+//                taskListArr.addObject(x)
+//            }
+//        } catch let error as NSError {
+//            print("failed: \(error.localizedDescription)")
+//        }
         
         for i in 0 ..< dataArr.count
         {
@@ -570,22 +588,30 @@ class databaseFile: NSObject {
                 dateStr = ""
             }
             
-            
-            if taskListArr.containsObject("\(dateStr)") {
-                do {
-                    try database.executeUpdate("UPDATE UserSignedList SET signedin=?, signedout=?, date=? WHERE date=?", values: [signedin,signedout,dateStr,dateStr])
-                } catch let error as NSError {
-                    print("failed: \(error.localizedDescription)")
-                }
+            do {
+                try database.executeUpdate("insert into UserSignedList (signedin ,signedout , date ) values (?, ? ,?)", values: [signedin , signedout , dateStr])
                 
-            }else{
-                do {
-                    try database.executeUpdate("insert into UserSignedList (signedin ,signedout , date ) values (?, ? ,?)", values: [signedin , signedout , dateStr])
-                    
-                } catch let error as NSError {
-                    print("failed: \(error.localizedDescription)")
-                }
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
             }
+            
+
+
+//            if taskListArr.containsObject("\(dateStr)") {
+//                do {
+//                    try database.executeUpdate("UPDATE UserSignedList SET signedin=?, signedout=?, date=? WHERE date=?", values: [signedin,signedout,dateStr,dateStr])
+//                } catch let error as NSError {
+//                    print("failed: \(error.localizedDescription)")
+//                }
+//                
+//            }else{
+//                do {
+//                    try database.executeUpdate("insert into UserSignedList (signedin ,signedout , date ) values (?, ? ,?)", values: [signedin , signedout , dateStr])
+//                    
+//                } catch let error as NSError {
+//                    print("failed: \(error.localizedDescription)")
+//                }
+//            }
         }
         database.close()
     }
