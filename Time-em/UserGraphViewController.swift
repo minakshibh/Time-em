@@ -34,6 +34,9 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
         //print("Second VC will appear")
         
     }
+    override func viewWillAppear(animated: Bool) {
+        self.graphDataLoading()
+    }
     
     func handleTap(sender: UITapGestureRecognizer? = nil) {
         print("\(dateArray.objectAtIndex((sender?.view?.tag)!))")
@@ -61,7 +64,8 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
     }
     
     func graphDataLoading(){
-        
+        self.removeAllViewsFromSUperView()
+
         scrollView = UIScrollView.init(frame: CGRectMake(20, 0, self.view.frame.size.width-20, 200))
         scrollView.backgroundColor = UIColor.clearColor()
         self.fetchUserTaskGraphDataFromDatabase()
@@ -224,13 +228,16 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
+       self.removeAllViewsFromSUperView()
+
+        print("Second VC will disappear")
+    }
+    func removeAllViewsFromSUperView() {
         if (scrollView != nil){  scrollView.removeFromSuperview() }
         if (bottomLine != nil){  bottomLine.removeFromSuperview() }
         if (currentDateLbl != nil){  currentDateLbl.removeFromSuperview() }
         if (linesBackView != nil){  linesBackView.removeFromSuperview() }
         if (bgLabel != nil){  bgLabel.removeFromSuperview() }
-
-        print("Second VC will disappear")
     }
     
     func fetchUserTaskGraphDataFromDatabase() {

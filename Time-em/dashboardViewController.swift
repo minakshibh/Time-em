@@ -308,9 +308,9 @@ class dashboardViewController: UIViewController {
 
     func displayGraphResponse() {
         self.fetchUserTaskGraphDataFromDatabase()
+        let userGraph = UserGraphViewController()
+        userGraph.viewWillAppear(true)
     }
-    
-    
     
     func fetchUserSignedGraphDataFromAPI () {
         let currentUserId:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
