@@ -144,8 +144,9 @@ class dashboardViewController: UIViewController {
     }
     
     override func viewDidDisappear(animated: Bool) {
+        
         btnSetting.backgroundColor = UIColor.clearColor()
-        btnNotificationSecond.backgroundColor = UIColor.clearColor()
+//        btnNotificationSecond.backgroundColor = UIColor.clearColor()
         btnMyTeam.backgroundColor = UIColor.clearColor()
         btnNotifications.backgroundColor = UIColor.clearColor()
         btnMyTasks.backgroundColor = UIColor.clearColor()
@@ -186,7 +187,7 @@ class dashboardViewController: UIViewController {
             self.menuSlideBack()
         }
         
-        let usertype = "\(NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!)"
+//        let usertype = "\(NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!)"
 //        print(usertype)
 //        if "\(usertype)" == "4" {
 //            btnMyTeam.hidden = true
@@ -204,6 +205,11 @@ class dashboardViewController: UIViewController {
         refreshsyncImage()
        
         
+        let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
+        if "\(usertype)" == "4" {
+            btnMyTeam.hidden = true
+            self.btnNotifications.hidden = true
+        }
         
     }
     // &&&&&
@@ -267,8 +273,12 @@ class dashboardViewController: UIViewController {
         
         
     }
-    setNotificationButton()
     
+//    let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
+//    if "\(usertype)" == "4" {
+//    NSTimer.scheduledTimerWithTimeInterval(0.05, target: self, selector: #selector(dashboardViewController.setNotificationButton), userInfo: nil, repeats: true)
+//    }
+    setNotificationButton()
     
         if val == 0 {
             val += 1
@@ -281,6 +291,8 @@ class dashboardViewController: UIViewController {
 
     }
     
+    
+    
     func setNotificationButton () {
         let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 9.0)!
 
@@ -290,7 +302,7 @@ class dashboardViewController: UIViewController {
         centerButtonImageTopAndTextBottom(btnNotificationSecond, frame: btnNotificationSecond.frame, text: "Notifications", textColor: UIColor.whiteColor(), font: myFont, image: UIImage(named: "notification_Dashboard")!, forState: .Normal)
         
         let usertype = NSUserDefaults.standardUserDefaults().valueForKey("UserTypeId")!
-        print(usertype)
+//        print(usertype)
         if "\(usertype)" == "4" {
             btnMyTeam.hidden = true
             
@@ -363,7 +375,7 @@ class dashboardViewController: UIViewController {
     @IBAction func btnNotificationSecond(sender: AnyObject) {
         self.performSegueWithIdentifier("notification", sender: self)
         
-        btnNotificationSecond.backgroundColor = UIColor(red: 35/255, green: 51/255, blue: 86/255, alpha: 1)
+//        btnNotificationSecond.backgroundColor = UIColor(red: 35/255, green: 51/255, blue: 86/255, alpha: 1)
         btnMyTeam.backgroundColor = UIColor.clearColor()
         btnMyTasks.backgroundColor = UIColor.clearColor()
         btnSetting.backgroundColor = UIColor.clearColor()
@@ -404,6 +416,7 @@ class dashboardViewController: UIViewController {
         btnSetting.backgroundColor = UIColor.clearColor()
     }
     @IBAction func btnSetting(sender: AnyObject) {
+         self.performSegueWithIdentifier("setting", sender: self)
         btnSetting.backgroundColor = UIColor(red: 35/255, green: 51/255, blue: 86/255, alpha: 1)
         btnMyTeam.backgroundColor = UIColor.clearColor()
         btnNotifications.backgroundColor = UIColor.clearColor()
@@ -437,12 +450,14 @@ class dashboardViewController: UIViewController {
             let api = ApiRequest()
             api.signInUser(userId, LoginId: loginid, view: self.view)
             }
+
         }else{
             main{
 
             let api = ApiRequest()
             
             api.signOutUser(userId, LoginId: loginid, ActivityId: ActivityId, view: self.view)
+
             }
         }
         
@@ -587,6 +602,8 @@ class dashboardViewController: UIViewController {
     NSUserDefaults.standardUserDefaults().removeObjectForKey("notificationsTimeStamp")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("teamTimeStamp")
         
+////        self.navigationController?.popToRootViewControllerAnimated(true)
+//        self.dismissViewControllerAnimated(true, completion: nil)
         let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")
         self.presentViewController(loginVC!, animated: true, completion: nil)
         
@@ -664,7 +681,8 @@ class dashboardViewController: UIViewController {
         
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
-        
+
+
 //        var alert :UIAlertController!
         NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.signInOutResponse", object:nil)
 

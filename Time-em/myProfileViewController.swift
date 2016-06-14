@@ -19,11 +19,8 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
     @IBOutlet var txtName: UITextField!
     @IBOutlet var lblEmail: UILabel!
     @IBOutlet var txtEmail: UITextField!
-    @IBOutlet var lblPassword: UILabel!
-    @IBOutlet var txtPassword: UITextField!
     @IBOutlet var lblPhoneNo: UILabel!
     @IBOutlet var txtPhoneNo: UITextField!
-    @IBOutlet var btnLogOut: UIButton!
     @IBOutlet var scrollView: UIScrollView!
     
     var isEditModeEnable:Bool = false
@@ -35,14 +32,12 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
         lblName.textColor = labelColor
         lblEmail.textColor = labelColor
         lblPhoneNo.textColor = labelColor
-        lblPassword.textColor = labelColor
         
-        btnLogOut.setTitleColor(textFieldColor, forState: .Normal)
         
         txtName.textColor = textFieldColor
         txtEmail.textColor = textFieldColor
         txtPhoneNo.textColor = textFieldColor
-        txtPassword.textColor = textFieldColor
+
         
         
         let numberToolbar: UIToolbar = UIToolbar(frame: CGRectMake(0, 0, 320, 50))
@@ -80,21 +75,17 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
             txtName.hidden = false
             txtEmail.hidden = false
             txtPhoneNo.hidden = false
-            txtPassword.hidden = false
         
             //hide labels
             lblName.hidden = true
             lblEmail.hidden = true
             lblPhoneNo.hidden = true
-            lblPassword.hidden = true
         
             //assigning lbl value to textfields
             txtName.text = lblName.text
             txtEmail.text = lblEmail.text
             txtPhoneNo.text = lblPhoneNo.text
-            txtPassword.text = lblPassword.text
             
-             btnLogOut.setTitleColor(labelColor, forState: .Normal)
         }else{
             scrollView.scrollEnabled = false
             isEditModeEnable = false
@@ -102,22 +93,18 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
             txtName.hidden = true
             txtEmail.hidden = true
             txtPhoneNo.hidden = true
-            txtPassword.hidden = true
             
             //hide labels
             lblName.hidden = false
             lblEmail.hidden = false
             lblPhoneNo.hidden = false
-            lblPassword.hidden = false
             
             //assigning lbl value to textfields
             lblName.text = txtName.text
             lblEmail.text = txtEmail.text
             lblPhoneNo.text = txtPhoneNo.text
-            lblPassword.text = txtPassword.text
             
             
-             btnLogOut.setTitleColor(textFieldColor, forState: .Normal)
             
             
             //assigning value
@@ -127,13 +114,11 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
         }
         
     }
-    @IBAction func btnLogOut(sender: AnyObject) {
-    }
+    
     @IBAction func resgnResponder(sender: AnyObject) {
         txtName.resignFirstResponder()
         txtEmail.resignFirstResponder() 
         txtPhoneNo.resignFirstResponder()
-        txtPassword.resignFirstResponder()
     }
 
     
@@ -147,8 +132,6 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
                 
             }else if textField == txtEmail {
                     scrollView.setContentOffset(CGPointMake(0, txtName.frame.size.height), animated: true)
-            }else if textField == txtPassword {
-                    scrollView.setContentOffset(CGPointMake(0, txtName.frame.size.height*2), animated: true)
             }else if textField == txtPhoneNo {
                     scrollView.setContentOffset(CGPointMake(0, txtName.frame.size.height*3), animated: true)
             }
@@ -170,11 +153,6 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
                 return true
             }
         }else if textField == txtEmail {
-            if (string == "\n") {
-                txtPassword.becomeFirstResponder()
-                return true
-            }
-        }else if textField == txtPassword {
             if (string == "\n") {
                 txtPhoneNo.becomeFirstResponder()
                 return true

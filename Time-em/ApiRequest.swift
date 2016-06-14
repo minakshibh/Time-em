@@ -12,7 +12,7 @@ import MBProgressHUD
 import FMDB
 import Toast_Swift
 
-class ApiRequest: NSObject {
+public class ApiRequest {
     
     func loginApi(loginId:String,password:String,view:UIView) {
         let notificationKey = "com.time-em.loginResponse"

@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/myTasksViewController.swift"
-            timestampString = "486642407.520872"
+            timestampString = "487254295.588492"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
             landmarkName = "usertasksResponse(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "486627989.635163"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
             landmarkName = "addImageToTask(_:AttachmentImageData:imageORvideo:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -170,11 +170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "487230796.005487"
+            timestampString = "487250644.160068"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1081"
-            endingLineNumber = "1081"
+            startingLineNumber = "1086"
+            endingLineNumber = "1086"
             landmarkName = "sendNotification(_:UserId:Subject:Message:NotificationTypeId:notifyto:view:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -202,7 +202,7 @@
                   moduleName = "Time-em"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/krishna_mac_2/Documents/Github/time-em/Time-em/AppDelegate.swift"
-                  timestampString = "487230797.58855"
+                  timestampString = "487572215.799414"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "75"
@@ -217,7 +217,7 @@
                   moduleName = "Time-em"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/krishna_mac_2/Documents/Github/time-em/Time-em/AppDelegate.swift"
-                  timestampString = "487230797.588713"
+                  timestampString = "487572215.799686"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "75"
@@ -250,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/MyTeamViewController.swift"
-            timestampString = "486989548.951151"
+            timestampString = "487254295.588492"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
+            startingLineNumber = "189"
+            endingLineNumber = "189"
             landmarkName = "tableView(_:cellForRowAtIndexPath:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -266,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/MyTeamViewController.swift"
-            timestampString = "486989548.951151"
+            timestampString = "487254295.588492"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "264"
-            endingLineNumber = "264"
+            startingLineNumber = "263"
+            endingLineNumber = "263"
             landmarkName = "tableView(_:cellForRowAtIndexPath:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -282,11 +282,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/MyTeamViewController.swift"
-            timestampString = "486989548.951151"
+            timestampString = "487254295.588492"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "152"
-            endingLineNumber = "152"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
             landmarkName = "tableView(_:cellForRowAtIndexPath:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -298,28 +298,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "487230796.005487"
+            timestampString = "487250644.160068"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1220"
-            endingLineNumber = "1220"
-            landmarkName = "teamUserSignIn(_:LoginId:view:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/databaseFile.swift"
-            timestampString = "487147508.441425"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "616"
-            endingLineNumber = "616"
-            landmarkName = "updateActivityIdForTeam(_:activityId:SignInAt:)"
+            startingLineNumber = "1227"
+            endingLineNumber = "1227"
+            landmarkName = "resetPasswordApi(_:view:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -330,11 +314,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/MyTeamViewController.swift"
-            timestampString = "486989548.951151"
+            timestampString = "487254295.588492"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "114"
-            endingLineNumber = "114"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
             landmarkName = "tableView(_:cellForRowAtIndexPath:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -358,32 +342,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/databaseFile.swift"
-            timestampString = "487147508.441425"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1061"
-            endingLineNumber = "1061"
-            landmarkName = "deleteTaskFromDatabse(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/dashboardViewController.swift"
-            timestampString = "487145878.444612"
+            timestampString = "487579137.756321"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "228"
-            endingLineNumber = "228"
-            landmarkName = "registerUserDevice()"
+            startingLineNumber = "251"
+            endingLineNumber = "251"
+            landmarkName = "iphone5UiAdjustments()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -399,7 +367,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "550"
             endingLineNumber = "550"
-            landmarkName = "signOutUser(_:LoginId:ActivityId:view:)"
+            landmarkName = "getUserTask(_:createdDate:TimeStamp:view:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -410,12 +378,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487147508.441425"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "662"
-            endingLineNumber = "662"
-            landmarkName = "addDataToSync(_:data:)"
+            startingLineNumber = "661"
+            endingLineNumber = "661"
+            landmarkName = "getUserTaskGraphData()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -426,12 +394,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487147508.441425"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "804"
-            endingLineNumber = "804"
-            landmarkName = "currentUserSignOutSync()"
+            startingLineNumber = "803"
+            endingLineNumber = "803"
+            landmarkName = "signOutUpdate(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -442,12 +410,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487147508.441425"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "823"
-            endingLineNumber = "823"
-            landmarkName = "currentUserSignOutSync()"
+            startingLineNumber = "822"
+            endingLineNumber = "822"
+            landmarkName = "signOutUpdate(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -458,7 +426,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "487230796.005487"
+            timestampString = "487250644.160068"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "653"
@@ -474,7 +442,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "487230796.005487"
+            timestampString = "487250644.160068"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "659"
@@ -490,12 +458,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487147508.441425"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "844"
-            endingLineNumber = "844"
-            landmarkName = "currentUserSignInSync()"
+            startingLineNumber = "843"
+            endingLineNumber = "843"
+            landmarkName = "updateActivityIdForTeam(_:activityId:SignInAt:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -506,12 +474,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487147508.441425"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "664"
-            endingLineNumber = "664"
-            landmarkName = "addDataToSync(_:data:)"
+            startingLineNumber = "663"
+            endingLineNumber = "663"
+            landmarkName = "getUserTaskGraphData()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -522,12 +490,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487147508.441425"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "853"
-            endingLineNumber = "853"
-            landmarkName = "currentUserSignInSync()"
+            startingLineNumber = "852"
+            endingLineNumber = "852"
+            landmarkName = "deleteTask(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -538,76 +506,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487147508.441425"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "864"
-            endingLineNumber = "864"
-            landmarkName = "currentUserSignInSync()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/databaseFile.swift"
-            timestampString = "487146785.266979"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "537"
-            endingLineNumber = "537"
-            landmarkName = "teamSignInUpdate(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/databaseFile.swift"
-            timestampString = "487146786.290553"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "540"
-            endingLineNumber = "540"
-            landmarkName = "teamSignInUpdate(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/databaseFile.swift"
-            timestampString = "487147508.441425"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "573"
-            endingLineNumber = "573"
-            landmarkName = "teamSignOutbyId(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/databaseFile.swift"
-            timestampString = "487147508.441425"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "575"
-            endingLineNumber = "575"
-            landmarkName = "teamSignOutbyId(_:)"
+            startingLineNumber = "863"
+            endingLineNumber = "863"
+            landmarkName = "deleteTask(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -618,27 +522,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "487229642.802739"
+            timestampString = "487250644.160068"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1293"
-            endingLineNumber = "1293"
-            landmarkName = "teamUserSignOut(_:LoginId:ActivityId:view:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/ApiRequest.swift"
-            timestampString = "487230796.005487"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1194"
-            endingLineNumber = "1194"
+            startingLineNumber = "1300"
+            endingLineNumber = "1300"
             landmarkName = "teamUserSignIn(_:LoginId:view:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -650,12 +538,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "487230796.005487"
+            timestampString = "487250644.160068"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "890"
-            endingLineNumber = "890"
-            landmarkName = "AddUpdateNewTask(_:videoData:ActivityId:TaskId:UserId:TaskName:TimeSpent:Comments:CreatedDate:ID:view:isVideoRecorded:)"
+            startingLineNumber = "1201"
+            endingLineNumber = "1201"
+            landmarkName = "resetPasswordApi(_:view:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/ApiRequest.swift"
+            timestampString = "487250644.160068"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "895"
+            endingLineNumber = "895"
+            landmarkName = "GetAssignedTaskIList(_:view:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -682,12 +586,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487165669.074259"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1247"
-            endingLineNumber = "1247"
-            landmarkName = "addTaskSync(_:videoData:ActivityId:TaskId:UserId:TaskName:TimeSpent:Comments:CreatedDate:ID:isVideoRecorded:)"
+            startingLineNumber = "1246"
+            endingLineNumber = "1246"
+            landmarkName = "getNotifications()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -698,12 +602,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487165669.074259"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1245"
-            endingLineNumber = "1245"
-            landmarkName = "addTaskSync(_:videoData:ActivityId:TaskId:UserId:TaskName:TimeSpent:Comments:CreatedDate:ID:isVideoRecorded:)"
+            startingLineNumber = "1244"
+            endingLineNumber = "1244"
+            landmarkName = "getNotifications()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -714,12 +618,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487165669.074259"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1262"
-            endingLineNumber = "1262"
-            landmarkName = "addTaskSync(_:videoData:ActivityId:TaskId:UserId:TaskName:TimeSpent:Comments:CreatedDate:ID:isVideoRecorded:)"
+            startingLineNumber = "1261"
+            endingLineNumber = "1261"
+            landmarkName = "deleteNotification(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -730,12 +634,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487162445.624807"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1099"
-            endingLineNumber = "1099"
-            landmarkName = "addTaskSync(_:videoData:ActivityId:TaskId:UserId:TaskName:TimeSpent:Comments:CreatedDate:ID:isVideoRecorded:)"
+            startingLineNumber = "1098"
+            endingLineNumber = "1098"
+            landmarkName = "saveNotificationType(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -762,11 +666,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487160201.588175"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "getTasksForUserID(_:Date:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -778,28 +682,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487163356.25307"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
+            startingLineNumber = "144"
+            endingLineNumber = "144"
             landmarkName = "getTasksForUserID(_:Date:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Time-em/ApiRequest.swift"
-            timestampString = "487230796.005487"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "876"
-            endingLineNumber = "876"
-            landmarkName = "AddUpdateNewTask(_:videoData:ActivityId:TaskId:UserId:TaskName:TimeSpent:Comments:CreatedDate:ID:view:isVideoRecorded:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -842,12 +730,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/databaseFile.swift"
-            timestampString = "487165669.074259"
+            timestampString = "487234333.772781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1237"
-            endingLineNumber = "1237"
-            landmarkName = "addTaskSync(_:videoData:ActivityId:TaskId:UserId:TaskName:TimeSpent:Comments:CreatedDate:ID:isVideoRecorded:)"
+            startingLineNumber = "1236"
+            endingLineNumber = "1236"
+            landmarkName = "getNotifications()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -906,11 +794,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/AddNewTaskViewController.swift"
-            timestampString = "487230086.401976"
+            timestampString = "487254295.588492"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "475"
-            endingLineNumber = "475"
+            startingLineNumber = "477"
+            endingLineNumber = "477"
             landmarkName = "displayResponse(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -922,12 +810,172 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Time-em/ApiRequest.swift"
-            timestampString = "487230796.005487"
+            timestampString = "487250644.160068"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1013"
-            endingLineNumber = "1013"
-            landmarkName = "sendNotification(_:UserId:Subject:Message:NotificationTypeId:notifyto:view:)"
+            startingLineNumber = "1018"
+            endingLineNumber = "1018"
+            landmarkName = "AddUpdateNewTask(_:videoData:ActivityId:TaskId:UserId:TaskName:TimeSpent:Comments:CreatedDate:ID:view:isVideoRecorded:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/ApiRequest.swift"
+            timestampString = "487250644.160068"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1061"
+            endingLineNumber = "1061"
+            landmarkName = "AddUpdateNewTask(_:videoData:ActivityId:TaskId:UserId:TaskName:TimeSpent:Comments:CreatedDate:ID:view:isVideoRecorded:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Time_em.ApiRequest.(AddUpdateNewTask (__ObjC.NSData, videoData : __ObjC.NSData, ActivityId : Swift.String, TaskId : Swift.String, UserId : Swift.String, TaskName : Swift.String, TimeSpent : Swift.String, Comments : Swift.String, CreatedDate : Swift.String, ID : Swift.String, view : __ObjC.UIView, isVideoRecorded : Swift.Bool) -&gt; ()).(closure #1)"
+                  moduleName = "Time-em"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/krishna_mac_2/Documents/Github/time-em/Time-em/ApiRequest.swift"
+                  timestampString = "487572215.815429"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1061"
+                  endingLineNumber = "1061"
+                  offsetFromSymbolStart = "683">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Time_em.ApiRequest.(AddUpdateNewTask (__ObjC.NSData, videoData : __ObjC.NSData, ActivityId : Swift.String, TaskId : Swift.String, UserId : Swift.String, TaskName : Swift.String, TimeSpent : Swift.String, Comments : Swift.String, CreatedDate : Swift.String, ID : Swift.String, view : __ObjC.UIView, isVideoRecorded : Swift.Bool) -&gt; ()).(closure #1).(closure #1)"
+                  moduleName = "Time-em"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/krishna_mac_2/Documents/Github/time-em/Time-em/ApiRequest.swift"
+                  timestampString = "487572215.815564"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1062"
+                  endingLineNumber = "1062"
+                  offsetFromSymbolStart = "48">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/AddNewTaskViewController.swift"
+            timestampString = "487244360.50721"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
+            landmarkName = "viewDidLoad()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/ApiRequest.swift"
+            timestampString = "487250644.160068"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "687"
+            endingLineNumber = "687"
+            landmarkName = "signInUser(_:LoginId:view:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/databaseFile.swift"
+            timestampString = "487249786.935379"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1038"
+            endingLineNumber = "1038"
+            landmarkName = "currentUserSignOutSync()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/ApiRequest.swift"
+            timestampString = "487250644.160068"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "695"
+            endingLineNumber = "695"
+            landmarkName = "signInUser(_:LoginId:view:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/dashboardViewController.swift"
+            timestampString = "487579137.756321"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "687"
+            endingLineNumber = "687"
+            landmarkName = "displayResponse(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/resetPinAndPassword.swift"
+            timestampString = "487254405.591779"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "displayResponse(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Time-em/resetPinAndPassword.swift"
+            timestampString = "487254406.27916"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
+            landmarkName = "displayResponse(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

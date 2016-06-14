@@ -133,6 +133,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }else if passwordStr.isEmpty{
             message = "Please enter password"
             let alert = UIAlertController(title: "Time'em", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
             return
         }
