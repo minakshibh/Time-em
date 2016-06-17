@@ -30,6 +30,7 @@ class dashboardViewController: UIViewController {
     var count:Int = 0
     var currentUser: User!
     @IBOutlet var btnUserInfo: UIButton!
+     @IBOutlet var btnSync: UIButton!
     @IBOutlet var btnMenu: UIButton!
     @IBOutlet var sideView: UIView!
     @IBOutlet var btnLogout: UIButton!
@@ -372,6 +373,100 @@ class dashboardViewController: UIViewController {
         }
     }
     
+    @IBAction func btnSync(sender: AnyObject) {
+        self.menuSlideBack()
+        let database = databaseFile()
+        var dataArray:NSMutableArray = []
+        dataArray =  database.getDataFromSync()
+//        print(dataArray)
+        
+        let addyaToSynkData:NSMutableArray = []
+        let uniqueDict:NSMutableDictionary = [:]
+        for dictDATA in dataArray {
+            
+                    if dictDATA.valueForKey("AddUpdateNewTask") != nil {
+                        let dict:NSMutableDictionary = [:]
+                        let userArr:NSArray = (dictDATA.valueForKey("AddUpdateNewTask") as? NSArray)!
+                        dict.setObject(userArr[9], forKey: "Id")
+                        dict.setObject(userArr[8], forKey: "CreatedDate")
+                        dict.setObject(userArr[7], forKey: "Comments")
+                        dict.setObject(userArr[4], forKey: "UserId")
+                        dict.setObject(userArr[3], forKey: "TaskId")
+                        dict.setObject(userArr[2], forKey: "ActivityId")
+                        
+                        if "\(userArr[9])" == "0"{
+                            dict.setValue("add", forKey: "Operation")
+                        }else{
+                            dict.setValue("update", forKey: "Operation")
+                        }
+                        
+                        var uniqueNo:String = ""
+                        
+                        
+                        if "\(userArr[10])" == "true" {
+                            let videoData:NSData = userArr[1] as! NSData
+                            let count = videoData.length / sizeof(UInt8)
+                            if count > 0{
+                                uniqueNo = "video_\(userArr[11])"
+                                dict.setObject(uniqueNo, forKey: "UniqueNumber")
+                                let localArr:NSMutableArray = []
+                                localArr.addObject("video")
+                                localArr.addObject(videoData)
+                                uniqueDict.setObject(localArr, forKey: uniqueNo)
+                            }
+                        }else{
+                            let imageData:NSData = userArr[0] as! NSData
+                            let count = imageData.length / sizeof(UInt8)
+                            if count > 0{
+                                uniqueNo = "img_\(userArr[11])"
+                                dict.setObject(uniqueNo, forKey: "UniqueNumber")
+                                let localArr:NSMutableArray = []
+                                localArr.addObject("image")
+                                localArr.addObject(imageData)
+                                uniqueDict.setObject(localArr, forKey: uniqueNo)
+                            }
+                        }
+                        addyaToSynkData.addObject(dict)
+                    }
+                    if dictDATA.valueForKey("deleteTasks") != nil{
+                        let dict:NSMutableDictionary = [:]
+                        let userArr:NSArray = (dictDATA.valueForKey("deleteTasks") as? NSArray)!
+                        dict.setObject(userArr[0], forKey: "Id")
+                        dict.setValue("delete", forKey: "Operation")
+                        addyaToSynkData.addObject(dict)
+                    }
+
+            
+        }
+        print(addyaToSynkData)
+
+        if addyaToSynkData.count > 0 {
+            let api = ApiRequest()
+            let data = NSData()
+//            api.addUpdateTaskSynk(addyaToSynkData,type:"",uniqueno:"", data:data ,view: self.view)
+            api.sendSyncDataToServer(addyaToSynkData)
+        }
+        
+//        if uniqueDict.count > 0 {
+//            let api = ApiRequest()
+//            let array:NSMutableArray = []
+//            for (key, value) in uniqueDict {
+//                let arr:NSArray = (value as? NSArray)!
+//                let data:NSData = (arr[1] as? NSData)!
+//                api.addUpdateTaskSynk(array,type:"\(arr[0])",uniqueno:"\(key)", data:data ,view: self.view)
+//            }
+//            
+//        }
+        
+            
+        
+            
+       
+    }
+    func currentTimeMillis() -> Int64{
+        let nowDouble = NSDate().timeIntervalSince1970
+        return Int64(nowDouble*1000)
+    }
     @IBAction func btnNotificationSecond(sender: AnyObject) {
         self.performSegueWithIdentifier("notification", sender: self)
         
@@ -601,7 +696,11 @@ class dashboardViewController: UIViewController {
     NSUserDefaults.standardUserDefaults().removeObjectForKey("activeUserListTimeStamp")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("notificationsTimeStamp")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("teamTimeStamp")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_Email")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_PhoneNumber")
+
         
+
 ////        self.navigationController?.popToRootViewControllerAnimated(true)
 //        self.dismissViewControllerAnimated(true, completion: nil)
         let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")

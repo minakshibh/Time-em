@@ -55,6 +55,8 @@ public class ApiRequest {
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginId)", forKey: "currentUser_LoginId")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.FullName)", forKey: "currentUser_FullName")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserTypeId)", forKey: "UserTypeId")
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Email)", forKey: "currentUser_Email")
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.PhoneNumber)", forKey: "currentUser_PhoneNumber")
             
             var dictionary:NSMutableDictionary = [:]
             dictionary = currentUsers.returnDict()
@@ -72,7 +74,7 @@ public class ApiRequest {
             }
             
             do {
-                try database.executeUpdate("create table tasksData(ActivityId text, AttachmentImageFile text, AttachmentVideoFile text ,Comments text, CreatedDate text, EndTime text,Id text, SelectedDate text, SignedInHours text,StartTime text, TaskId text, TaskName text,TimeSpent text, Token text, UserId text, AttachmentImageData text,isVideoRecorded text)", values: nil)
+                try database.executeUpdate("create table tasksData(ActivityId text, AttachmentImageFile text, AttachmentVideoFile text ,Comments text, CreatedDate text, EndTime text,Id text, SelectedDate text, SignedInHours text,StartTime text, TaskId text, TaskName text,TimeSpent text, Token text, UserId text, AttachmentImageData text,isVideoRecorded text, isoffline text, uniqueno text)", values: nil)
                 } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
                 }
@@ -158,8 +160,44 @@ public class ApiRequest {
         
     }
     
-    func deleteTasks(Id:String,view:UIView) {
+    func deleteTasks(Id:String,TimeSpent:String,CreatedDate:String,isoffline:String,TaskId:String,view:UIView) {
         let notificationKey = "com.time-em.deleteResponse"
+        
+        //--
+        if isoffline == "true"{
+            let database = databaseFile()
+            database.deleteTask(Id, TimeSpent: TimeSpent, CreatedDate: CreatedDate, isoffline: isoffline, TaskId:TaskId)
+            view.makeToast("task deleted successfully")
+            let userInfo = ["response" : "success"]
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            return
+        }
+        if Reachability.isConnectedToNetwork() == true {
+            print("Internet connection OK")
+        } else {
+            print("Internet connection FAILED")
+            view.makeToast("Internet connection FAILED. Request saved in sync")
+            
+            let array:NSMutableArray = []
+            array.addObject(Id)
+//            array.addObject(view)
+            
+            let database = databaseFile()
+            
+            
+            if isoffline != "true"{
+                database.addDataToSync("deleteTasks", data: array)
+                NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+            }
+            database.deleteTask(Id, TimeSpent: TimeSpent, CreatedDate: CreatedDate, isoffline: isoffline, TaskId:TaskId)
+            
+            let userInfo = ["response" : "success"]
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            return
+            
+        }
+        
+        //--
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
         Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserTask/DeleteTask", parameters: ["Id":Id])
@@ -178,8 +216,7 @@ public class ApiRequest {
                         if "\(JSON.valueForKey("isError")!)" == "0"{
                             
                             var databse = databaseFile()
-                            databse.deleteTask(Id)
-                            
+                            databse.deleteTask(Id, TimeSpent: TimeSpent, CreatedDate: CreatedDate, isoffline: isoffline, TaskId:TaskId)
                             
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             
@@ -238,6 +275,8 @@ public class ApiRequest {
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginId)", forKey: "currentUser_LoginId")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.FullName)", forKey: "currentUser_FullName")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserTypeId)", forKey: "UserTypeId")
+                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Email)", forKey: "currentUser_Email")
+                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.PhoneNumber)", forKey: "currentUser_PhoneNumber")
                         
                         var dictionary:NSMutableDictionary = [:]
                         dictionary = currentUsers.returnDict()
@@ -333,22 +372,22 @@ public class ApiRequest {
                             var saveDateDict:NSMutableDictionary = [:]
                             let user: NSUserDefaults = NSUserDefaults.standardUserDefaults()
                             if user.valueForKey("taskTimeStamp") != nil {
-                                let data: NSData = (user.valueForKey("taskTimeStamp") as! NSData)
+                                let data: NSData = (user.valueForKey("taskTimeStamp")! as! NSData)
                                 let dictio = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
                                 saveDateDict = dictio
-                                if (saveDateDict.valueForKey("\(dict[0].valueForKey("UserId"))") != nil) {
+                                if (saveDateDict.valueForKey("\(dict[0].valueForKey("UserId")!)") != nil) {
                                     
-                                    saveDateDict.removeObjectForKey("\(dict[0].valueForKey("UserId"))")
+                                    saveDateDict.removeObjectForKey("\(dict[0].valueForKey("UserId")!)")
                                     
-                                    saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId"))")
+                                    saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId")!)")
                                 }
                                 else {
                                     
-                                    saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId"))")
+                                    saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId")!)")
                                 }
                             }
                             else {
-                                saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId"))")
+                                saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId")!)")
                                 
                             }
                             let data1: NSData = NSKeyedArchiver.archivedDataWithRootObject(saveDateDict)
@@ -522,7 +561,7 @@ public class ApiRequest {
                                 
                                 do {
                                     //                    try database.executeUpdate("delete * from  tasksData", values: nil)
-                                    try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData ) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,"" ])
+                                    try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,uniqueno ) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,"", "" ])
                                     
                                 } catch let error as NSError {
                                     print("failed: \(error.localizedDescription)")
@@ -563,22 +602,22 @@ public class ApiRequest {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            view.makeToast("Internet connection FAILED. Request saved in sync")
-            let array:NSMutableArray = []
-            array.addObject(userId)
-            array.addObject(LoginId)
-            array.addObject(ActivityId)
-            array.addObject(view)
-            
-            let database = databaseFile()
-            database.addDataToSync("signOutUser", data: array)
-            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
-            
-            NSUserDefaults.standardUserDefaults().setObject("0", forKey: "currentUser_IsSignIn")
-            database.currentUserSignOutSync()
-            
-            let userInfo = ["response" : "Sign out successfully"]
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            view.makeToast("Internet connection FAILED.")
+//            let array:NSMutableArray = []
+//            array.addObject(userId)
+//            array.addObject(LoginId)
+//            array.addObject(ActivityId)
+//            array.addObject(view)
+//            
+//            let database = databaseFile()
+//            database.addDataToSync("signOutUser", data: array)
+//            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+//            
+//            NSUserDefaults.standardUserDefaults().setObject("0", forKey: "currentUser_IsSignIn")
+//            database.currentUserSignOutSync()
+//            
+//            let userInfo = ["response" : "Sign out successfully"]
+//            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             return
         }
         
@@ -654,22 +693,22 @@ public class ApiRequest {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            view.makeToast("Internet connection FAILED. Request saved in sync")
-
-            let array:NSMutableArray = []
-            array.addObject(userId)
-            array.addObject(LoginId)
-            array.addObject(view)
-            
-            let database = databaseFile()
-            database.addDataToSync("signInUser", data: array)
-            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
-            
-            
-            NSUserDefaults.standardUserDefaults().setObject("1", forKey: "currentUser_IsSignIn")
-            database.currentUserSignInSync()
-            let userInfo = ["response" : "Sign in successfully"]
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            view.makeToast("Internet connection FAILED.")
+//
+//            let array:NSMutableArray = []
+//            array.addObject(userId)
+//            array.addObject(LoginId)
+//            array.addObject(view)
+//            
+//            let database = databaseFile()
+//            database.addDataToSync("signInUser", data: array)
+//            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+//            
+//            
+//            NSUserDefaults.standardUserDefaults().setObject("1", forKey: "currentUser_IsSignIn")
+//            database.currentUserSignInSync()
+//            let userInfo = ["response" : "Sign in successfully"]
+//            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             return
         }
         
@@ -729,7 +768,7 @@ public class ApiRequest {
     
     func getTeamDetail(userId:String,TimeStamp:String,view:UIView)  {
         let notificationKey = "com.time-em.getTeamResponse"
-        
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
         Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/User/GetAllUsersList", parameters: ["userId":userId,"TimeStamp":TimeStamp])
             .responseJSON { response in
                 print(response.request)  // original URL request
@@ -934,18 +973,33 @@ public class ApiRequest {
                 MBProgressHUD.hideHUDForView(view, animated: true)
         }
     }
-    
-    func AddUpdateNewTask(imageData: NSData, videoData: NSData, ActivityId: String, TaskId: String, UserId: String, TaskName: String, TimeSpent: String, Comments: String, CreatedDate: String, ID:String, view:UIView, isVideoRecorded:Bool)
+    func currentTimeMillis() -> Int64{
+        let nowDouble = NSDate().timeIntervalSince1970
+        return Int64(nowDouble*1000)
+    }
+    func AddUpdateNewTask(imageData: NSData, videoData: NSData, ActivityId: String, TaskId: String, UserId: String, TaskName: String, TimeSpent: String, Comments: String, CreatedDate: String, ID:String, view:UIView, isVideoRecorded:Bool,isoffline:String,uniqueno:String)
     {
         let notificationKey = "com.time-em.addTaskResponse"
         //--
+        if isoffline == "true" && ID == "0" {
+           let database = databaseFile()
+            
+            database.addTaskSync(imageData, videoData: videoData, ActivityId: ActivityId, TaskId: TaskId, UserId: UserId, TaskName: TaskName, TimeSpent: TimeSpent, Comments: Comments, CreatedDate: CreatedDate, ID: ID, isVideoRecorded: "\(isVideoRecorded)",uniqueno:uniqueno)
+            let userInfo = ["response" : "success"]
+            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            
+            return
+        }
+        
+        
         
         if Reachability.isConnectedToNetwork() == true {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
             view.makeToast("Internet connection FAILED. Request saved in sync")
-
+            let uniqueno:String = "\(UserId)\(currentTimeMillis())"
+            
             let array:NSMutableArray = []
             array.addObject(imageData)
             array.addObject(videoData)
@@ -957,17 +1011,17 @@ public class ApiRequest {
             array.addObject(Comments)
             array.addObject(CreatedDate)
             array.addObject(ID)
-            array.addObject(view)
             array.addObject(isVideoRecorded)
-            
+            array.addObject(uniqueno)
             let database = databaseFile()
             database.addDataToSync("AddUpdateNewTask", data: array)
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+            //
             
-            
-            database.addTaskSync(imageData, videoData: videoData, ActivityId: ActivityId, TaskId: TaskId, UserId: UserId, TaskName: TaskName, TimeSpent: TimeSpent, Comments: Comments, CreatedDate: CreatedDate, ID: ID, isVideoRecorded: "\(isVideoRecorded)")
+            database.addTaskSync(imageData, videoData: videoData, ActivityId: ActivityId, TaskId: TaskId, UserId: UserId, TaskName: TaskName, TimeSpent: TimeSpent, Comments: Comments, CreatedDate: CreatedDate, ID: ID, isVideoRecorded: "\(isVideoRecorded)",uniqueno:uniqueno)
             let userInfo = ["response" : "success"]
             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            
             return
         }
 
@@ -1050,14 +1104,23 @@ public class ApiRequest {
             
             guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
                 print("error")
-                let userInfo = ["response" : "failure"]
+                let userInfo = ["response" : "Failed to add task. Kindly try again."]
                 NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                delay(0.001){
+                    MBProgressHUD.hideHUDForView(view, animated: true)
+                }
                 return
             }
             
             let dataString = NSString(data: data!, encoding: NSUTF8StringEncoding)
             
-                         print(dataString)
+            print(dataString)
+            
+            if isoffline == "true"{
+             let database = databaseFile()
+                database.deleteTaskFromDatabse(TaskId)
+            }
+            
             delay(0.001){
                 MBProgressHUD.hideHUDForView(view, animated: true)
                 if "\(dataString!.lowercaseString)".rangeOfString("activity id does not exist") != nil{
@@ -1094,7 +1157,7 @@ public class ApiRequest {
             array.addObject(Message)
             array.addObject(NotificationTypeId)
             array.addObject(notifyto)
-            array.addObject(view)
+//            array.addObject(view)
             
             let database = databaseFile()
             database.addDataToSync("sendNotification", data: array)
@@ -1272,20 +1335,20 @@ public class ApiRequest {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            view.makeToast("Internet connection FAILED. Request saved in sync")
+            view.makeToast("Internet connection FAILED.")
 
-            let array:NSMutableArray = []
-            array.addObject(userId)
-            array.addObject(LoginId)
-            array.addObject(view)
-            
-            let database = databaseFile()
-            database.addDataToSync("teamUserSignIn", data: array)
-            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
-            
-            database.teamSignInUpdate(userId)
-             let userInfo = ["response" : "successfull"]
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//            let array:NSMutableArray = []
+//            array.addObject(userId)
+//            array.addObject(LoginId)
+//            array.addObject(view)
+//            
+//            let database = databaseFile()
+//            database.addDataToSync("teamUserSignIn", data: array)
+//            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+//            
+//            database.teamSignInUpdate(userId)
+//             let userInfo = ["response" : "successfull"]
+//            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             return
         }
         
@@ -1370,21 +1433,21 @@ public class ApiRequest {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            view.makeToast("Internet connection FAILED. Request saved in sync")
+            view.makeToast("Internet connection FAILED.")
 
-            let array:NSMutableArray = []
-            array.addObject(userId)
-            array.addObject(LoginId)
-            array.addObject(ActivityId)
-            array.addObject(view)
-            
-            let database = databaseFile()
-            database.addDataToSync("teamUserSignOut", data: array)
-            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
-            
-            database.teamSignOutbyId(userId)
-            let userInfo = ["response" : "successfull"]
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//            let array:NSMutableArray = []
+//            array.addObject(userId)
+//            array.addObject(LoginId)
+//            array.addObject(ActivityId)
+//            array.addObject(view)
+//            
+//            let database = databaseFile()
+//            database.addDataToSync("teamUserSignOut", data: array)
+//            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+//            
+//            database.teamSignOutbyId(userId)
+//            let userInfo = ["response" : "successfull"]
+//            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             return
         }
         
@@ -1450,16 +1513,16 @@ public class ApiRequest {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            view.makeToast("Internet connection FAILED. Request saved in sync")
+            view.makeToast("Internet connection FAILED.")
 
-            let array:NSMutableArray = []
-            array.addObject(userId)
-            array.addObject(view)
-            
-            let database = databaseFile()
-            database.addDataToSync("teamSignInAll", data: array)
-            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
-            
+//            let array:NSMutableArray = []
+//            array.addObject(userId)
+//            array.addObject(view)
+//            
+//            let database = databaseFile()
+//            database.addDataToSync("teamSignInAll", data: array)
+//            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+            return
         }
         
         
@@ -1536,16 +1599,16 @@ public class ApiRequest {
             print("Internet connection OK")
         } else {
             print("Internet connection FAILED")
-            view.makeToast("Internet connection FAILED. Request saved in sync")
+            view.makeToast("Internet connection FAILED.")
 
-            let array:NSMutableArray = []
-            array.addObject(userId)
-            array.addObject(view)
-            
-            let database = databaseFile()
-            database.addDataToSync("teamSignOutAll", data: array)
-            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
-            
+//            let array:NSMutableArray = []
+//            array.addObject(userId)
+//            array.addObject(view)
+//            
+//            let database = databaseFile()
+//            database.addDataToSync("teamSignOutAll", data: array)
+//            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+            return
         }
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
@@ -1806,6 +1869,154 @@ public class ApiRequest {
         }
         
     }
+    func sendSyncDataToServer(dataArr:NSMutableArray) {
+        let notificationKey = "com.time-em.sendSyncDataToServer"
+        
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserActivity/Sync", parameters:  ["userTaskActivities":dataArr])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        print(JSON.valueForKey("isError"))
+                        print(JSON.valueForKey("Message"))
+                        
+                        let userInfo = ["response" : "success"]
+                        
+                        
+                        
+                        
+                        
+                        
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                }
+        }
+    }
+    
+    
+    
+    func addUpdateTaskSynk(dataArr:NSMutableArray,type:String,uniqueno:String,data:NSData,view:UIView) {
+        let notificationKey = "com.time-em.addUpdateTaskSynk"
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        
+        //--
+      let  param = ["userTaskActivities":dataArr]
+        print(param)
+        let url = NSURL(string: "http://timeemapi.azurewebsites.net/api/UserActivity/Sync")
+        
+        let request = NSMutableURLRequest(URL: url!)
+        request.HTTPMethod = "POST"
+        
+        let boundary = generateBoundaryString()
+        
+        
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        let body = NSMutableData()
+        
+        for (key, value) in param {
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"\(key)\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("\(value)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        }
+        
+        var image = UIImage()
+        var count:Int = 0
+        if type == "image"{
+         image = UIImage(data: data)!
+             count = data.length / sizeof(UInt8)
+            
+        }
+
+        if(count > 0)
+        {
+            let fname = "\(uniqueno).png"
+            let mimetype = "image/png"
+            
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"test\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("hi\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"file\"; filename=\"\(fname)\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Type: \(mimetype)\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData(data)
+            body.appendData("\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        }
+        
+        if type == "video" {
+            let fname = "\(uniqueno).mp4"
+            let mimetype = "video/.mp4"
+            
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"test\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("hi\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"file\"; filename=\"\(fname)\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Type: \(mimetype)\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData(data)
+            body.appendData("\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        }
+        
+        body.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        
+        request.HTTPBody = body
+        
+        
+        
+        let session = NSURLSession.sharedSession()
+        
+        
+        let task = session.dataTaskWithRequest(request) {
+            (
+            let data, let response, let error) in
+            
+            guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
+                print("error")
+                let userInfo = ["response" : "failure"]
+                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                delay(0.001){
+                    MBProgressHUD.hideHUDForView(view, animated: true)
+                }
+                return
+            }
+            
+            let dataString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            
+            print(dataString)
+            
+           
+            
+            delay(0.001){
+                MBProgressHUD.hideHUDForView(view, animated: true)
+                if "\(dataString!.lowercaseString)".rangeOfString("activity id does not exist") != nil{
+                    let userInfo = ["response" : "please signin before adding task"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    return
+                }
+                let userInfo = ["response" : "SUCCESS"]
+                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            }
+        }
+        
+        task.resume()
+    }
+    
+    
 //http://timeemapi.azurewebsites.net/api/notification/NotificationByUserId
     func getNotifications(UserId:String,timeStamp:String) {
         let notificationKey = "com.time-em.getNotificationListByLoginCode"

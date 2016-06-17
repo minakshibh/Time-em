@@ -11,6 +11,10 @@ import JLToast
 
 class sendNotificationViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate{
 
+    @IBOutlet var btnCrossImage: UIButton!
+    @IBOutlet var TextViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var TextPlaceHolderViewHeightConstraint: NSLayoutConstraint!
+
     @IBOutlet var heightConstraintFortxtComment: NSLayoutConstraint!
      @IBOutlet var txtCommentHeightConstraint: NSLayoutConstraint!
     @IBOutlet var taskDropDown: UIButton!
@@ -43,8 +47,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         btnUploadImage.layer.cornerRadius = 4
         
         
-        
-        
+        uploadedImage.layer.cornerRadius = 4
+        uploadedImage.layer.masksToBounds = true
         
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.GetNotificationTypeResponse), name: "com.time-em.NotificationTypeloginResponse", object: nil)
         
@@ -64,6 +68,14 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
 //            // Fallback on earlier versions
 //        }
         imagePicker.delegate = self
+    }
+    
+   override func viewWillAppear(animated: Bool) {
+        let sizeThatFitsTextView: CGSize = self.txtComment.sizeThatFits(CGSizeMake(self.txtComment.frame.size.width, CGFloat(MAXFLOAT)))
+        print(sizeThatFitsTextView.height)
+        self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
+    self.TextPlaceHolderViewHeightConstraint.constant = sizeThatFitsTextView.height-10
+    
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -192,6 +204,17 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     }
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         
+        delay(0.001){
+        let sizeThatFitsTextView: CGSize = self.txtComment.sizeThatFits(CGSizeMake(self.txtComment.frame.size.width, CGFloat(MAXFLOAT)))
+        print(sizeThatFitsTextView.height)
+            if sizeThatFitsTextView.height > 57 {
+                
+            }else{
+                self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
+                self.TextPlaceHolderViewHeightConstraint.constant = sizeThatFitsTextView.height
+                
+            }
+        }
         if textView == txtSubject {
             if (text == "\n") {
                 txtComment.becomeFirstResponder()
@@ -211,6 +234,13 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
 
         getDataFromDatabase()
     }
+    
+    @IBAction func btnCrossImage(sender: AnyObject) {
+        uploadedImage.image = nil
+        uploadedImage.hidden = true
+        btnCrossImage.hidden = true
+    }
+    
     
     @IBAction func btnBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
@@ -437,6 +467,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             uploadedImage.hidden = false
             uploadedImage.contentMode = .ScaleToFill
             uploadedImage.image = pickedImage
+            btnCrossImage.hidden = false
         }
         
         dismissViewControllerAnimated(true, completion: nil)

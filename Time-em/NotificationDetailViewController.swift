@@ -11,6 +11,7 @@ class NotificationDetailViewController: UIViewController {
     
     var notificationData:NSMutableDictionary! = [:]
     @IBOutlet var dateTimeLbl: UILabel!
+    @IBOutlet var TextViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet var notification_subject_lbl: UITextView!
     @IBOutlet var notification_messageLbl: UITextView!
     @IBOutlet var sender_name_Lbl: UILabel!
@@ -108,6 +109,10 @@ class NotificationDetailViewController: UIViewController {
                 dateTimeLbl.text = dateStr as String
             }
         }
+        
+        let sizeThatFitsTextView1: CGSize = self.notification_messageLbl.sizeThatFits(CGSizeMake(notification_messageLbl.frame.size.width, CGFloat(MAXFLOAT)))
+        TextViewHeightConstraint.constant = sizeThatFitsTextView1.height
+
     }
     
     @IBAction func backBtn(sender: AnyObject) {

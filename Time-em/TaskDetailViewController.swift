@@ -101,7 +101,9 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                 dataArr = database.getImageForUrl("\(taskData.valueForKey("AttachmentImageFile")!)",imageORvideo:"AttachmentImageFile")
                 
                 if dataArr.count > 0 {
-                    if "\(dataArr[0])" != "" {
+                    let data1:NSData = dataArr[0] as! NSData
+                    let count = data1.length / sizeof(UInt8)
+                    if count > 0 {
                         let data:NSData = dataArr[0] as! NSData
                         let userImageData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
                         self.imageView.image = UIImage(data: userImageData)
@@ -117,9 +119,11 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                         if self.imageView != nil && data != nil {
                        self.imageView.image = UIImage(data: data!)
                         }
+                        if data != nil {
                         let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
                         let database = databaseFile()
                         database.addImageToTask("\(self.taskData.valueForKey("AttachmentImageFile")!)", AttachmentImageData: encodedData, imageORvideo:"AttachmentImageFile")
+                        }
                     });
                 }
             }else{
@@ -139,7 +143,9 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                 let dataArr:NSMutableArray!
                 dataArr = database.getImageForUrl("\(taskData.valueForKey("AttachmentVideoFile")!)",imageORvideo:"AttachmentVideoFile")
                 if dataArr.count > 0 {
-                    if "\(dataArr[0])" != "" {
+                   let data1:NSData = dataArr[0] as! NSData
+                    let count = data1.length / sizeof(UInt8)
+                    if count > 0 {
                         let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentVideoFile")!)")
                         
                         generateThumbnail(url!)

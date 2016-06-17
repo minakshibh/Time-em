@@ -245,6 +245,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             Description.font = myFont
         }else if Reachability.DeviceType.IS_IPHONE_6 {
             Description.frame = CGRectMake(15,  10 - 10 , 250  + 50  , 58)
+        }else if Reachability.DeviceType.IS_IPAD {
+            Description.frame = CGRectMake(15, 10 - 10 , 250  + 85 + 350  , 58)
+            
         }
         Description.text =  "\(dataDic.valueForKey("Comments")!)"
         //        Description.text= [notificationDataArr objectAtIndex:indexPath.row];
@@ -300,6 +303,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
              TitleLabel.font  = UIFont(name: "HelveticaNeue", size: 15)
         }else if Reachability.DeviceType.IS_IPHONE_6 {
             TitleLabel.frame = CGRectMake(notificationImage.frame.origin.x + notificationImage.frame.size.width + 15, 5, 250 + 50 , 30)
+        }else if Reachability.DeviceType.IS_IPAD {
+            TitleLabel.frame = CGRectMake(notificationImage.frame.origin.x + notificationImage.frame.size.width + 15, 5, 250 + 85 + 300 , 30)
+
         }
         TitleLabel.text =  "\(dataDic.valueForKey("TaskName")!)"
         TitleLabel.textColor = UIColor(red: 23/256, green: 166/256, blue: 199/256, alpha: 1)
@@ -316,6 +322,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             Description.font = myFont
         }else if Reachability.DeviceType.IS_IPHONE_6 {
             Description.frame = CGRectMake(TitleLabel.frame.origin.x, TitleLabel.frame.origin.y + TitleLabel.frame.size.height-10 , 250  + 50  , 58)
+        }else if Reachability.DeviceType.IS_IPAD {
+            Description.frame = CGRectMake(TitleLabel.frame.origin.x, TitleLabel.frame.origin.y + TitleLabel.frame.size.height , 250  + 85 + 350  , 58)
+
         }
         let lines = Description.getNoOflines()
         if lines > 3 {
@@ -366,10 +375,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.deleteTaskResponse), name: "com.time-em.deleteResponse", object: nil)
 
-            print(dataDic)
+//            print(dataDic)
             let api = ApiRequest()
-            api.deleteTasks("\(dataDic.valueForKey("Id")!)", view: self.view)
-            
+            api.deleteTasks("\(dataDic.valueForKey("Id")!)", TimeSpent: "\(dataDic.valueForKey("TimeSpent")!)", CreatedDate: "\(dataDic.valueForKey("CreatedDate")!)", isoffline: "\(dataDic.valueForKey("isoffline")!)", TaskId:"\(dataDic.valueForKey("TaskId")!)", view: self.view)
             return true
         }),MGSwipeButton(title: "", icon:UIImage(named: "edit"),backgroundColor: UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1), callback: {
             (sender: MGSwipeTableCell!) -> Bool in

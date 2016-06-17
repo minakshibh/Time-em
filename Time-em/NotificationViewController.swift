@@ -20,8 +20,8 @@ class NotificationViewController: UIViewController {
     var selectedNotificationData:NSMutableDictionary! = [:]
 
     
-    let normalColor = UIColor(red: 146/255, green: 146/255, blue: 146/255, alpha: 1)
-    let highLightedColor = UIColor.darkGrayColor()
+    let normalColor = UIColor(red: 56/255, green: 72/255, blue: 98/255, alpha: 1)
+    let highLightedColor = UIColor(red: 30/255, green: 45/255, blue: 68/255, alpha: 1)
     let fontSmall: UIFont = UIFont(name: "HelveticaNeue", size: 11.0)!
     let font: UIFont = UIFont(name: "HelveticaNeue", size: 15.0)!
 
@@ -85,6 +85,7 @@ class NotificationViewController: UIViewController {
         var alert :UIAlertController!
         alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+
         //        self.presentViewController(alert, animated: true, completion: nil)
         fetchNotificationDataFromDatabase()
     }

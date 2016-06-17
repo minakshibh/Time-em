@@ -45,6 +45,22 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
         numberToolbar.items = [UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(myProfileViewController.cancelNumberPad)), UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil), UIBarButtonItem(title: "Done", style: .Done, target: self, action: #selector(myProfileViewController.doneWithNumberPad))]
         numberToolbar.sizeToFit()
         txtPhoneNo.inputAccessoryView = numberToolbar
+        
+        //assigning value
+        let nameStr:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_FullName")!)"
+        lblName.text = nameStr
+        lblNameUnderprofileImage.text = nameStr
+        
+        let emailStr = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_Email")!)"
+        lblEmail.text = emailStr
+        
+        let phoneNoStr = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_PhoneNumber")!)"
+        if phoneNoStr == "0" {
+           lblPhoneNo.text = ""
+        }else{
+            lblPhoneNo.text = phoneNoStr
+        }
+
 
     }
 
@@ -107,10 +123,7 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
             
             
             
-            //assigning value
-            let name:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_FullName")!)"
-            lblName.text = name
-            lblNameUnderprofileImage.text = name
+           
         }
         
     }

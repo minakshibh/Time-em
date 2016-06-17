@@ -42,7 +42,7 @@
 		D9AD39191CE5BAE3005D5029 /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D9AD39181CE5BAE3005D5029 /* images.xcassets */; };
 		D9AD391F1CE5CD8D005D5029 /* dashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */; };
 		D9AD39231CE5F29D005D5029 /* async.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AD39221CE5F29D005D5029 /* async.swift */; };
-		D9C92C4D1D0FDABE009011A9 /* SeetingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C92C4C1D0FDABE009011A9 /* SeetingViewController.swift */; };
+		D9C92C4D1D0FDABE009011A9 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C92C4C1D0FDABE009011A9 /* SettingViewController.swift */; };
 		D9D378011CEC9201002E24D9 /* databaseFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378001CEC9201002E24D9 /* databaseFile.swift */; };
 		D9D378031CEC92C8002E24D9 /* TaskData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378021CEC92C8002E24D9 /* TaskData.swift */; };
 		D9D378051CECAC6D002E24D9 /* MyTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378041CECAC6D002E24D9 /* MyTeamViewController.swift */; };
@@ -128,7 +128,7 @@
 		D9AD39181CE5BAE3005D5029 /* images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = images.xcassets; sourceTree = "<group>"; };
 		D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = dashboardViewController.swift; sourceTree = "<group>"; };
 		D9AD39221CE5F29D005D5029 /* async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = async.swift; sourceTree = "<group>"; };
-		D9C92C4C1D0FDABE009011A9 /* SeetingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeetingViewController.swift; sourceTree = "<group>"; };
+		D9C92C4C1D0FDABE009011A9 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		D9D378001CEC9201002E24D9 /* databaseFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = databaseFile.swift; sourceTree = "<group>"; };
 		D9D378021CEC92C8002E24D9 /* TaskData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskData.swift; sourceTree = "<group>"; };
 		D9D378041CECAC6D002E24D9 /* MyTeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyTeamViewController.swift; sourceTree = "<group>"; };
@@ -294,7 +294,7 @@
 			isa = PBXGroup;
 			children = (
 				D970050E1CE31B150036B5EA /* LoginViewController.swift */,
-				D9C92C4C1D0FDABE009011A9 /* SeetingViewController.swift */,
+				D9C92C4C1D0FDABE009011A9 /* SettingViewController.swift */,
 				18B5C3331D084902009EA870 /* Dashboard */,
 				D965A2071CF82ECD00AB11C0 /* notifications */,
 				D928049D1CF5ADC000F99D28 /* BarCodeScanning */,
@@ -580,7 +580,7 @@
 				D9963C271CFC3E0400537699 /* DigitField.swift in Sources */,
 				D9DA40191CE9B27100D6B572 /* DailyCalendarView.m in Sources */,
 				D9DA40271CE9B28A00D6B572 /* NSDate+CL.m in Sources */,
-				D9C92C4D1D0FDABE009011A9 /* SeetingViewController.swift in Sources */,
+				D9C92C4D1D0FDABE009011A9 /* SettingViewController.swift in Sources */,
 				D965A2091CF82EF000AB11C0 /* NotificationViewController.swift in Sources */,
 				D9DA402A1CE9B28A00D6B572 /* UIImage+CL.m in Sources */,
 				F9F012961CF33489003698C6 /* DPDKeyboardListener.swift in Sources */,
@@ -750,7 +750,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "8cbc16a7-bb80-4eec-8996-e815e9f04cce";
+				PROVISIONING_PROFILE = "1e1b5b09-d5ec-422d-ae09-e9afd18abfc4";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -774,7 +774,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "eb33d980-b0a1-40b5-99ab-a5c0c85e967e";
+				PROVISIONING_PROFILE = "592c946d-9bd3-4335-a6a5-9dd0021d8cd4";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -16,6 +16,7 @@ import Toast_Swift
 class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate{
     
     @IBOutlet var taskDropDown: UIButton!
+    @IBOutlet var TextViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet var selectTaskTxt: UITextField!
     @IBOutlet var commentsTxt: UITextView!
     @IBOutlet var commentPlaceholder: UILabel!
@@ -42,6 +43,8 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     let notificationKey = "com.time-em.addTaskResponse"
     var isEditting: String!
     var editId: String! = "0"
+     var isoffline: String! = "false"
+    var uniqueno: String! = ""
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
@@ -71,6 +74,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             if self.commentsTxt.text != "" {
                 self.commentPlaceholder.hidden = true
             }
+            self.uniqueno = "\(editTaskDict.valueForKey("uniqueno")!)"
             self.numberOfHoursTxt.text = "\(editTaskDict.valueForKey("TimeSpent")!)"
             self.taskId = "\(editTaskDict.valueForKey("TaskId")!)"
             self.createdDate = "\(editTaskDict.valueForKey("CreatedDate")!)"
@@ -80,7 +84,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             let year = dateStr.componentsSeparatedByString("/")[2]
             self.createdDate = "\(month)-\(day)-\(year)"
             self.editId = "\(editTaskDict.valueForKey("Id")!)"
-            
+            self.isoffline = "\(editTaskDict.valueForKey("isoffline")!)"
             //--------
             if editTaskDict.valueForKey("AttachmentImageFile") != nil {
                 
@@ -243,8 +247,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         dropDown.anchorView = selectTaskTxt
         dropDown.bottomOffset = CGPoint(x: 0, y:selectTaskTxt.bounds.height)
         
-        //~~ Set delegate of UIImagePickerController
-        imagePicker.delegate = self
+        
         
         scrollView.scrollEnabled = false
         scrollView.delegate = self
@@ -257,6 +260,11 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         numberToolbar.sizeToFit()
         numberOfHoursTxt.inputAccessoryView = numberToolbar
     }
+    override func viewWillAppear(animated: Bool) {
+        let sizeThatFitsTextView: CGSize = self.commentsTxt.sizeThatFits(CGSizeMake(self.commentsTxt.frame.size.width, CGFloat(MAXFLOAT)))
+        self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
+    }
+    
     func cancelNumberPad() {
         numberOfHoursTxt.resignFirstResponder()
         scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
@@ -345,6 +353,8 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     }
   
     @IBAction func uploadImage(sender: AnyObject) {
+        //~~ Set delegate of UIImagePickerController
+        imagePicker.delegate = self
         // 1
         let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .ActionSheet)
         
@@ -408,6 +418,9 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     }
     
     @IBAction func addUpdateTask(sender: AnyObject) {
+        commentsTxt.resignFirstResponder()
+        numberOfHoursTxt.resignFirstResponder()
+        
         numberOfHoursTxt.resignFirstResponder()
         main {
             self.lblbackground.frame.origin.y += 150
@@ -459,9 +472,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             videoRecordedData = videoData
             isVideoRecorded = true
         }
-        assignedTasks.AddUpdateNewTask(imageData,videoData: videoRecordedData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: editId as String, view: self.view, isVideoRecorded:isVideoRecorded)
-        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AddNewTaskViewController.displayResponse), name: notificationKey, object: nil)
+        assignedTasks.AddUpdateNewTask(imageData,videoData: videoRecordedData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: editId as String, view: self.view, isVideoRecorded:isVideoRecorded,isoffline:self.isoffline,uniqueno: self.uniqueno)
+        
+        
     }
     
     @IBAction func backBtn(sender: AnyObject) {
@@ -500,6 +514,17 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     //~~ TextView Delegates
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         
+        let sizeThatFitsTextView: CGSize = self.commentsTxt.sizeThatFits(CGSizeMake(self.commentsTxt.frame.size.width, CGFloat(MAXFLOAT)))
+        print(sizeThatFitsTextView.height)
+        if sizeThatFitsTextView.height > 62 {
+            
+        }else{
+        self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
+        }
+        
+        if commentsTxt.text.characters.count == 0 && text == "" {
+            commentPlaceholder.hidden = false
+        }
         
             if (text == "\n") {
                 numberOfHoursTxt.becomeFirstResponder()
@@ -542,7 +567,8 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
 //        scrollView.contentSize = CGSizeMake(0, 0)
     }
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-       
+
+        
 //        limit for not data entered more than 24
         if textField == numberOfHoursTxt {
 //            if Int(string) > 2 && numberOfHoursTxt.text?.characters.count == 0{
@@ -586,6 +612,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             uploadImageView.hidden = false
+            uploadedImage.hidden = false
             uploadedImage.contentMode = .ScaleToFill
             uploadedImage.image = pickedImage
         }

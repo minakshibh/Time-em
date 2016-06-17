@@ -37,8 +37,10 @@ class User: NSObject {
      var Worksite:String = ""
      var WorksiteId:Int
      var isError:Int
+    var Email:String = ""
+    var PhoneNumber:Int
     
-    required init(ActivityId: Int?, Company: String?, CompanyId: Int?, Department: String?, DepartmentId: Int?, FirstName: String?, FullName: String?, Id: Int?, IsSecurityPin: String?, IsSignIn: Int?, LastName: String?, LoginCode: String?, LoginId: String?, NFCTagId: String?, Password: String?, Project: String?,ProjectId: Int?, RefrenceCount: Int?,ReturnMessage: String? ,Supervisor: String? ,SupervisorId: Int? , Token: String? , UserType: String? = nil, UserTypeId: Int?, Worksite: String?,WorksiteId: Int?, isError: Int?) {
+    required init(ActivityId: Int?, Company: String?, CompanyId: Int?, Department: String?, DepartmentId: Int?, FirstName: String?, FullName: String?, Id: Int?, IsSecurityPin: String?, IsSignIn: Int?, LastName: String?, LoginCode: String?, LoginId: String?, NFCTagId: String?, Password: String?, Project: String?,ProjectId: Int?, RefrenceCount: Int?,ReturnMessage: String? ,Supervisor: String? ,SupervisorId: Int? , Token: String? , UserType: String? = nil, UserTypeId: Int?, Worksite: String?,WorksiteId: Int?, isError: Int?, Email: String?, PhoneNumber: Int?) {
         self.ActivityId = ActivityId!
         self.Company = Company ?? ""
         self.CompanyId = CompanyId!
@@ -66,6 +68,8 @@ class User: NSObject {
         self.Worksite = Worksite ?? ""
         self.WorksiteId = WorksiteId!
         self.isError = isError!
+         self.Email = Email ?? ""
+        self.PhoneNumber = PhoneNumber!
     }
     
     convenience required init(dict: NSMutableDictionary) {
@@ -94,7 +98,9 @@ class User: NSObject {
                   UserTypeId : dict["UserTypeId"] as? Int,
                   Worksite : dict["Worksite"] as? String,
                   WorksiteId : dict["WorksiteId"] as? Int,
-                  isError : dict["isError"] as? Int
+                  isError : dict["isError"] as? Int,
+                  Email : dict["Email"] as? String,
+                  PhoneNumber : dict["PhoneNumber"] as? Int
         )
     }
     
@@ -128,6 +134,8 @@ class User: NSObject {
         data.setObject(self.Worksite, forKey: "Worksite")
         data.setObject(self.WorksiteId, forKey: "WorksiteId")
         data.setObject(self.isError, forKey: "isError")
+        data.setObject(self.Email, forKey: "Email")
+        data.setObject(self.PhoneNumber, forKey: "PhoneNumber")
         return data
     }
 

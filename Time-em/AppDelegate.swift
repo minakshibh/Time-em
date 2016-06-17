@@ -1,4 +1,4 @@
- //
+//
 //  AppDelegate.swift
 //  Time-em
 // self.dispatch = false
@@ -37,7 +37,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.rootViewController = navigationController
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
-        NSUserDefaults.standardUserDefaults().setObject("no", forKey:"sync")
         
         /// setup for notifications
         let notificationTypes = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
