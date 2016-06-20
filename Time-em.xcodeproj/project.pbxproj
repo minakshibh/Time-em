@@ -685,7 +685,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "0dc5e69e-c73f-4dba-bc91-b9402eedab83";
+				PROVISIONING_PROFILE = "8da277d7-5ff4-4780-b10b-a4ea4dcaf1a5";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -726,7 +726,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "1c1b832e-e779-40a3-abd1-526f65cba047";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -750,7 +750,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1e1b5b09-d5ec-422d-ae09-e9afd18abfc4";
+				PROVISIONING_PROFILE = "59addf06-bb4e-4157-957c-748a2c8d2052";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -774,7 +774,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "592c946d-9bd3-4335-a6a5-9dd0021d8cd4";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

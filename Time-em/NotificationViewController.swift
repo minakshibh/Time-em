@@ -39,7 +39,6 @@ class NotificationViewController: UIViewController {
         notificationBtn.backgroundColor = highLightedColor
         
         // Do any additional setup after loading the view.
-        main {
             let api = ApiRequest()
             api.GetNotificationType()
             
@@ -50,8 +49,7 @@ class NotificationViewController: UIViewController {
             }else{
                 TimeStamp = ""
             }
-            api.getActiveUserList(userIdStr!,timeStamp:TimeStamp)
-        }
+        api.getActiveUserList(userIdStr!,timeStamp:TimeStamp,view:self.view)
     }
     override func viewWillAppear(animated: Bool) {
          dateTimeLbl.text = self.dateConversion(NSDate()) as String
