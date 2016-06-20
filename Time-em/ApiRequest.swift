@@ -57,7 +57,8 @@ public class ApiRequest {
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserTypeId)", forKey: "UserTypeId")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Email)", forKey: "currentUser_Email")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.PhoneNumber)", forKey: "currentUser_PhoneNumber")
-            
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "forGraph")
+
             var dictionary:NSMutableDictionary = [:]
             dictionary = currentUsers.returnDict()
             
@@ -277,6 +278,7 @@ public class ApiRequest {
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserTypeId)", forKey: "UserTypeId")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Email)", forKey: "currentUser_Email")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.PhoneNumber)", forKey: "currentUser_PhoneNumber")
+                        NSUserDefaults.standardUserDefaults().setObject("no", forKey: "forGraph")
                         
                         var dictionary:NSMutableDictionary = [:]
                         dictionary = currentUsers.returnDict()
@@ -784,6 +786,8 @@ public class ApiRequest {
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
                             let userInfo = ["response" : "FAILURE"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            MBProgressHUD.hideHUDForView(view, animated: true)
+
                             return
                         }
                         
@@ -982,6 +986,16 @@ public class ApiRequest {
         let notificationKey = "com.time-em.addTaskResponse"
         //--
         if isoffline == "true" && ID == "0" {
+            
+            let issignedin:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)"
+            if issignedin == "0" {
+               
+                let userInfo = ["response" : "Signin before editing task."]
+                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                return
+            }
+            
+            
            let database = databaseFile()
             
             database.addTaskSync(imageData, videoData: videoData, ActivityId: ActivityId, TaskId: TaskId, UserId: UserId, TaskName: TaskName, TimeSpent: TimeSpent, Comments: Comments, CreatedDate: CreatedDate, ID: ID, isVideoRecorded: "\(isVideoRecorded)",uniqueno:uniqueno)
@@ -996,6 +1010,13 @@ public class ApiRequest {
         if Reachability.isConnectedToNetwork() == true {
             print("Internet connection OK")
         } else {
+            let issignedin:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)"
+            if issignedin == "0" {
+                
+                let userInfo = ["response" : "Signin before adding task."]
+                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                return
+            }
             print("Internet connection FAILED")
             view.makeToast("Internet connection FAILED. Request saved in sync")
             let uniqueno:String = "\(UserId)\(currentTimeMillis())"

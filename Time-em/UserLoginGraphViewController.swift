@@ -164,7 +164,12 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
             let signInHeightGraph : CGFloat = CGFloat(signInHours * (maxHeightGraph/maxHours))
             
             let signInBarView  = UIView.init(frame: CGRectMake(DateView.frame.size.width/2-5, DateView.frame.size.height-signInHeightGraph, 10, signInHeightGraph))
-            signInBarView.layer.cornerRadius = 3
+//            signInBarView.layer.cornerRadius = 3
+            let path = UIBezierPath(roundedRect:signInBarView.bounds, byRoundingCorners:[.TopRight, .TopLeft], cornerRadii: CGSizeMake(20, 20))
+            let maskLayer = CAShapeLayer()
+            maskLayer.path = path.CGPath
+            signInBarView.layer.mask = maskLayer
+            
             signInBarView.backgroundColor = UIColor(red: 210.0/255.0, green: 52.0/255.0, blue: 53.0/255.0, alpha: 1.0)
             DateView.addSubview(signInBarView)
             
@@ -172,7 +177,13 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
             let signOutHeightGraph : CGFloat = CGFloat(signOutHours * (maxHeightGraph/maxHours))
 
             let signOutBarView  = UIView.init(frame: CGRectMake(signInBarView.frame.size.width + signInBarView.frame.origin.x, DateView.frame.size.height-signOutHeightGraph, 10, signOutHeightGraph))
-            signOutBarView.layer.cornerRadius = 3
+//            signOutBarView.layer.cornerRadius = 3
+            
+            let path1 = UIBezierPath(roundedRect:signOutBarView.bounds, byRoundingCorners:[.TopRight, .TopLeft], cornerRadii: CGSizeMake(20, 20))
+            let maskLayer1 = CAShapeLayer()
+            maskLayer1.path = path1.CGPath
+            signOutBarView.layer.mask = maskLayer1
+            
             signOutBarView.backgroundColor = UIColor(red: 219.0/255.0, green: 219.0/255.0, blue: 219.0/255.0, alpha: 1.0)
             DateView.addSubview(signOutBarView)
 

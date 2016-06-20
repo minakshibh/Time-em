@@ -161,7 +161,14 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
             let barheight : CGFloat = CGFloat(hours * (maxHeightGraph/maxHours))
             
             let barView  = UIView.init(frame: CGRectMake(DateView.frame.size.width/2-5, DateView.frame.size.height - barheight, 10, barheight))
-            barView.layer.cornerRadius = 3
+//            barView.layer.cornerRadius = 3
+            
+            let path = UIBezierPath(roundedRect:barView.bounds, byRoundingCorners:[.TopRight, .TopLeft], cornerRadii: CGSizeMake(20, 20))
+            let maskLayer = CAShapeLayer()
+            maskLayer.path = path.CGPath
+            barView.layer.mask = maskLayer
+            
+            
             barView.backgroundColor = UIColor(red: 210.0/255.0, green: 52.0/255.0, blue: 53.0/255.0, alpha: 1.0)
             //            barView.backgroundColor = UIColor(red: 219.0/255.0, green: 219.0/255.0, blue: 219.0/255.0, alpha: 1.0)
             

@@ -128,6 +128,7 @@ class dashboardViewController: UIViewController {
         
         // Initialize scroll menu
         pageMenu = CAPSPageMenu(viewControllers: controllerArray, frame: CGRectMake(0.0, btnSignInOut2.frame.size.height + btnSignInOut2.frame.origin.y, self.view.frame.width, 270), pageMenuOptions: parameters)
+    
         
         self.addChildViewController(pageMenu!)
         self.view.addSubview(pageMenu!.view)
@@ -135,6 +136,8 @@ class dashboardViewController: UIViewController {
         pageMenu!.didMoveToParentViewController(self)
         self.view.sendSubviewToBack(pageMenu!.view)
 //        self.view.bringSubviewToFront( self.sideView)
+        
+//
     }
     
     
@@ -288,8 +291,16 @@ class dashboardViewController: UIViewController {
             }
             
         }
-    self.implementGraphViews()
 
+    let value = "\(NSUserDefaults.standardUserDefaults().valueForKey("forGraph")!)"
+
+    if value == "yes" {
+        
+    }else{
+       self.implementGraphViews()
+    }
+    
+    
     }
     
     
@@ -340,10 +351,29 @@ class dashboardViewController: UIViewController {
 
     func displayGraphResponse() {
 //        self.fetchUserTaskGraphDataFromDatabase()
+        NSUserDefaults.standardUserDefaults().setObject("no", forKey:"forGraph")
+
+        self.implementGraphViews()
+
         let userGraph = UserGraphViewController()
         userGraph.viewWillAppear(true)
+        
     }
-    
+    func displayUserSignedGraphResponse() {
+        
+        let userGraph = UserLoginGraphViewController()
+        userGraph.viewWillAppear(true)
+        //        self.fetchUserSignedGraphDataFromDatabase()
+    }
+//    func changepage (){
+//        var currentIndex = pageMenu!.currentPageIndex
+//        
+//                if currentIndex == 0 {
+//                    pageMenu!.moveToPage(currentIndex + 1)
+//        }else if currentIndex == 1 {
+//            pageMenu!.moveToPage(currentIndex - 1)
+//        }
+//    }
     func fetchUserSignedGraphDataFromAPI () {
         let currentUserId:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
         let api = ApiRequest()
@@ -356,11 +386,7 @@ class dashboardViewController: UIViewController {
 //        print("\(userSignedGraphDataArray)")
 //    }
     
-    func displayUserSignedGraphResponse() {
-        let userGraph = UserLoginGraphViewController()
-        userGraph.viewWillAppear(true)
-//        self.fetchUserSignedGraphDataFromDatabase()
-    }
+
     
     
     func refreshButtonTitleImage() {
@@ -418,7 +444,7 @@ class dashboardViewController: UIViewController {
                             let imageData:NSData = userArr[0] as! NSData
                             let count = imageData.length / sizeof(UInt8)
                             if count > 0{
-                                uniqueNo = "img_\(userArr[11])"
+                                uniqueNo = "121212"
                                 dict.setObject(uniqueNo, forKey: "UniqueNumber")
                                 let localArr:NSMutableArray = []
                                 localArr.addObject("image")
@@ -698,8 +724,8 @@ class dashboardViewController: UIViewController {
     NSUserDefaults.standardUserDefaults().removeObjectForKey("teamTimeStamp")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_Email")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_PhoneNumber")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("forGraph")
 
-        
 
 ////        self.navigationController?.popToRootViewControllerAnimated(true)
 //        self.dismissViewControllerAnimated(true, completion: nil)

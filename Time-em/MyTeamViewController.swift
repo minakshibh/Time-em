@@ -273,7 +273,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         
         
         if "\(dict["IsSignedIn"]!)"  == "0" {
-        cell.rightButtons = [MGSwipeButton(title: "  Signin  ",icon:UIImage(named: ""),backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
+        cell.rightButtons = [MGSwipeButton(title: "  Signin  ",icon:nil,backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
             (sender: MGSwipeTableCell!) -> Bool in
             print("delete: \(indexPath.row)")
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.signInOutResponse), name: "com.time-teamUserSignInOutResponse", object: nil)
@@ -284,7 +284,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             return true
         })]
         }else{
-        cell.rightButtons = [MGSwipeButton(title: "  Signout  ",icon:UIImage(named: ""),backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
+        cell.rightButtons = [MGSwipeButton(title: "  Signout  ",icon:nil,backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
                 (sender: MGSwipeTableCell!) -> Bool in
                 print("delete: \(indexPath.row)")
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.signInOutResponse), name: "com.time-teamUserSignInOutResponse", object: nil)
