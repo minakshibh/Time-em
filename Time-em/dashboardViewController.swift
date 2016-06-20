@@ -434,7 +434,7 @@ class dashboardViewController: UIViewController {
                             let count = videoData.length / sizeof(UInt8)
                             if count > 0{
                                 uniqueNo = "video_\(userArr[11])"
-                                dict.setObject(uniqueNo, forKey: "UniqueNumber")
+                                dict.setObject("\(uniqueNo)", forKey: "UniqueNumber")
                                 let localArr:NSMutableArray = []
                                 localArr.addObject("video")
                                 localArr.addObject(videoData)
@@ -444,8 +444,8 @@ class dashboardViewController: UIViewController {
                             let imageData:NSData = userArr[0] as! NSData
                             let count = imageData.length / sizeof(UInt8)
                             if count > 0{
-                                uniqueNo = "121212"
-                                dict.setObject(uniqueNo, forKey: "UniqueNumber")
+                                uniqueNo = "img_\(userArr[11])"
+                                dict.setObject("\(uniqueNo)", forKey: "UniqueNumber")
                                 let localArr:NSMutableArray = []
                                 localArr.addObject("image")
                                 localArr.addObject(imageData)

@@ -40,6 +40,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     var selectedRecipientsNameArr:NSMutableArray = []
     var selectedRecipientsIdArr:NSMutableArray = []
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -100,17 +101,19 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         tableView = UITableView(frame: CGRectMake(btnSelectRecipients.frame.origin.x, btnSelectRecipients.frame.origin.y+btnSelectRecipients.frame.size.height-3, btnSelectRecipients.frame.size.width, 220 ), style: .Plain)
         
         if Reachability.DeviceType.IS_IPHONE_5 {
-           tableView.frame = CGRectMake(tableView.frame.origin.x, tableView.frame.origin.y, tableView.frame.size.width, tableView.frame.size.height-50)
+           tableView.frame = CGRectMake(tableView.frame.origin.x, tableView.frame.origin.y+5, tableView.frame.size.width, tableView.frame.size.height-50)
         }
         tableView.delegate = self
         tableView.dataSource = self
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "commentCellss")
         tableView.layer.cornerRadius = 4
-        tableView.backgroundColor = UIColor(red: 235/256, green: 235/256, blue: 235/256, alpha: 1)
+//        tableView.backgroundColor = UIColor(red: 235/256, green: 235/256, blue: 235/256, alpha: 1)
 
         
         
         //        self.tableViewContact.layer.cornerRadius = 8.0
+        
+        
         self.scrollView.addSubview(tableView)
         tableView.allowsMultipleSelection = true
         tableView.hidden = true
@@ -162,7 +165,9 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+    @IBAction func btnbackground(sender: AnyObject) {
+        self.tableView.hidden = true
+    }
 
     @IBAction func selectTaskFromDropDown(sender: AnyObject) {
         txtSubject.resignFirstResponder()
@@ -247,6 +252,15 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         self.navigationController?.popViewControllerAnimated(true)
     }
     @IBAction func btnSelectRecipients(sender: AnyObject) {
+        tableView.frame = CGRectMake(tableView.frame.origin.x, btnSelectRecipients.frame.origin.y+btnSelectRecipients.frame.size.height-3, tableView.frame.size.width, tableView.frame.size.height)
+        
+        tableView.layer.shadowOffset = CGSizeMake(0, 0)
+        tableView.layer.shadowColor = UIColor.blackColor().CGColor
+        tableView.layer.shadowRadius = 4
+        tableView.layer.shadowOpacity = 0.25
+        tableView.layer.masksToBounds = false;
+        tableView.clipsToBounds = false;
+
         getDataFromDatabase()
         txtComment.resignFirstResponder()
         txtSubject.resignFirstResponder()
@@ -376,7 +390,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 12.0)!
         cell.textLabel?.font = myFont
         }
-        cell.backgroundColor = UIColor(red: 235/256, green: 235/256, blue: 235/256, alpha: 1)
+//        cell.backgroundColor = UIColor(red: 235/256, green: 235/256, blue: 235/256, alpha: 1)
         cell.selectionStyle = .None
         
         

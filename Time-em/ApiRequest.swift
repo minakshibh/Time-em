@@ -1886,14 +1886,22 @@ public class ApiRequest {
                     NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     
                 }
-                
         }
         
     }
+    
     func sendSyncDataToServer(dataArr:NSMutableArray) {
         let notificationKey = "com.time-em.sendSyncDataToServer"
-        
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserActivity/Sync", parameters:  ["userTaskActivities":dataArr])
+        print(dataArr)
+        var tempJson : NSString = ""
+        do {
+            let arrJson = try NSJSONSerialization.dataWithJSONObject(dataArr, options: NSJSONWritingOptions.PrettyPrinted)
+            let string = NSString(data: arrJson, encoding: NSUTF8StringEncoding)
+            tempJson = string! as NSString
+        }catch let error as NSError{
+            print(error.description)
+        }
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserActivity/Sync", parameters:  ["userTaskActivities":tempJson])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1908,10 +1916,6 @@ public class ApiRequest {
                         print(JSON.valueForKey("Message"))
                         
                         let userInfo = ["response" : "success"]
-                        
-                        
-                        
-                        
                         
                         
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
