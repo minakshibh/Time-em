@@ -1793,9 +1793,9 @@ public class ApiRequest {
         }
     }
     
-    func getActiveUserList(userid:String,timeStamp:String) {
+    func getActiveUserList(userid:String,timeStamp:String,view:UIView) {
         let notificationKey = "com.time-em.NotificationTypeloginResponse"
-        
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
         Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/user/GetActiveUserList", parameters:  ["UserId":userid,"timeStamp":timeStamp])
             .responseJSON { response in
                 print(response.request)  // original URL request
@@ -1815,6 +1815,7 @@ public class ApiRequest {
                             if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record found!") != nil{
                                 NSUserDefaults.standardUserDefaults().setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "activeUserListTimeStamp")
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                MBProgressHUD.hideHUDForView(view, animated: true)
                                 return
                             }
                             
@@ -1824,23 +1825,27 @@ public class ApiRequest {
                             
                             for i in data {
                                  database.saveNotificationActiveUserList("\(i.valueForKey("FullName")!)", userid: "\(i.valueForKey("userid")!)")
+                              
                             }
                         
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
-                        
+                        MBProgressHUD.hideHUDForView(view, animated: true)
                             }else{
                                 let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                                 NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            MBProgressHUD.hideHUDForView(view, animated: true)
                                                 }
                         //
                         
                     }else{
                         let userInfo = ["response" : "FAILURE"]
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        MBProgressHUD.hideHUDForView(view, animated: true)
                     }
                 }else if "\(response.result)" == "FAILURE"{
                     let userInfo = ["response" : "FAILURE"]
                     NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    MBProgressHUD.hideHUDForView(view, animated: true)
                     
                 }
                 
@@ -1869,14 +1874,14 @@ public class ApiRequest {
                         
                         let data = JSON.valueForKey("AppUserViewModel")! as! NSArray
                         print(data.count)
-                        
+                        if data.count == 0{
                         let userDict = NSKeyedArchiver.archivedDataWithRootObject(data)
                        
                         NSUserDefaults.standardUserDefaults().setObject(userDict, forKey: "getuserListByLoginCode")
                         
                         
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
-                       
+                        }
                     }else{
                         let userInfo = ["response" : "FAILURE"]
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)

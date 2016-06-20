@@ -281,8 +281,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             imageData = UIImagePNGRepresentation(uploadedImage.image!)!
         }
         
-        let UserId =             NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")
- as? String
+        let UserId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")as? String
         let subject:String!
         let comments:String!
         
