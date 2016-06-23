@@ -169,8 +169,8 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
             let maskLayer = CAShapeLayer()
             maskLayer.path = path.CGPath
             signInBarView.layer.mask = maskLayer
-            
-            signInBarView.backgroundColor = UIColor(red: 210.0/255.0, green: 52.0/255.0, blue: 53.0/255.0, alpha: 1.0)
+            //80 176 202
+            signInBarView.backgroundColor = UIColor(red: 80.0/255.0, green: 176.0/255.0, blue: 202.0/255.0, alpha: 1.0)
             DateView.addSubview(signInBarView)
             
             let signOutHours :CGFloat = CGFloat(((dateArray.objectAtIndex(i).valueForKey("signedout")!) as? NSNumber)!)
@@ -254,14 +254,14 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
                 
                 nameLbl.text = "Sign out"
                 colorLbl.backgroundColor = UIColor(red: 219.0/255.0, green: 219.0/255.0, blue: 219.0/255.0, alpha: 1.0)
-                
+                //80 176 202
             }
             else{
                 nameLbl.frame = CGRectMake(firstLblposition - padding - labelWidth, labelY, labelWidth, 20)
                 colorLbl.frame = CGRectMake(nameLbl.frame.origin.x - padding - colorLblSize , colorLblY, colorLblSize, colorLblSize)
                 
                 nameLbl.text = "Sign in"
-                colorLbl.backgroundColor = UIColor(red: 210.0/255.0, green: 52.0/255.0, blue: 53.0/255.0, alpha: 1.0)
+                colorLbl.backgroundColor = UIColor(red: 80.0/255.0, green: 176.0/255.0, blue: 202.0/255.0, alpha: 1.0)
             }
             shiftsLblBackView.addSubview(nameLbl)
             shiftsLblBackView.addSubview(colorLbl)

@@ -128,7 +128,7 @@ class BarCodeViewController: RSCodeReaderViewController {
     
     @IBAction func btnback(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
-    }
+        self.navigationController?.popViewControllerAnimated(true)    }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         self.navigationController?.navigationBarHidden = false

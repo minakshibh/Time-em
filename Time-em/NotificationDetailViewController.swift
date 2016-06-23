@@ -117,7 +117,7 @@ class NotificationDetailViewController: UIViewController {
     
     @IBAction func backBtn(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
-    }
+        self.navigationController?.popViewControllerAnimated(true)    }
     
     func dateConversion(date : NSDate) -> NSString {
         let dateFormatter: NSDateFormatter = NSDateFormatter()

@@ -407,6 +407,7 @@ class dashboardViewController: UIViewController {
 //        print(dataArray)
         
         let addyaToSynkData:NSMutableArray = []
+        let addyaToSynkNotification:NSMutableArray = []
         let uniqueDict:NSMutableDictionary = [:]
         for dictDATA in dataArray {
             
@@ -419,6 +420,11 @@ class dashboardViewController: UIViewController {
                         dict.setObject(userArr[4], forKey: "UserId")
                         dict.setObject(userArr[3], forKey: "TaskId")
                         dict.setObject(userArr[2], forKey: "ActivityId")
+                        dict.setObject(userArr[6], forKey: "TimeSpent")
+                        
+                        if "\(userArr[3])" == "0" {
+                        dict.setObject(userArr[5], forKey: "TaskName")
+                        }
                         
                         if "\(userArr[9])" == "0"{
                             dict.setValue("add", forKey: "Operation")
@@ -429,7 +435,7 @@ class dashboardViewController: UIViewController {
                         var uniqueNo:String = ""
                         
                         
-                        if "\(userArr[10])" == "true" {
+                        if "\(userArr[10])" == "1" {
                             let videoData:NSData = userArr[1] as! NSData
                             let count = videoData.length / sizeof(UInt8)
                             if count > 0{
@@ -450,7 +456,10 @@ class dashboardViewController: UIViewController {
                                 localArr.addObject("image")
                                 localArr.addObject(imageData)
                                 uniqueDict.setObject(localArr, forKey: uniqueNo)
+                            }else{
+                                dict.setObject("\(currentTimeMillis)", forKey: "UniqueNumber")
                             }
+                            
                         }
                         addyaToSynkData.addObject(dict)
                     }
@@ -461,16 +470,43 @@ class dashboardViewController: UIViewController {
                         dict.setValue("delete", forKey: "Operation")
                         addyaToSynkData.addObject(dict)
                     }
+            if dictDATA.valueForKey("sendNotification") != nil{
+                let dict:NSMutableDictionary = [:]
+                let userArr:NSArray = (dictDATA.valueForKey("sendNotification") as? NSArray)!
+                dict.setObject(userArr[1], forKey: "UserId")
+                dict.setObject(userArr[2], forKey: "Subject")
+                dict.setObject(userArr[3], forKey: "Message")
+                dict.setObject(userArr[4], forKey: "NotificationTypeId")
+                dict.setObject(userArr[5], forKey: "NotifyTo")
+                
+                
+                if "\(userArr[0])".characters.count != 0{
+                var uniqueNo:String = ""
+                let imageData:NSData = userArr[0] as! NSData
+                let count = imageData.length / sizeof(UInt8)
+                if count > 0{
+                    uniqueNo = "img_\(currentTimeMillis())"
+                    dict.setObject("\(uniqueNo)", forKey: "UniqueNumber")
+                    let localArr:NSMutableArray = []
+                    localArr.addObject("image")
+                    localArr.addObject(imageData)
+                    uniqueDict.setObject(localArr, forKey: uniqueNo)
+                }else{
+                    dict.setObject("\(currentTimeMillis)", forKey: "UniqueNumber")
+                    }
+                addyaToSynkNotification.addObject(dict)
+                }
+            }
 
             
         }
         print(addyaToSynkData)
-
-        if addyaToSynkData.count > 0 {
+        print(addyaToSynkNotification)
+        if addyaToSynkData.count > 0 || addyaToSynkNotification.count > 0{
             let api = ApiRequest()
             let data = NSData()
 //            api.addUpdateTaskSynk(addyaToSynkData,type:"",uniqueno:"", data:data ,view: self.view)
-            api.sendSyncDataToServer(addyaToSynkData)
+            api.sendSyncDataToServer(addyaToSynkData,NotificationData:addyaToSynkNotification,imagesDataDict:uniqueDict,view:self.view)
         }
         
 //        if uniqueDict.count > 0 {
@@ -719,7 +755,9 @@ class dashboardViewController: UIViewController {
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_ActivityId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_LoginId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_FullName")
-    NSUserDefaults.standardUserDefaults().removeObjectForKey("activeUserListTimeStamp")
+NSUserDefaults.standardUserDefaults().removeObjectForKey("activeUserListTimeStamp")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("taskTimeStamp")
+
     NSUserDefaults.standardUserDefaults().removeObjectForKey("notificationsTimeStamp")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("teamTimeStamp")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_Email")

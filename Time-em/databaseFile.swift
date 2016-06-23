@@ -94,8 +94,8 @@ class databaseFile: NSObject {
     func addImageToTask (AttachmentImageFile:String,AttachmentImageData:NSData,imageORvideo:String) {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
-        
-        let database = FMDatabase(path: fileURL.path)
+                let database = FMDatabase(path:
+fileURL.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1294,6 +1294,39 @@ class databaseFile: NSObject {
     func currentTimeMillis() -> Int64{
         let nowDouble = NSDate().timeIntervalSince1970
         return Int64(nowDouble*1000)
+    }
+    func deleteTasksSync () {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("delete  from  tasksData WHERE isoffline=?", values: ["true"] )
+        } catch let error as NSError {
+            print("DELETE failed tasksData: \(error.localizedDescription)")
+        }
+        database.close()
+    }
+    
+    func deleteSYNCData () {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("DELETE FROM sync", values: nil )
+        } catch let error as NSError {
+            print("DELETE failed sync: \(error.localizedDescription)")
+        }
+        database.close()
     }
     
     func addTaskSync(imageData:NSData,videoData:NSData,ActivityId:String,TaskId:String,UserId:String,TaskName:String,TimeSpent:String,Comments:String,CreatedDate:String,ID:String,isVideoRecorded:String,uniqueno:String){

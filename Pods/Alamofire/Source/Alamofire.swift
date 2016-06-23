@@ -125,7 +125,6 @@ public func request(
     headers: [String: String]? = nil)
     -> Request
 {
-    print(parameters!)
     return Manager.sharedInstance.request(
         method,
         URLString,

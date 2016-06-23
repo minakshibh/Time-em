@@ -260,6 +260,13 @@ public class ApiRequest {
                     
                     if "\(response.result)" == "SUCCESS"{
                         let userInfo = ["response" : "SUCCESS"]
+                         if JSON.valueForKey("isError") == nil {
+                            let userInfo = ["response" : "FAILURE"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            MBProgressHUD.hideHUDForView(view, animated: true)
+                            
+                            return
+                        }
                         
                         if "\(JSON.valueForKey("isError")!)" != "0" {
                             let userInfo = ["response" : "FAILURE"]
@@ -377,20 +384,19 @@ public class ApiRequest {
                                 let data: NSData = (user.valueForKey("taskTimeStamp")! as! NSData)
                                 let dictio = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
                                 saveDateDict = dictio
-                                if (saveDateDict.valueForKey("\(dict[0].valueForKey("UserId")!)") != nil) {
+                                if (saveDateDict.valueForKey(createdDate) != nil) {
                                     
-                                    saveDateDict.removeObjectForKey("\(dict[0].valueForKey("UserId")!)")
+                                    saveDateDict.removeObjectForKey(createdDate)
                                     
-                                    saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId")!)")
+                                    saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: createdDate)
                                 }
                                 else {
                                     
-                                    saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId")!)")
+                                    saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: createdDate)
                                 }
                             }
                             else {
-                                saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "\(dict[0].valueForKey("UserId")!)")
-                                
+                                saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: createdDate)
                             }
                             let data1: NSData = NSKeyedArchiver.archivedDataWithRootObject(saveDateDict)
                             user.setObject(data1,forKey:"taskTimeStamp")
@@ -1184,7 +1190,7 @@ public class ApiRequest {
             database.addDataToSync("sendNotification", data: array)
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
             
-            let userInfo = ["response" : "success"]
+            let userInfo = ["response" : "successfully"]
             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             return
         }
@@ -1295,13 +1301,27 @@ public class ApiRequest {
                     
                     if "\(response.result)" == "SUCCESS"{
                         
+                        if "\(JSON)".lowercaseString == "your request is not completed" {
+                            let userInfo = ["response" : "your request is not completed"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            MBProgressHUD.hideHUDForView(view, animated: true)
+                        return
+                        }
+                        if "\(JSON)".lowercaseString == "no user exists with this email" {
+                            let userInfo = ["response" : "no user exists with this email"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            MBProgressHUD.hideHUDForView(view, animated: true)
+                            return
+                        }
+                        
+                        
                         let userInfo = ["response" : "SUCCESS"]
                         
                         
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         
                     }else{
-                        let userInfo = ["response" : "FAILURE"]
+                        let userInfo = ["response" : "\(JSON)"]
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     }
                 }else if "\(response.result)" == "FAILURE"{
@@ -1330,9 +1350,20 @@ public class ApiRequest {
                     
                     if "\(response.result)" == "SUCCESS"{
                         
+                        if "\(JSON)".lowercaseString == "your request is not completed" {
+                            let userInfo = ["response" : "your request is not completed"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            MBProgressHUD.hideHUDForView(view, animated: true)
+                            return
+                        }
+                        if "\(JSON)".lowercaseString == "no user exists with this email" {
+                            let userInfo = ["response" : "no user exists with this email"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            MBProgressHUD.hideHUDForView(view, animated: true)
+                            return
+                        }
+                        
                         let userInfo = ["response" : "SUCCESS"]
-                        
-                        
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         
                     }else{
@@ -1894,19 +1925,33 @@ public class ApiRequest {
         }
         
     }
-    
-    func sendSyncDataToServer(dataArr:NSMutableArray) {
+    let hud: MBProgressHUD! = MBProgressHUD()
+    func sendSyncDataToServer(dataArr:NSMutableArray,NotificationData:NSMutableArray,imagesDataDict:NSMutableDictionary,view:UIView) {
         let notificationKey = "com.time-em.sendSyncDataToServer"
-        print(dataArr)
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+
+//        print(dataArr)
         var tempJson : NSString = ""
+        var parameter:[String:AnyObject] = [:]
+        let dict:NSMutableDictionary = [:]
+        dict.setObject(dataArr, forKey: "userTaskActivities")
+        dict.setObject(NotificationData, forKey: "notifications")
         do {
-            let arrJson = try NSJSONSerialization.dataWithJSONObject(dataArr, options: NSJSONWritingOptions.PrettyPrinted)
+            let arrJson = try NSJSONSerialization.dataWithJSONObject(dict, options: NSJSONWritingOptions.PrettyPrinted)
             let string = NSString(data: arrJson, encoding: NSUTF8StringEncoding)
             tempJson = string! as NSString
+            print(tempJson)
+            parameter = ["data":tempJson ]
         }catch let error as NSError{
             print(error.description)
         }
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserActivity/Sync", parameters:  ["userTaskActivities":tempJson])
+//        let dict:NSMutableDictionary = dataArr[0] as! NSMutableDictionary
+//        print("$$$$\(dict.valueForKey("CreatedDate")!)")
+//        print("$$$$\(dict.valueForKey("Comments")!)")
+//        print("$$$$\(dict.valueForKey("UniqueNumber")!)")
+//        print("$$$$\(dict.valueForKey("ActivityId")!)")
+//        print("$$$$\(dict.valueForKey("TaskId")!)")
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserActivity/Sync", parameters:parameter)
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1923,6 +1968,64 @@ public class ApiRequest {
                         let userInfo = ["response" : "success"]
                         
                         
+                        if "\(JSON.valueForKey("Message")!)" !=  "Sync Complete" || "\(JSON.valueForKey("isError")!)" !=  "0"{
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            MBProgressHUD.hideHUDForView(view, animated: true)
+                            return
+                        }
+                       NSUserDefaults.standardUserDefaults().setObject("\(imagesDataDict.count)", forKey: "noOfimages")
+                        let notiArrayData:NSArray = (JSON.valueForKey("NotificationData") as? NSArray)!
+                        if notiArrayData.count > 0 {
+                            
+                            for dictionary in notiArrayData {
+                                
+                                if dictionary.valueForKey("UniqueNumber") != nil {
+                                    let idStr = "\(dictionary.valueForKey("Id")!)"
+                                    let uniqueNoStr = "\(dictionary.valueForKey("UniqueNumber")!)"
+                                    if imagesDataDict.valueForKey(uniqueNoStr) != nil{
+                                        let array = (imagesDataDict.valueForKey(uniqueNoStr) as? NSArray)!
+                                        let imageVideo = "\(array[0])"
+                                        let data:NSData = (array[1] as? NSData)!
+                                        self.sendImageVideoSync(idStr, FileUploadFor: "notification", data: data, type: imageVideo,uniqueno:uniqueNoStr,view: view)
+                                    }
+                                }
+                                
+                            }
+                            // for loop end
+                        }
+                        
+                        let UsersDataArray:NSArray = (JSON.valueForKey("UsersData") as? NSArray)!
+                        if UsersDataArray.count > 0 {
+                            
+                            for dictionary in UsersDataArray {
+                                
+                                if dictionary.valueForKey("UniqueNumber") != nil {
+                                    let idStr = "\(dictionary.valueForKey("Id")!)"
+                                    let uniqueNoStr = "\(dictionary.valueForKey("UniqueNumber")!)"
+                                    if imagesDataDict.valueForKey(uniqueNoStr) != nil{
+                                        let array = (imagesDataDict.valueForKey(uniqueNoStr) as? NSArray)!
+                                        let imageVideo = "\(array[0])"
+                                        let data:NSData = (array[1] as? NSData)!
+                                        self.sendImageVideoSync(idStr, FileUploadFor: "usertaskactivity", data: data, type: imageVideo,uniqueno:uniqueNoStr,view: view)
+                                    }
+                                }
+                                
+                            }
+                            // for loop end
+                        }
+        
+//                        self.hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+//                        hud.mode = MBProgressHUDModeDeterminateHorizontalBar
+//                        hud.labelText = "Changing Image..."
+
+                        
+                        // delete sync data
+                        let database:databaseFile = databaseFile()
+                        database.deleteSYNCData()
+                        database.deleteTasksSync()
+                        NSUserDefaults.standardUserDefaults().setObject("no", forKey:"sync")
+                        
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         
                     }else{
@@ -1933,10 +2036,126 @@ public class ApiRequest {
                     let userInfo = ["response" : "FAILURE"]
                     NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                 }
+                MBProgressHUD.hideHUDForView(view, animated: true)
+
         }
     }
     
-    
+    func sendImageVideoSync (Id:String,FileUploadFor:String,data:NSData,type:String,uniqueno:String,view:UIView) {
+//        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        
+        let count:Int = Int("\(NSUserDefaults.standardUserDefaults().valueForKey("noOfimages")!)")!
+            hud.progress = 0
+        hud.show(true)
+        let interval:Int = 100/count
+        hud.mode = .DeterminateHorizontalBar
+        
+        let param = [
+            "Id"    :Id,
+            "FileUploadFor"        :FileUploadFor
+                    ]
+        print(param)
+        let url = NSURL(string: "http://timeemapi.azurewebsites.net/api/UserActivity/SyncFileUpload")
+        
+        let request = NSMutableURLRequest(URL: url!)
+        request.HTTPMethod = "POST"
+        
+        let boundary = generateBoundaryString()
+        
+        
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        var image = UIImage()
+        if type == "image"{
+         image = UIImage(data: data)!
+        }
+        
+        let body = NSMutableData()
+        
+        for (key, value) in param {
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"\(key)\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("\(value)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        }
+        
+        if type == "image"
+        {
+            let fname = "\(uniqueno).png"
+            let mimetype = "image/png"
+            
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"test\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("hi\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"file\"; filename=\"\(fname)\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Type: \(mimetype)\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData(data)
+            body.appendData("\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        }
+        
+//        if isVideoRecorded {
+        if type == "video" {
+            let fname = "\(uniqueno).mp4"
+            let mimetype = "video/.mp4"
+            
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"test\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("hi\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            
+            body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Disposition:form-data; name=\"file\"; filename=\"\(fname)\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData("Content-Type: \(mimetype)\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            body.appendData(data)
+            body.appendData("\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        }
+        
+        body.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        
+        request.HTTPBody = body
+        
+        
+        
+        let session = NSURLSession.sharedSession()
+        
+        
+        let task = session.dataTaskWithRequest(request) {
+            (
+            let data, let response, let error) in
+            self.hud.progress = self.hud.progress + Float(interval)
+            if Int(self.hud.progress) == 100 {
+                delay(0.001){
+                    MBProgressHUD.hideHUDForView(view, animated: true)
+                }
+            }
+            guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
+                print("\(error)")
+                let userInfo = ["response" : "Failed to add task. Kindly try again."]
+//                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                delay(0.001){
+//                    MBProgressHUD.hideHUDForView(view, animated: true)
+                }
+                return
+            }
+            
+            let dataString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            
+            print(dataString)
+            
+            
+            delay(0.001){
+//                MBProgressHUD.hideHUDForView(view, animated: true)
+                if "\(dataString!.lowercaseString)".rangeOfString("activity id does not exist") != nil{
+                    let userInfo = ["response" : "please signin before adding task"]
+//                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    return
+                }
+                let userInfo = ["response" : "SUCCESS"]
+//                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            }
+        }
+        
+        task.resume()
+    }
     
     func addUpdateTaskSynk(dataArr:NSMutableArray,type:String,uniqueno:String,data:NSData,view:UIView) {
         let notificationKey = "com.time-em.addUpdateTaskSynk"

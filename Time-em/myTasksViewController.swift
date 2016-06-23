@@ -168,12 +168,13 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     
     func getuserTask(userId:String,createdDate:String){
         let apiCall = ApiRequest()
+        
         if NSUserDefaults.standardUserDefaults().objectForKey("taskTimeStamp") != nil {
             let data: NSData = (NSUserDefaults.standardUserDefaults().objectForKey("taskTimeStamp") as? NSData)!
             let dict = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
             
-            if dict.valueForKey(userId) != nil {
-                TimeStamp = "\(dict.valueForKey(userId)!)"
+            if dict.valueForKey(createdDate) != nil {
+                TimeStamp = "\(dict.valueForKey(createdDate)!)"
             }else{
                 TimeStamp = ""
             }
@@ -303,6 +304,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
              TitleLabel.font  = UIFont(name: "HelveticaNeue", size: 15)
         }else if Reachability.DeviceType.IS_IPHONE_6 {
             TitleLabel.frame = CGRectMake(notificationImage.frame.origin.x + notificationImage.frame.size.width + 15, 5, 250 + 50 , 30)
+            TitleLabel.font  = UIFont(name: "HelveticaNeue", size: 15)
         }else if Reachability.DeviceType.IS_IPAD {
             TitleLabel.frame = CGRectMake(notificationImage.frame.origin.x + notificationImage.frame.size.width + 15, 5, 250 + 85 + 300 , 30)
 
@@ -321,7 +323,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 12.0)!
             Description.font = myFont
         }else if Reachability.DeviceType.IS_IPHONE_6 {
-            Description.frame = CGRectMake(TitleLabel.frame.origin.x, TitleLabel.frame.origin.y + TitleLabel.frame.size.height-10 , 250  + 50  , 58)
+            Description.frame = CGRectMake(TitleLabel.frame.origin.x, TitleLabel.frame.origin.y + TitleLabel.frame.size.height , 250  + 50  , 58)
+            let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 12.0)!
+            Description.font = myFont
         }else if Reachability.DeviceType.IS_IPAD {
             Description.frame = CGRectMake(TitleLabel.frame.origin.x, TitleLabel.frame.origin.y + TitleLabel.frame.size.height , 250  + 85 + 350  , 58)
 
@@ -447,7 +451,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
 
     @IBAction func btnBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
-    }
+        self.navigationController?.popViewControllerAnimated(true)    }
     @IBAction func btnSignIn(sender: AnyObject) {
         let buttontitle:String = (btnSignIn.titleLabel!.text)!
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.signInOutResponse), name: "com.time-em.signInOutResponse", object: nil)

@@ -80,7 +80,9 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
     }
     
     @IBAction func btnBack(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: {});
         self.navigationController?.popViewControllerAnimated(true)
+        
     }
     @IBAction func btnEditprofile(sender: AnyObject) {
         

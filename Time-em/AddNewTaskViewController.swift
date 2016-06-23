@@ -480,6 +480,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     
     @IBAction func backBtn(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
+        self.navigationController?.popViewControllerAnimated(true)
     }
     func displayResponse(notification:NSNotification) {
         

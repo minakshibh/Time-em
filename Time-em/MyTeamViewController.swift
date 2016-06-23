@@ -316,7 +316,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         }
         
         self.dismissViewControllerAnimated(true, completion: {});
-        
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func displayResponse(notification:NSNotification) {

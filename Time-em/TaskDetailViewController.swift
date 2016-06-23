@@ -101,6 +101,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                 dataArr = database.getImageForUrl("\(taskData.valueForKey("AttachmentImageFile")!)",imageORvideo:"AttachmentImageFile")
                 
                 if dataArr.count > 0 {
+                    if "\(dataArr[0])".characters.count != 0 {
                     let data1:NSData = dataArr[0] as! NSData
                     let count = data1.length / sizeof(UInt8)
                     if count > 0 {
@@ -109,23 +110,12 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                         self.imageView.image = UIImage(data: userImageData)
                         return
                     }
+                    }else{
+                       downloadImage() 
+                    }
                 }
-                
-                let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)")
-                
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                    let data = NSData(contentsOfURL: url!)
-                    dispatch_async(dispatch_get_main_queue(), {
-                        if self.imageView != nil && data != nil {
-                       self.imageView.image = UIImage(data: data!)
-                        }
-                        if data != nil {
-                        let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
-                        let database = databaseFile()
-                        database.addImageToTask("\(self.taskData.valueForKey("AttachmentImageFile")!)", AttachmentImageData: encodedData, imageORvideo:"AttachmentImageFile")
-                        }
-                    });
-                }
+                downloadImage()
+
             }else{
               imageView.hidden = true
             }
@@ -143,6 +133,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                 let dataArr:NSMutableArray!
                 dataArr = database.getImageForUrl("\(taskData.valueForKey("AttachmentVideoFile")!)",imageORvideo:"AttachmentVideoFile")
                 if dataArr.count > 0 {
+                     if "\(dataArr[0])".characters.count != 0 {
                    let data1:NSData = dataArr[0] as! NSData
                     let count = data1.length / sizeof(UInt8)
                     if count > 0 {
@@ -155,33 +146,57 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                         videoData = userVideoData
                         return
                     }
+                     }else{
+                        downloadVideo()
+                    }
                 }
                 
                 
                 
 //                downloadVideo  and save to databse
-                
-                let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentVideoFile")!)")
-                self.generateThumbnail(url!)
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                    
-                    let data = NSData(contentsOfURL: url!)
-                    dispatch_async(dispatch_get_main_queue(), {
-                        
-                        //----
-                        let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
-                        let database = databaseFile()
-                        database.addImageToTask("\(self.taskData.valueForKey("AttachmentVideoFile")!)", AttachmentImageData: encodedData,imageORvideo:"AttachmentVideoFile")
-                        self.videoData = data!
-                    });
-                }
-                
+                downloadVideo()
+
             }
         }
        
         
     }
-
+    func downloadImage() {
+        let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)")
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            let data = NSData(contentsOfURL: url!)
+            dispatch_async(dispatch_get_main_queue(), {
+                if self.imageView != nil && data != nil {
+                    self.imageView.image = UIImage(data: data!)
+                }
+                if data != nil {
+                    let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
+                    let database = databaseFile()
+                    database.addImageToTask("\(self.taskData.valueForKey("AttachmentImageFile")!)", AttachmentImageData: encodedData, imageORvideo:"AttachmentImageFile")
+                    print("image download complete")
+                }
+            });
+        }
+    
+    }
+    func downloadVideo() {
+        let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentVideoFile")!)")
+        self.generateThumbnail(url!)
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            
+            let data = NSData(contentsOfURL: url!)
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                //----
+                let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
+                let database = databaseFile()
+                database.addImageToTask("\(self.taskData.valueForKey("AttachmentVideoFile")!)", AttachmentImageData: encodedData,imageORvideo:"AttachmentVideoFile")
+                self.videoData = data!
+            });
+        }
+        
+    }
     func generateThumbnail (url:NSURL) {
         do {
             viewimageBackground.hidden = false
@@ -257,6 +272,6 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
     }
     @IBAction func btnBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
-    }
+        self.navigationController?.popViewControllerAnimated(true)    }
 
 }

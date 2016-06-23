@@ -31,7 +31,30 @@ class resetPinAndPassword: UIViewController
     override func viewWillAppear(animated: Bool) {
         btnSend.layer.cornerRadius = 4
     }
+    func isValidEmail(testStr:String) -> Bool {
+        // print("validate calendar: \(testStr)")
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+        
+        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailTest.evaluateWithObject(testStr)
+    }
     @IBAction func send(sender: AnyObject) {
+        let emailStr: String = self.emailTxt.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        if emailStr.characters.count == 0 {
+           let message = "Please enter an emailaddress."
+            let alert = UIAlertController(title: "Time'em", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }else if !isValidEmail(emailStr){
+            let message = "Enter a valid emailaddress."
+            let alert = UIAlertController(title: "Time'em", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        
+        
         let emailIs = self.emailTxt.text!
       
         let assignedTasks = ApiRequest()
@@ -70,7 +93,7 @@ class resetPinAndPassword: UIViewController
             alert = UIAlertController(title: "Time'em", message: messages, preferredStyle: UIAlertControllerStyle.Alert)
             
         }else{
-            alert = UIAlertController(title: "Time'em", message: "Reset Failed", preferredStyle: UIAlertControllerStyle.Alert)
+            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
         }
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
