@@ -44,6 +44,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.sharedApplication().registerForRemoteNotifications()
         return true
     }
+    
+  
+    
+//    func application(application: UIApplication, supportedInterfaceOrientationsForWindow window: UIWindow?) -> UIInterfaceOrientationMask {
+//        if self.window?.rootViewController?.presentedViewController is chartViewController {
+//            
+//            let secondController = self.window!.rootViewController!.presentedViewController as! chartViewController
+//            
+//            if secondController.isPresented {
+//                return UIInterfaceOrientationMask.LandscapeLeft;
+//            } else {
+//                return UIInterfaceOrientationMask.Portrait;
+//            }
+//            
+//        } else {
+//            
+//            return UIInterfaceOrientationMask.Portrait;
+//        }
+//    }
     func application(application: UIApplication,didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         //send this device token to server
        

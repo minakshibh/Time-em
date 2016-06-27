@@ -30,14 +30,17 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     
     @IBOutlet var btnSignIn: UIButton!
     
+    
+    
     override func viewDidDisappear(animated: Bool) {
 //        NSNotificationCenter.defaultCenter().removeObserver(self)
         
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         NSUserDefaults.standardUserDefaults().setObject("false", forKey: "isEditingOrAdding")
-        
+
         
         self.dateConversion(NSDate())
         // Do any additional setup after loading the view.
@@ -54,13 +57,49 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
         //        changeSignINButton()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "rotated", name: UIDeviceOrientationDidChangeNotification, object: nil)
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc:UIViewController = storyboard.instantiateViewControllerWithIdentifier("chart") as! chartViewController
+        
+        self.configureChildViewController(vc, onView: self.view)
+
+    }
+    func rotated()
+    {
+        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
+        {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc:UIViewController = storyboard.instantiateViewControllerWithIdentifier("chart") as! chartViewController
+
+            self.configureChildViewController(vc, onView: self.view)
+            print("landscape")
+        }
+        
+        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
+        {
+            print("Portrait")
+            if chldViewControllers != nil{
+                chldViewControllers.willMoveToParentViewController(nil)
+                chldViewControllers.view.removeFromSuperview()
+                chldViewControllers.removeFromParentViewController()
+            }
+        }
         
     }
-    
+    var chldViewControllers:UIViewController!
+    func configureChildViewController(childController: UIViewController, onView: UIView?) {
+        chldViewControllers = childController
+        var holderView = self.view
+        if let onView = onView {
+            holderView = onView
+        }
+        addChildViewController(chldViewControllers)
+        holderView.addSubview(chldViewControllers.view)
+        chldViewControllers.didMoveToParentViewController(self)
+    }
     func refreshData() {
         let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
-        
-        
         
         if currentUserID != nil{
             btnAddTask.hidden = true
@@ -345,7 +384,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         cell.selectionStyle = .None
         
         
-        let timelabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x + Description.frame.size.width , (Description.frame.size.height + Description.frame.origin.y)/3 , 65 , 45))
+        let timelabel: UILabel = UILabel(frame: CGRectMake(Description.frame.origin.x + Description.frame.size.width , (Description.frame.size.height + Description.frame.origin.y)/3-5 , 65 , 45))
         timelabel.font  = UIFont(name: "HelveticaNeue", size: 13)
         if Reachability.DeviceType.IS_IPHONE_5 {
             timelabel.frame = CGRectMake(Description.frame.origin.x + Description.frame.size.width-10, TitleLabel.frame.origin.y+3, 60 , 40)

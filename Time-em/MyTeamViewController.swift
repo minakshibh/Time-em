@@ -335,6 +335,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     
     @IBAction func btnUserDetail(sender: AnyObject) {
     }
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "myteam_mytask"{
             let mytask = (segue.destinationViewController as! myTasksViewController)
@@ -368,6 +369,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
 //        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
 //        self.presentViewController(alert, animated: true, completion: nil)
         fetchTeamDataFromDatabase()
+        fetchTeamList()
     }
 
 }

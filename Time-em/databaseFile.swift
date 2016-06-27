@@ -1341,10 +1341,10 @@ fileURL.path)
         }
         
         // get already added tasks taskids
-        var TaskIdsArr:NSMutableArray = []
-        var TaskNameArr:NSMutableArray = []
-        var TimeSpentArr:NSMutableArray = []
-        var CreatedDateArr:NSMutableArray = []
+        let TaskIdsArr:NSMutableArray = []
+        let TaskNameArr:NSMutableArray = []
+        let TimeSpentArr:NSMutableArray = []
+        let CreatedDateArr:NSMutableArray = []
         do {
             let rs = try database.executeQuery("select * from tasksData", values: nil)
             while rs.next() {

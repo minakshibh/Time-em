@@ -129,7 +129,10 @@ class NotificationViewController: UIViewController {
         messagesBtn.backgroundColor = highLightedColor
         self.showNotificationsInTable()
     }
-    
+    @IBAction func btnAddNotificatiom(sender: AnyObject) {
+        self.performSegueWithIdentifier("iap", sender: self)
+
+    }
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
         return 78

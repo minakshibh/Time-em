@@ -161,7 +161,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             self.performSegueWithIdentifier("homeView", sender: self)
         
         }else{
-         alert = UIAlertController(title: "Time'em", message: "Login Failed", preferredStyle: UIAlertControllerStyle.Alert)
+         alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         }

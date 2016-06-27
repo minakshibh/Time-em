@@ -586,7 +586,23 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
                 }
             }
             
-            if numberOfHoursTxt.text?.characters.count == 2 && string != ""{
+            if numberOfHoursTxt.text?.characters.count >= 2 && string != ""{
+                 let textstr = "\(numberOfHoursTxt.text!)"
+                if Int(textstr) == 24 && string == "."{
+                    return false
+                }
+                
+                
+                let str = "\(numberOfHoursTxt.text!)\(string)"
+                if str.rangeOfString(".") != nil{
+                    let val = str.componentsSeparatedByString(".")[1]
+                    if val.characters.count > 2{
+                        return false
+                    }
+                }
+                if Int(str) <= 24 {
+                    return true
+                }
                 self.view.makeToast("maximum hours allowed is 24hrs", duration: 2.0, position: .Top)
                 return false
             }

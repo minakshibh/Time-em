@@ -258,8 +258,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         tableView.layer.shadowColor = UIColor.blackColor().CGColor
         tableView.layer.shadowRadius = 4
         tableView.layer.shadowOpacity = 0.25
-        tableView.layer.masksToBounds = false;
-        tableView.clipsToBounds = false;
+//        tableView.layer.masksToBounds = false;
+//        tableView.clipsToBounds = false;
 
         getDataFromDatabase()
         txtComment.resignFirstResponder()

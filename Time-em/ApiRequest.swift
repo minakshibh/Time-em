@@ -36,9 +36,28 @@ public class ApiRequest {
         if "\(response.result)" == "SUCCESS"{
             let userInfo = ["response" : "SUCCESS"]
            
+            if JSON.valueForKey("ReturnMessage") != nil {
+                if "\(JSON.valueForKey("ReturnMessage")!)".lowercaseString == "login id or password not correct. please try again." {
+                    let userInfo = ["response" : "\(JSON.valueForKey("ReturnMessage")!)"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                
+                    MBProgressHUD.hideHUDForView(view, animated: true)
+                    return
+                }
+                if "\(JSON.valueForKey("ReturnMessage")!)".lowercaseString == "login id doesn't exist!" {
+                    let userInfo = ["response" : "\(JSON.valueForKey("ReturnMessage")!)"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                    MBProgressHUD.hideHUDForView(view, animated: true)
+                    return
+                }
+            }
             if let field = JSON.valueForKey("Message")   as? String{
+                
+                
+                
                 if "\(JSON.valueForKey("Message")!)".lowercaseString == "an error has occurred." {
-                    let userInfo = ["response" : "failre"]
+                    let userInfo = ["response" : "failure"]
                     NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     
                     MBProgressHUD.hideHUDForView(view, animated: true)
@@ -1925,10 +1944,10 @@ public class ApiRequest {
         }
         
     }
-    let hud: MBProgressHUD! = MBProgressHUD()
+    
     func sendSyncDataToServer(dataArr:NSMutableArray,NotificationData:NSMutableArray,imagesDataDict:NSMutableDictionary,view:UIView) {
         let notificationKey = "com.time-em.sendSyncDataToServer"
-        MBProgressHUD.showHUDAddedTo(view, animated: true)
+//        MBProgressHUD.showHUDAddedTo(view, animated: true)
 
 //        print(dataArr)
         var tempJson : NSString = ""
@@ -2015,15 +2034,13 @@ public class ApiRequest {
                             // for loop end
                         }
         
-//                        self.hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
-//                        hud.mode = MBProgressHUDModeDeterminateHorizontalBar
-//                        hud.labelText = "Changing Image..."
+                        
 
                         
                         // delete sync data
                         let database:databaseFile = databaseFile()
-                        database.deleteSYNCData()
-                        database.deleteTasksSync()
+//                        database.deleteSYNCData()
+//                        database.deleteTasksSync()
                         NSUserDefaults.standardUserDefaults().setObject("no", forKey:"sync")
                         
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -2043,12 +2060,19 @@ public class ApiRequest {
     
     func sendImageVideoSync (Id:String,FileUploadFor:String,data:NSData,type:String,uniqueno:String,view:UIView) {
 //        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        let notificationKey = "com.time-em.sendSyncDataToServer"
+        let noOfImages:Int = Int("\(NSUserDefaults.standardUserDefaults().valueForKey("noOfimages")!)")!
+        var count:Int = 1
+        NSUserDefaults.standardUserDefaults().setObject(count, forKey: "count")
         
-        let count:Int = Int("\(NSUserDefaults.standardUserDefaults().valueForKey("noOfimages")!)")!
-            hud.progress = 0
-        hud.show(true)
-        let interval:Int = 100/count
-        hud.mode = .DeterminateHorizontalBar
+        let loadingNotification = MBProgressHUD.showHUDAddedTo(view, animated: true)
+        loadingNotification.mode = MBProgressHUDMode.Indeterminate
+        loadingNotification.labelText = "Uploading image...\(count)/\(noOfImages)"
+            loadingNotification.progress = 0
+            loadingNotification.show(true)
+        
+        let interval:Int = 100/noOfImages
+        
         
         let param = [
             "Id"    :Id,
@@ -2121,11 +2145,24 @@ public class ApiRequest {
         let task = session.dataTaskWithRequest(request) {
             (
             let data, let response, let error) in
-            self.hud.progress = self.hud.progress + Float(interval)
-            if Int(self.hud.progress) == 100 {
+            delay(0.001){
+            MBProgressHUD.hideAllHUDsForView(view, animated: true)
+           
+            let loadingNotification = MBProgressHUD.showHUDAddedTo(view, animated: true)
+            loadingNotification.mode = MBProgressHUDMode.Indeterminate
+            loadingNotification.progress = 0
+            loadingNotification.show(true)
+                let count1:Int = Int("\(NSUserDefaults.standardUserDefaults().valueForKey("count")!)")!
+                count = count1 + 1
+                NSUserDefaults.standardUserDefaults().setObject(count, forKey: "count")
+            print(count)
+                loadingNotification.labelText = "Uploading image...\(count)/\(noOfImages)"
+
+            if count > noOfImages {
                 delay(0.001){
                     MBProgressHUD.hideHUDForView(view, animated: true)
                 }
+            }
             }
             guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
                 print("\(error)")
