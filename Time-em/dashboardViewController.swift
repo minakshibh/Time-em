@@ -42,7 +42,7 @@ class dashboardViewController: UIViewController {
     @IBOutlet var lblNameSlideMenu: UILabel!
     var pageMenu : CAPSPageMenu?
     var lblBackground:UILabel!
-    
+    var selectedWidgets:NSMutableArray = []
     override func viewDidLoad() {
         super.viewDidLoad()
         sideView.hidden = true
@@ -179,11 +179,10 @@ class dashboardViewController: UIViewController {
         self.fetchUserSignedGraphDataFromAPI()
 //        self.fetchUserTaskGraphDataFromDatabase()
 //        self.fetchUserSignedGraphDataFromDatabase()
-
+        print(selectedWidgets)
         let currentUserName = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_FullName")  as? String
         lblNameSlideMenu.text = currentUserName!
         self.checkActiveInacive()
-        
         refreshButtonTitleImage()
         
         print(sideView.frame)

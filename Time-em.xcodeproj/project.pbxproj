@@ -63,6 +63,9 @@
 		D9DA40291CE9B28A00D6B572 /* UIColor+CL.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40241CE9B28A00D6B572 /* UIColor+CL.m */; };
 		D9DA402A1CE9B28A00D6B572 /* UIImage+CL.m in Sources */ = {isa = PBXBuildFile; fileRef = D9DA40261CE9B28A00D6B572 /* UIImage+CL.m */; };
 		D9E38F421D069EA000064802 /* myProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E38F411D069EA000064802 /* myProfileViewController.swift */; };
+		F91E33AC1D2105F4006FE2E3 /* widgetsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E33AB1D2105F4006FE2E3 /* widgetsViewController.swift */; };
+		F91E33AE1D210AC7006FE2E3 /* widgetsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E33AD1D210AC7006FE2E3 /* widgetsCell.swift */; };
+		F91E33B01D213F95006FE2E3 /* checkMark.png in Resources */ = {isa = PBXBuildFile; fileRef = F91E33AF1D213F95006FE2E3 /* checkMark.png */; };
 		F947CF481CF30A03009635B4 /* resetPinAndPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = F947CF471CF30A03009635B4 /* resetPinAndPassword.swift */; };
 		F95985EA1CEDC022002582C4 /* AddNewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */; };
 		F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */; };
@@ -164,6 +167,9 @@
 		D9DA40261CE9B28A00D6B572 /* UIImage+CL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+CL.m"; sourceTree = "<group>"; };
 		D9E38F411D069EA000064802 /* myProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = myProfileViewController.swift; sourceTree = "<group>"; };
 		D9E9D44030C43EDD49F563DA /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		F91E33AB1D2105F4006FE2E3 /* widgetsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = widgetsViewController.swift; sourceTree = "<group>"; };
+		F91E33AD1D210AC7006FE2E3 /* widgetsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = widgetsCell.swift; sourceTree = "<group>"; };
+		F91E33AF1D213F95006FE2E3 /* checkMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checkMark.png; path = ../Desktop/checkMark.png; sourceTree = "<group>"; };
 		F947CF471CF30A03009635B4 /* resetPinAndPassword.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = resetPinAndPassword.swift; sourceTree = "<group>"; };
 		F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewTaskViewController.swift; sourceTree = "<group>"; };
 		F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssignedTasks.swift; sourceTree = "<group>"; };
@@ -204,6 +210,8 @@
 			isa = PBXGroup;
 			children = (
 				D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */,
+				F91E33AB1D2105F4006FE2E3 /* widgetsViewController.swift */,
+				F91E33AD1D210AC7006FE2E3 /* widgetsCell.swift */,
 				18CBF1201D07EE9C0072DF12 /* UserGraphViewController.swift */,
 				18CBF1211D07EE9C0072DF12 /* UserGraphViewController.xib */,
 				18CBF1221D07EE9C0072DF12 /* UserLoginGraphViewController.swift */,
@@ -262,6 +270,7 @@
 			isa = PBXGroup;
 			children = (
 				D965A20E1CF867CC00AB11C0 /* FileUploadInfo.swift */,
+				F91E33AF1D213F95006FE2E3 /* checkMark.png */,
 				F9F0128E1CF31D88003698C6 /* Lato-Bold.ttf */,
 				F9F0128F1CF31D88003698C6 /* Lato-Regular.ttf */,
 				D99C2D231CEAE0A1007E0A0D /* Time-em-Prefix.pch */,
@@ -548,6 +557,7 @@
 				D93AC0BD1CF47F08009E73F5 /* Website-Under-Construction.jpg in Resources */,
 				D9AD39191CE5BAE3005D5029 /* images.xcassets in Resources */,
 				F9F012991CF33495003698C6 /* DropDownCell.xib in Resources */,
+				F91E33B01D213F95006FE2E3 /* checkMark.png in Resources */,
 				D97005001CE31A1F0036B5EA /* Main.storyboard in Resources */,
 				F9F012901CF31D88003698C6 /* Lato-Bold.ttf in Resources */,
 			);
@@ -616,6 +626,7 @@
 				D965A2091CF82EF000AB11C0 /* NotificationViewController.swift in Sources */,
 				D9DA402A1CE9B28A00D6B572 /* UIImage+CL.m in Sources */,
 				F9F012961CF33489003698C6 /* DPDKeyboardListener.swift in Sources */,
+				F91E33AE1D210AC7006FE2E3 /* widgetsCell.swift in Sources */,
 				F9F0129D1CF334A2003698C6 /* DropDownCell.swift in Sources */,
 				18CBF1261D07EE9C0072DF12 /* UserLoginGraphViewController.swift in Sources */,
 				F947CF481CF30A03009635B4 /* resetPinAndPassword.swift in Sources */,
@@ -652,6 +663,7 @@
 				D9D378051CECAC6D002E24D9 /* MyTeamViewController.swift in Sources */,
 				D9DA401D1CE9B27800D6B572 /* CLWeeklyCalendarView.m in Sources */,
 				D965A20C1CF8334C00AB11C0 /* sendNotificationViewController.swift in Sources */,
+				F91E33AC1D2105F4006FE2E3 /* widgetsViewController.swift in Sources */,
 				F95985EA1CEDC022002582C4 /* AddNewTaskViewController.swift in Sources */,
 				D97661191CF706DF004E4552 /* Reachability.swift in Sources */,
 				D99C2D261CEAE26D007E0A0D /* UILabel+helper.m in Sources */,
