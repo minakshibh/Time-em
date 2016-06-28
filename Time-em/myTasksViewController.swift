@@ -57,12 +57,8 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
         //        changeSignINButton()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "rotated", name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc:UIViewController = storyboard.instantiateViewControllerWithIdentifier("chart") as! chartViewController
-        
-        self.configureChildViewController(vc, onView: self.view)
 
     }
     func rotated()
