@@ -9,6 +9,7 @@
 import UIKit
 import FMDB
 
+
 class LoginViewController: UIViewController, UITextFieldDelegate {
 
     // MARK: Outlets
@@ -32,7 +33,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         txtPassword.delegate = self
         self.navigationController?.navigationBarHidden = true
         btnLogin.layer.cornerRadius = 4
+        
+        
+        
+        
+        
+        
+        
+       
+        
+        //--
     }
+    
+   
+    
+    
     override func viewWillAppear(animated: Bool) {
         UIApplication.sharedApplication().statusBarStyle = .LightContent
         self.navigationController?.navigationBarHidden = true

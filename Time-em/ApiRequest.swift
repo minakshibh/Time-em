@@ -111,6 +111,11 @@ public class ApiRequest {
                 print("failed: \(error.localizedDescription)")
             }
             do {
+                try database.executeUpdate("create table geofensingGraph(CreatedDate text, workSiteList text, userId tex)", values: nil)
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
+            do {
                 try database.executeUpdate("create table notificationtype(data text)", values: nil)
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
@@ -860,7 +865,7 @@ public class ApiRequest {
                 print(response.result)   // result of response serialization
                 
                 if let JSON = response.result.value {
-                    print("JSON: \(JSON)")
+//                    print("JSON: \(JSON)")
                     
                     if "\(response.result)" == "SUCCESS"{
                         
@@ -911,7 +916,7 @@ public class ApiRequest {
                 print(response.result)   // result of response serialization
                 
                 if let JSON = response.result.value {
-                    print("JSON: \(JSON)")
+//                    print("JSON: \(JSON)")
                     
                     if "\(response.result)" == "SUCCESS"{
                         
@@ -950,6 +955,73 @@ public class ApiRequest {
         }
     }
     
+    //--
+    func GetUserWorksiteActivityGraph(userId:String,view:UIView)  {
+        let notificationKey = "com.time-em.getUserSignedGraphData"
+        
+        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/Worksite/GetUserWorksiteActivity", parameters: ["userid":userId])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                        print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+//                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
+//                            let userInfo = ["response" : "FAILURE"]
+//                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                            return
+//                        }
+                        print(JSON.count)
+                        
+                        let dataArr:NSArray = JSON as! NSArray
+                        
+                        let database = databaseFile()
+                        database.saveUserWorksiteActivityGraph(dataArr,userId:userId)
+                        
+                        
+                       
+                        
+                        
+                        
+                        
+                        
+                        
+                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
+                            
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            
+                            
+                            
+                            
+                            
+                        
+                            
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+                        }else{
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+    }
     
     func GetAssignedTaskIList(userId:String,view:UIView)  {
         MBProgressHUD.showHUDAddedTo(view, animated: true)

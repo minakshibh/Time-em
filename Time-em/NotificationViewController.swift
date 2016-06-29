@@ -8,8 +8,9 @@
 
 import UIKit
 import MGSwipeTableCell
+import StoreKit
 
-class NotificationViewController: UIViewController {
+class NotificationViewController: UIViewController, SKProductsRequestDelegate, SKPaymentTransactionObserver {
 
     
     @IBOutlet var dateTimeLbl: UILabel!
@@ -19,6 +20,12 @@ class NotificationViewController: UIViewController {
     @IBOutlet var notificationsTableView: UITableView!
     var selectedNotificationData:NSMutableDictionary! = [:]
 
+    var delegate: IAPurchaceViewControllerDelegate!
+    var productIDs: Array<String!> = []
+    var productsArray: Array<SKProduct!> = []
+    var selectedProductIndex: Int!
+    var transactionInProgress = false
+    
     
     let normalColor = UIColor(red: 56/255, green: 72/255, blue: 98/255, alpha: 1)
     let highLightedColor = UIColor(red: 30/255, green: 45/255, blue: 68/255, alpha: 1)
@@ -37,6 +44,12 @@ class NotificationViewController: UIViewController {
         self.fetchNotificationDataFromDatabase()
         self.fetchNotificationList()
         notificationBtn.backgroundColor = highLightedColor
+        
+        
+        productIDs.append("testpurchase525")
+        requestProductInfo()
+        
+        SKPaymentQueue.defaultQueue().addTransactionObserver(self)
         
         // Do any additional setup after loading the view.
             let api = ApiRequest()
@@ -130,8 +143,26 @@ class NotificationViewController: UIViewController {
         self.showNotificationsInTable()
     }
     @IBAction func btnAddNotificatiom(sender: AnyObject) {
-        self.performSegueWithIdentifier("iap", sender: self)
-
+//        self.performSegueWithIdentifier("iap", sender: self)
+        let product = productsArray[0]
+        
+        let refreshAlert = UIAlertController(title: product.localizedTitle, message: product.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        
+        refreshAlert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
+            print("Handle Ok logic here")
+            let payment = SKPayment(product: product as SKProduct)
+            SKPaymentQueue.defaultQueue().addPayment(payment)
+            self.transactionInProgress = true
+        }))
+        
+        refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) in
+            print("Handle Cancel Logic here")
+            self.dismissViewControllerAnimated(true, completion: {});
+            self.navigationController?.popViewControllerAnimated(true)
+        }))
+        
+        presentViewController(refreshAlert, animated: true, completion: nil)
+        
     }
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
@@ -301,4 +332,97 @@ class NotificationViewController: UIViewController {
 //        
 //    }
 
+    
+    // MARK: Custom method implementation
+    
+    func requestProductInfo() {
+        if SKPaymentQueue.canMakePayments() {
+            let productIdentifiers = NSSet(array: productIDs)
+            let productRequest = SKProductsRequest(productIdentifiers: productIdentifiers as! Set<String> )
+            
+            productRequest.delegate = self
+            productRequest.start()
+        }
+        else {
+            print("Cannot perform In App Purchases.")
+        }
+    }
+    
+    
+    func showActions() {
+        if transactionInProgress {
+            return
+        }
+        
+        let actionSheetController = UIAlertController(title: "IAPDemo", message: "What do you want to do?", preferredStyle: UIAlertControllerStyle.ActionSheet)
+        
+        let buyAction = UIAlertAction(title: "Buy", style: UIAlertActionStyle.Default) { (action) -> Void in
+            let payment = SKPayment(product: self.productsArray[self.selectedProductIndex] as SKProduct)
+            SKPaymentQueue.defaultQueue().addPayment(payment)
+            self.transactionInProgress = true
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { (action) -> Void in
+            
+        }
+        
+        actionSheetController.addAction(buyAction)
+        actionSheetController.addAction(cancelAction)
+        
+        presentViewController(actionSheetController, animated: true, completion: nil)
+    }
+    
+    
+    // MARK: SKProductsRequestDelegate method implementation
+    
+    func productsRequest(request: SKProductsRequest, didReceiveResponse response: SKProductsResponse) {
+        if response.products.count != 0 {
+            for product in response.products {
+                productsArray.append(product )
+                print(product.localizedDescription)
+                print(product.localizedTitle)
+                print(product.price)
+                print(product.priceLocale)
+                print(product.productIdentifier)
+                print(product.downloadable)
+            }
+
+            print(productsArray)
+            //            tblProducts.reloadData()
+        }
+        else {
+            print("There are no products.")
+        }
+        
+        if response.invalidProductIdentifiers.count != 0 {
+            print(response.invalidProductIdentifiers.description)
+        }
+    }
+    
+    
+    // MARK: SKPaymentTransactionObserver method implementation
+    
+    func paymentQueue(queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+        for transaction in transactions {
+            switch transaction.transactionState {
+            case SKPaymentTransactionState.Purchased:
+                print("Transaction completed successfully.")
+                SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+                transactionInProgress = false
+                delegate.didBuyColorsCollection(selectedProductIndex)
+                
+                
+            case SKPaymentTransactionState.Failed:
+                print("Transaction Failed");
+                SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+                transactionInProgress = false
+                
+            default:
+                print(transaction.transactionState.rawValue)
+            }
+        }
+    }
+    
+    
+    
 }

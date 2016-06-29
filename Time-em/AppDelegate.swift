@@ -9,17 +9,45 @@
 import UIKit
 import AVFoundation
 import TSMessages
- 
+import CoreLocation
+
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate {
 
     var window: UIWindow?
     var storyboard:UIStoryboard?
     let navigator:UINavigationController? = nil
-    
+    var locManager = CLLocationManager()
+    var afterResume:Bool!
+    var anotherLocationManager:CLLocationManager!
+    var  IS_OS_8_OR_LATER = (Int(UIDevice.currentDevice().systemVersion) >= 8)
+    var myLocation:CLLocationCoordinate2D!
+    var myLocationAccuracy:CLLocationAccuracy!
+    var timer:NSTimer!
+    var delay10Seconds:NSTimer! = nil
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+
+        //--
+        // Ask for Authorisation from the User.
+        self.locManager.requestAlwaysAuthorization()
+        
+        // For use in foreground
+//        self.locManager.requestWhenInUseAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locManager.delegate = self
+            locManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locManager.activityType =  .OtherNavigation
+            locManager.startUpdatingLocation()
+            
+            self.locManager.startMonitoringSignificantLocationChanges()
+            
+        }
+        
+        
+        
         window?.backgroundColor = UIColor.blackColor()
         self.createCopyOfDatabaseIfNeeded()
         UIApplication.sharedApplication().applicationIconBadgeNumber = 0
@@ -42,10 +70,60 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let notificationTypes = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(notificationTypes)
         UIApplication.sharedApplication().registerForRemoteNotifications()
+        
+        
+        if NSUserDefaults.standardUserDefaults().valueForKey("data") != nil {
+            
+            let data = NSUserDefaults.standardUserDefaults().valueForKey("data")!
+            let arr1:NSMutableArray =  (NSKeyedUnarchiver.unarchiveObjectWithData(data as! NSData) as? NSMutableArray)!
+            print(arr1)
+        }
+       
+        
+
+        
+        
         return true
+        //performFetchWithCompletionHandler
     }
     
-  
+
+    
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+//        let locValue:CLLocationCoordinate2D = manager.location!.coordinate
+//        print("locations = \(locValue.latitude) \(locValue.longitude)")
+//        NSLog("locationManager didUpdateLocations: %@", locations)
+        for var i = 0; i < locations.count; i++ {
+            
+            var newLocation: CLLocation = locations[i]
+            var theLocation: CLLocationCoordinate2D = newLocation.coordinate
+            var theAccuracy: CLLocationAccuracy = newLocation.horizontalAccuracy
+            self.myLocation = theLocation
+            self.myLocationAccuracy = theAccuracy
+            let dict:NSMutableDictionary = [:]
+            dict["lat"] = newLocation.coordinate.latitude
+            dict["lov"] = newLocation.coordinate.longitude
+            dict["date"] = NSDate()
+            let arr:NSMutableArray = []
+            arr.addObject(dict)
+            
+            if NSUserDefaults.standardUserDefaults().valueForKey("data") != nil {
+                
+               let data = NSUserDefaults.standardUserDefaults().valueForKey("data")!
+                let arr1:NSMutableArray =  (NSKeyedUnarchiver.unarchiveObjectWithData(data as! NSData) as? NSMutableArray)!
+                arr1.addObject(dict)
+                 let data1 = NSKeyedArchiver.archivedDataWithRootObject(arr1)
+                NSUserDefaults.standardUserDefaults().setObject(data1, forKey: "data")
+            }else{
+            let data = NSKeyedArchiver.archivedDataWithRootObject(arr)
+            NSUserDefaults.standardUserDefaults().setObject(data, forKey: "data")
+            }
+        }
+
+        
+
+    }
     
 //    func application(application: UIApplication, supportedInterfaceOrientationsForWindow window: UIWindow?) -> UIInterfaceOrientationMask {
 //        if self.window?.rootViewController?.presentedViewController is chartViewController {
@@ -111,6 +189,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        self.locManager.stopMonitoringSignificantLocationChanges()
+
+        
+        if(IS_OS_8_OR_LATER) {
+             self.locManager.requestAlwaysAuthorization()
+        }
+        self.locManager.startMonitoringSignificantLocationChanges()
+
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
@@ -119,7 +205,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        
+        self.locManager.stopMonitoringSignificantLocationChanges()
+        self.locManager = CLLocationManager()
+        self.locManager.delegate = self
+        self.locManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        self.locManager.activityType = .OtherNavigation
+        
+        if(IS_OS_8_OR_LATER) {
+            self.locManager.requestAlwaysAuthorization()
+        }
+        self.locManager.startMonitoringSignificantLocationChanges()
     }
+    
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
@@ -163,5 +262,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             NSLog("DB exists, no need to copy.")
         }
     }
+    
 }
 

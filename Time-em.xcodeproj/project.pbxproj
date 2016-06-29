@@ -44,6 +44,7 @@
 		D9AD39191CE5BAE3005D5029 /* images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D9AD39181CE5BAE3005D5029 /* images.xcassets */; };
 		D9AD391F1CE5CD8D005D5029 /* dashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */; };
 		D9AD39231CE5F29D005D5029 /* async.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AD39221CE5F29D005D5029 /* async.swift */; };
+		D9B70B161D2152D700AF36FE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9B70B151D2152D700AF36FE /* CoreLocation.framework */; };
 		D9C92C4D1D0FDABE009011A9 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C92C4C1D0FDABE009011A9 /* SettingViewController.swift */; };
 		D9D378011CEC9201002E24D9 /* databaseFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378001CEC9201002E24D9 /* databaseFile.swift */; };
 		D9D378031CEC92C8002E24D9 /* TaskData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378021CEC92C8002E24D9 /* TaskData.swift */; };
@@ -136,6 +137,7 @@
 		D9AD39181CE5BAE3005D5029 /* images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = images.xcassets; sourceTree = "<group>"; };
 		D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = dashboardViewController.swift; sourceTree = "<group>"; };
 		D9AD39221CE5F29D005D5029 /* async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = async.swift; sourceTree = "<group>"; };
+		D9B70B151D2152D700AF36FE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		D9C92C4C1D0FDABE009011A9 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		D9D378001CEC9201002E24D9 /* databaseFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = databaseFile.swift; sourceTree = "<group>"; };
 		D9D378021CEC92C8002E24D9 /* TaskData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskData.swift; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9B70B161D2152D700AF36FE /* CoreLocation.framework in Frameworks */,
 				D98E56E81D1BFDAB006E3A63 /* StoreKit.framework in Frameworks */,
 				F9A36C291CFD75A100258074 /* AVKit.framework in Frameworks */,
 				D9DA400A1CE9871B00D6B572 /* AVFoundation.framework in Frameworks */,
@@ -218,6 +221,7 @@
 		2179CA4CC73A2FC955B7E10B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D9B70B151D2152D700AF36FE /* CoreLocation.framework */,
 				D98E56E71D1BFDAA006E3A63 /* StoreKit.framework */,
 				F9A36C281CFD75A100258074 /* AVKit.framework */,
 				D9DA40091CE9871B00D6B572 /* AVFoundation.framework */,
@@ -507,6 +511,9 @@
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = T5DY39F2BR;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.InAppPurchase = {
 								enabled = 1;
 							};
@@ -785,9 +792,9 @@
 				INFOPLIST_FILE = "Time-em/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Krishnais.TrueSecretsM;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1e1b5b09-d5ec-422d-ae09-e9afd18abfc4";
+				PROVISIONING_PROFILE = "a6f63e6b-fdd3-4cb1-9869-affc7ebbca3f";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -809,9 +816,9 @@
 				INFOPLIST_FILE = "Time-em/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Krishnais.TrueSecretsM;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "592c946d-9bd3-4335-a6a5-9dd0021d8cd4";
+				PROVISIONING_PROFILE = "0b85b854-831a-4eea-b572-60ed2d24346d";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

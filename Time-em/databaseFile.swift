@@ -1582,5 +1582,76 @@ fileURL.path)
         database.close()
 
     }
+    
+    
+    func saveUserWorksiteActivityGraph(data:NSArray,userId:String) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("DELETE FROM geofensingGraph", values: nil )
+        } catch let error as NSError {
+            print("geofensingGraph failed: \(error.localizedDescription)")
+        }
+        for i:Int in 0 ..< data.count {
+            
+            let dict:NSMutableDictionary = data[i] as! NSMutableDictionary
+            let  CreatedDate = "\(dict.valueForKey("CreatedDate")!)"
+            
+            let workSiteList:NSArray = dict.valueForKey("workSiteList") as! NSArray
+            if workSiteList.count == 0 {
+                continue
+            }
+            let workSiteListData = NSKeyedArchiver.archivedDataWithRootObject(workSiteList)
+//            try database.executeUpdate("create table geofensingGraph(CreatedDate text, workSiteList text, userId tex)", values: nil)
+
+            do {
+                try database.executeUpdate("insert into geofensingGraph (CreatedDate,workSiteList,userId) values (?,?,?)", values: [CreatedDate,workSiteListData,userId])
+            } catch let error as NSError {
+                print("geofensingGraph 2 failed: \(error.localizedDescription)")
+            }
+        }
+        database.close()
+    }
+    func getUserWorksiteActivityGraph() -> NSMutableArray{
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        var dataARR:NSMutableArray = []
+        
+        do {
+            let rs = try database.executeQuery("select * from geofensingGraph", values: nil)
+//            try database.executeUpdate("create table geofensingGraph(CreatedDate text, workSiteList text, userId tex)", values: nil)
+
+            while rs.next() {
+                let x = rs.stringForColumn("CreatedDate")
+                let y = rs.dataForColumn("workSiteList")
+                let z = rs.stringForColumn("userId")
+               let arr = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSArray
+                var dataDict:NSMutableDictionary = [:]
+                dataDict.setObject(arr, forKey: "workSiteList")
+                dataDict.setObject(z, forKey: "userId")
+                dataDict.setObject(x, forKey: "CreatedDate")
+                dataARR.addObject(dataDict)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+            dataARR = []
+        }
+        database.close()
+        return dataARR
+        
+    }
 }
 

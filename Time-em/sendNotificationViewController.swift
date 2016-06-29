@@ -9,6 +9,7 @@
 import UIKit
 import JLToast
 
+
 class sendNotificationViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate{
 
     @IBOutlet var btnCrossImage: UIButton!
@@ -41,9 +42,15 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     var selectedRecipientsIdArr:NSMutableArray = []
     
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
 
+        
+        
+        
         btnSend.layer.cornerRadius = 4
         btnUploadImage.layer.cornerRadius = 4
         
@@ -494,4 +501,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         tableView.hidden = true
     }
+    
+    
+
+
 }

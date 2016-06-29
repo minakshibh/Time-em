@@ -16,47 +16,24 @@ class chartViewController: UIViewController {
     var scrollView:UIScrollView!
     
     
-    var graphleftSpace:CGFloat = 40.0
+    var graphleftSpace:CGFloat = 60.0
     var leftSpace:CGFloat = 0.0
     var boundryLinesWidth:CGFloat = 2.0
     var barWidth:CGFloat = 60
     var topGrphStartBoundry: CGFloat = 60.0
+    var WorkSiteNamewithColorDict:NSMutableDictionary = [:]
     
     var dataArr:NSMutableArray = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+/*
+         dataDict.setObject(dataARR, forKey: "workSiteList")
+         dataDict.setObject(z, forKey: "userId")
+         dataDict.setObject(x, forKey: "CreatedDate")
+ */
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(chartViewController.rotated1), name: UIDeviceOrientationDidChangeNotification, object: nil)
 
-        // Do any additional setup after loading the view.
-        let dict:NSMutableDictionary = [:]
-        dict.setValue("121", forKey: "Id")
-        dict.setValue("parv", forKey: "name")
-        dict.setValue("3", forKey: "hours")
-        
-        let dict1:NSMutableDictionary = [:]
-        dict1.setValue(dict, forKey: "data")
-        dataArr.addObject(dict1)
-        
-        
-        let dict2:NSMutableDictionary = [:]
-        dict2.setValue("121", forKey: "Id")
-        dict2.setValue("parv", forKey: "name")
-        dict2.setValue("4", forKey: "hours")
-        
-        let dict3:NSMutableDictionary = [:]
-        dict3.setValue(dict1, forKey: "data")
-        dataArr.addObject(dict3)
-        
-        let dict4:NSMutableDictionary = [:]
-        dict4.setValue("121", forKey: "Id")
-        dict4.setValue("parv", forKey: "name")
-        dict4.setValue("6", forKey: "hours")
-        
-        let dict5:NSMutableDictionary = [:]
-        dict5.setValue(dict1, forKey: "data")
-        dataArr.addObject(dict5)
-        
-        
         
         graph()
     }
@@ -67,8 +44,38 @@ class chartViewController: UIViewController {
     }
     
 
-    func graph(){
+    func getRandomColor() -> UIColor{
         
+        let randomRed:CGFloat = CGFloat(drand48())
+        let randomGreen:CGFloat = CGFloat(drand48())
+        let randomBlue:CGFloat = CGFloat(drand48())
+        return UIColor(red: randomRed, green: randomGreen, blue: randomBlue, alpha: 1.0)
+    }
+
+    func graph(){
+//-->
+        let database = databaseFile()
+        var graphArr:NSMutableArray = []
+        let WorkSiteNameArr:NSMutableArray = []
+        graphArr = database.getUserWorksiteActivityGraph()
+        print(graphArr)
+        for i:Int in 0 ..< graphArr.count {
+            let dict:NSMutableDictionary = graphArr[i] as! NSMutableDictionary
+            
+            let locArr = (dict.valueForKey("workSiteList") as! NSArray)
+            for j:Int in 0 ..< locArr.count{
+                let locdict:NSDictionary = locArr[j] as! NSDictionary
+                if WorkSiteNameArr.containsObject("\(locdict.valueForKey("WorkSiteName")!)") {
+                }else{
+                    WorkSiteNameArr.addObject("\(locdict.valueForKey("WorkSiteName")!)")
+                }
+                
+            }
+        }
+        for a:Int in 0 ..< WorkSiteNameArr.count {
+            WorkSiteNamewithColorDict.setObject(getRandomColor(), forKey: "\(WorkSiteNameArr[a])")
+        }
+//-->
          scrollView = UIScrollView(frame: CGRectMake(graphleftSpace, leftSpace, self.view.frame.size.width-graphleftSpace-5, self.view.frame.size.height-leftSpace-20))
 //        scrollView.backgroundColor = UIColor.grayColor()
         self.view.addSubview(scrollView)
@@ -82,7 +89,7 @@ class chartViewController: UIViewController {
         var val:CGFloat = 0.0
         var hourtxt:Int = 0
         for(var x=0;x<5;x+=1){
-        let hourslbl = UILabel(frame: CGRectMake(0, scrollView.frame.origin.y + topGrphStartBoundry + val - 20, scrollView.frame.origin.x, 30))
+        let hourslbl = UILabel(frame: CGRectMake(0, scrollView.frame.origin.y + topGrphStartBoundry + val - 5, scrollView.frame.origin.x, 20))
             hourslbl.textAlignment = .Center
             hourslbl.text = "\(hourtxt)hr."
             hourslbl.font = hourslbl.font.fontWithSize(10)
@@ -108,7 +115,14 @@ class chartViewController: UIViewController {
          dataaaArr.addObject(differentValues2)
          dataaaArr.addObject(differentValues3)
         
-        for(var x=0;x<dataaaArr.count;x+=1){
+        for(var x=0;x<graphArr.count;x+=1){
+             let dict:NSMutableDictionary = graphArr[x] as! NSMutableDictionary
+            var  CreatedDate:String = "\(dict.valueForKey("CreatedDate")!)"
+            let workSiteListArr = (dict.valueForKey("workSiteList") as! NSArray)
+            CreatedDate = "\(CreatedDate.componentsSeparatedByString("-")[2])-\(CreatedDate.componentsSeparatedByString("-")[0])-\(CreatedDate.componentsSeparatedByString("-")[1])T00:00:00"
+            CreatedDate = convertDate(CreatedDate)
+            
+            "yyyy-MM-dd'T'HH:mm:ss"
            //creating the view for background of labels
             let graphView = UIView(frame: CGRectMake(10*CGFloat(x) + xViewValue + 10, topGrphStartBoundry + 2, barWidth, scrollView.frame.size.height-topGrphStartBoundry))
 //            graphView.backgroundColor = UIColor.darkGrayColor()
@@ -118,33 +132,45 @@ class chartViewController: UIViewController {
             // adding dates
             let dateslbl = UILabel(frame: CGRectMake(graphView.frame.origin.x, 0, graphView.frame.size.width, topGrphStartBoundry))
             dateslbl.textAlignment = .Center
-            dateslbl.text = "27-6"
+            dateslbl.text = CreatedDate
             dateslbl.font = dateslbl.font.fontWithSize(12)
             dateslbl.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
             self.scrollView.addSubview(dateslbl)
 
-            var differentValArr:NSArray = []
-           differentValArr = dataaaArr[x] as! NSArray
+            
             
             // loop for creating inner labels
             var xValue:CGFloat = 0.0
-            let area24 = graphView.frame.size.height/24
+            let area24 = graphView.frame.size.height/(24*60)
             
             
             
-            let differentColorValues:NSArray = [UIColor.redColor(),UIColor.darkGrayColor(),UIColor.yellowColor(),UIColor.grayColor(),UIColor.greenColor(),UIColor.purpleColor()]
             
-            for(var y=0;y<differentValArr.count;y+=1){
-                if differentValArr[y] as! NSNumber == 0 {
-                     xValue = xValue + 10
-                continue
-                }
-             let label = UILabel(frame: CGRectMake(0, 0 + xValue, graphView.frame.size.width, area24 * CGFloat(differentValArr[y] as! NSNumber) ))
+            for(var y=0;y<workSiteListArr.count;y+=1){
+                let locDict = workSiteListArr[y] as! NSDictionary
+                let height = "\(locDict.valueForKey("WorkingHour")!)"
+                let WorkSiteName = "\(locDict.valueForKey("WorkSiteName")!)"
+                print(Float(height))
+               let heightCGFloat:CGFloat = CGFloat(Float(height)!)
+                
+                var  TimeInStr = "\(locDict.valueForKey("TimeIn")!)"
+                let hr = Int(TimeInStr.componentsSeparatedByString(":")[0])! * 60
+                let min = Int(TimeInStr.componentsSeparatedByString(":")[1])!
+                let total = hr + min
+                TimeInStr = "\(total)"
+                
+                
+                let TimeInStrCGfloat:CGFloat = CGFloat(Float(TimeInStr)!)
+                
+                
+                //(0 26.4333; 60 3.49056)
+             let label = UILabel(frame: CGRectMake(0, area24 * TimeInStrCGfloat , graphView.frame.size.width, area24 * heightCGFloat * 60 ))
                 
 //                label.layer.borderColor = UIColor.blackColor().CGColor;
 //                label.layer.borderWidth = 1.0;
-                
-                label.backgroundColor = differentColorValues[y] as! UIColor
+//                label.text = WorkSiteName
+//                label.font = dateslbl.font.fontWithSize(10)
+                label.backgroundColor = WorkSiteNamewithColorDict.valueForKey(WorkSiteName) as! UIColor
                 
                 
              graphView.addSubview(label)
@@ -153,6 +179,39 @@ class chartViewController: UIViewController {
             }
 
             
+        }
+        
+    }
+
+    func convertDate(dateStr:String)-> String{
+        let dateFormatter: NSDateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
+        
+        let date: NSDate = dateFormatter.dateFromString(dateStr)!
+                    // create date from string
+                    // change to a readable time format and change to local time zone
+//        dateFormatter.dateFormat = "EEE, MMM d, yyyy - h:mm a"
+        dateFormatter.dateFormat = "MMM d"
+
+        dateFormatter.timeZone = NSTimeZone.localTimeZone()
+        let timestamp: String = dateFormatter.stringFromDate(date)
+        return timestamp
+    }
+    func rotated1()
+    {
+        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
+        {
+            
+            print("chart landscape")
+        }
+        
+        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
+        {
+            print("chart Portrait")
+            self.dismissViewControllerAnimated(true, completion: {});
+            self.navigationController?.popViewControllerAnimated(true)
+        
         }
         
     }

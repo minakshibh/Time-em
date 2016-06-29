@@ -47,6 +47,11 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         let assignedTasks = ApiRequest()
         
+        
+        assignedTasks.GetUserWorksiteActivityGraph("10",view: self.view)
+        
+        
+        
         let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
         assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
         
@@ -79,6 +84,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
                 chldViewControllers.willMoveToParentViewController(nil)
                 chldViewControllers.view.removeFromSuperview()
                 chldViewControllers.removeFromParentViewController()
+                
             }
         }
         

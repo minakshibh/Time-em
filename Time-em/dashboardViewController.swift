@@ -675,6 +675,16 @@ class dashboardViewController: UIViewController {
             print("failed: \(error.localizedDescription)")
         }
         database.close()
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("DELETE FROM geofensingGraph", values: nil )
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        database.close()
         
         if !database.open() {
             print("Unable to open database")
