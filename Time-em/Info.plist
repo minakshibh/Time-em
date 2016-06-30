@@ -28,9 +28,9 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>get location</string>
+	<string>app wants to get your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>get location</string>
+	<string>get location app wants to get your location</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lato-Bold.ttf</string>

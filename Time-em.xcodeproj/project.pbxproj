@@ -45,6 +45,7 @@
 		D9AD391F1CE5CD8D005D5029 /* dashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */; };
 		D9AD39231CE5F29D005D5029 /* async.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AD39221CE5F29D005D5029 /* async.swift */; };
 		D9B70B161D2152D700AF36FE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9B70B151D2152D700AF36FE /* CoreLocation.framework */; };
+		D9BDFD241D23E74800932A8F /* checkMark.png in Resources */ = {isa = PBXBuildFile; fileRef = D9BDFD231D23E74800932A8F /* checkMark.png */; };
 		D9C92C4D1D0FDABE009011A9 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C92C4C1D0FDABE009011A9 /* SettingViewController.swift */; };
 		D9D378011CEC9201002E24D9 /* databaseFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378001CEC9201002E24D9 /* databaseFile.swift */; };
 		D9D378031CEC92C8002E24D9 /* TaskData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378021CEC92C8002E24D9 /* TaskData.swift */; };
@@ -66,7 +67,6 @@
 		D9E38F421D069EA000064802 /* myProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E38F411D069EA000064802 /* myProfileViewController.swift */; };
 		F91E33AC1D2105F4006FE2E3 /* widgetsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E33AB1D2105F4006FE2E3 /* widgetsViewController.swift */; };
 		F91E33AE1D210AC7006FE2E3 /* widgetsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91E33AD1D210AC7006FE2E3 /* widgetsCell.swift */; };
-		F91E33B01D213F95006FE2E3 /* checkMark.png in Resources */ = {isa = PBXBuildFile; fileRef = F91E33AF1D213F95006FE2E3 /* checkMark.png */; };
 		F947CF481CF30A03009635B4 /* resetPinAndPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = F947CF471CF30A03009635B4 /* resetPinAndPassword.swift */; };
 		F95985EA1CEDC022002582C4 /* AddNewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */; };
 		F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */; };
@@ -141,6 +141,7 @@
 		D9AD391E1CE5CD8D005D5029 /* dashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = dashboardViewController.swift; sourceTree = "<group>"; };
 		D9AD39221CE5F29D005D5029 /* async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = async.swift; sourceTree = "<group>"; };
 		D9B70B151D2152D700AF36FE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		D9BDFD231D23E74800932A8F /* checkMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checkMark.png; path = ../../../Desktop/checkMark.png; sourceTree = "<group>"; };
 		D9C92C4C1D0FDABE009011A9 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		D9D378001CEC9201002E24D9 /* databaseFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = databaseFile.swift; sourceTree = "<group>"; };
 		D9D378021CEC92C8002E24D9 /* TaskData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskData.swift; sourceTree = "<group>"; };
@@ -171,7 +172,6 @@
 		D9E9D44030C43EDD49F563DA /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		F91E33AB1D2105F4006FE2E3 /* widgetsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = widgetsViewController.swift; sourceTree = "<group>"; };
 		F91E33AD1D210AC7006FE2E3 /* widgetsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = widgetsCell.swift; sourceTree = "<group>"; };
-		F91E33AF1D213F95006FE2E3 /* checkMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checkMark.png; path = ../Desktop/checkMark.png; sourceTree = "<group>"; };
 		F947CF471CF30A03009635B4 /* resetPinAndPassword.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = resetPinAndPassword.swift; sourceTree = "<group>"; };
 		F95985E91CEDC021002582C4 /* AddNewTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewTaskViewController.swift; sourceTree = "<group>"; };
 		F95985FC1CEDDFA8002582C4 /* AssignedTasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssignedTasks.swift; sourceTree = "<group>"; };
@@ -273,8 +273,8 @@
 		D97004EE1CE31A1E0036B5EA = {
 			isa = PBXGroup;
 			children = (
+				D9BDFD231D23E74800932A8F /* checkMark.png */,
 				D965A20E1CF867CC00AB11C0 /* FileUploadInfo.swift */,
-				F91E33AF1D213F95006FE2E3 /* checkMark.png */,
 				F9F0128E1CF31D88003698C6 /* Lato-Bold.ttf */,
 				F9F0128F1CF31D88003698C6 /* Lato-Regular.ttf */,
 				D99C2D231CEAE0A1007E0A0D /* Time-em-Prefix.pch */,
@@ -564,7 +564,7 @@
 				D93AC0BD1CF47F08009E73F5 /* Website-Under-Construction.jpg in Resources */,
 				D9AD39191CE5BAE3005D5029 /* images.xcassets in Resources */,
 				F9F012991CF33495003698C6 /* DropDownCell.xib in Resources */,
-				F91E33B01D213F95006FE2E3 /* checkMark.png in Resources */,
+				D9BDFD241D23E74800932A8F /* checkMark.png in Resources */,
 				D97005001CE31A1F0036B5EA /* Main.storyboard in Resources */,
 				F9F012901CF31D88003698C6 /* Lato-Bold.ttf in Resources */,
 			);
@@ -804,9 +804,9 @@
 				INFOPLIST_FILE = "Time-em/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.Krishnais.TrueSecretsM;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a6f63e6b-fdd3-4cb1-9869-affc7ebbca3f";
+				PROVISIONING_PROFILE = "1e1b5b09-d5ec-422d-ae09-e9afd18abfc4";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -828,9 +828,9 @@
 				INFOPLIST_FILE = "Time-em/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.Krishnais.TrueSecretsM;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0b85b854-831a-4eea-b572-60ed2d24346d";
+				PROVISIONING_PROFILE = "eb33d980-b0a1-40b5-99ab-a5c0c85e967e";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

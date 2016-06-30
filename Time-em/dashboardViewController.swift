@@ -10,9 +10,10 @@ import UIKit
 import KGModal
 import FMDB
 
-class dashboardViewController: UIViewController {
+class dashboardViewController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource {
 
     @IBOutlet var btnMyTasks: UIButton!
+    @IBOutlet var widgetBackgroundHeightConstraint: NSLayoutConstraint!
     @IBOutlet var btnNotificationSecond: UIButton!
     @IBOutlet var btnMyTeam: UIButton!
     @IBOutlet var btnNotifications: UIButton!
@@ -43,6 +44,13 @@ class dashboardViewController: UIViewController {
     var pageMenu : CAPSPageMenu?
     var lblBackground:UILabel!
     var selectedWidgets:NSMutableArray = []
+    @IBOutlet var widgetCollectionView: UICollectionView!
+    @IBOutlet var widgetBackground: UIView!
+    var counterForWidget:Int = 0
+    
+    
+    private let reuseIdentifier = "WidgetCell"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         sideView.hidden = true
@@ -180,6 +188,14 @@ class dashboardViewController: UIViewController {
 //        self.fetchUserTaskGraphDataFromDatabase()
 //        self.fetchUserSignedGraphDataFromDatabase()
         print(selectedWidgets)
+        if NSUserDefaults.standardUserDefaults().valueForKey("selectedWidgets") != nil {
+            let data:NSData = NSUserDefaults.standardUserDefaults().valueForKey("selectedWidgets") as! NSData
+            
+            selectedWidgets = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableArray
+      
+            widgetCollectionView.reloadData()
+        }
+
         let currentUserName = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_FullName")  as? String
         lblNameSlideMenu.text = currentUserName!
         self.checkActiveInacive()
@@ -297,6 +313,15 @@ class dashboardViewController: UIViewController {
         
     }else{
        self.implementGraphViews()
+    }
+    
+    if Reachability.DeviceType.IS_IPHONE_5 {
+//        widgetBackground.frame = CGRectMake(widgetBackground.frame.origin.x, widgetBackground.frame.origin.y+60, widgetBackground.frame.size.width, widgetBackground.frame.size.height-80)
+        
+        if counterForWidget == 0 {
+        widgetBackgroundHeightConstraint.constant = widgetBackground.frame.size.height - 40
+            counterForWidget=1
+        }
     }
     
     
@@ -764,15 +789,15 @@ class dashboardViewController: UIViewController {
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_ActivityId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_LoginId")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_FullName")
-NSUserDefaults.standardUserDefaults().removeObjectForKey("activeUserListTimeStamp")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("activeUserListTimeStamp")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("taskTimeStamp")
 
     NSUserDefaults.standardUserDefaults().removeObjectForKey("notificationsTimeStamp")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("teamTimeStamp")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_Email")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_PhoneNumber")
-    NSUserDefaults.standardUserDefaults().removeObjectForKey("forGraph")
-
+        NSUserDefaults.standardUserDefaults().removeObjectForKey("forGraph")
+        NSUserDefaults.standardUserDefaults().removeObjectForKey("selectedWidgets")
 
 ////        self.navigationController?.popToRootViewControllerAnimated(true)
 //        self.dismissViewControllerAnimated(true, completion: nil)
@@ -884,6 +909,41 @@ NSUserDefaults.standardUserDefaults().removeObjectForKey("activeUserListTimeStam
     
     override func shouldAutomaticallyForwardRotationMethods() -> Bool {
         return true
+    }
+
+    // MARK: - Collection view
+    
+    //1
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    //2
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return selectedWidgets.count
+    }
+    
+    //3
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        //1
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! widgetsCell
+        //2
+        
+        if selectedWidgets[indexPath.row] as! String == "0" {
+            cell.widgetLabel.backgroundColor = UIColor(red: 99/255.0, green: 192/255.0, blue: 112/255.0, alpha: 1.0)
+        }
+        else if selectedWidgets[indexPath.row] as! String == "1"{
+            cell.widgetLabel.backgroundColor = UIColor(red: 184/255.0, green: 63/255.0, blue: 58/255.0, alpha: 1.0)
+        }else if selectedWidgets[indexPath.row] as! String == "2"{
+            cell.widgetLabel.backgroundColor = UIColor(red: 81/255.0, green: 179/255.0, blue: 206/255.0, alpha: 1.0)
+        }
+        //3
+        cell.widgetLabel.text = "Label \(selectedWidgets[indexPath.row])"
+        cell.widgetLabel?.textAlignment = NSTextAlignment.Center
+        
+        
+        
+        return cell
     }
 
 }

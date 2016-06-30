@@ -46,7 +46,7 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
         notificationBtn.backgroundColor = highLightedColor
         
         
-        productIDs.append("testpurchase525")
+        productIDs.append("sendNotificationAccess")
         requestProductInfo()
         
         SKPaymentQueue.defaultQueue().addTransactionObserver(self)

@@ -17,7 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
     var window: UIWindow?
     var storyboard:UIStoryboard?
     let navigator:UINavigationController? = nil
-    var locManager = CLLocationManager()
+    var locationManager: CLLocationManager!
+
     var afterResume:Bool!
     var anotherLocationManager:CLLocationManager!
     var  IS_OS_8_OR_LATER = (Int(UIDevice.currentDevice().systemVersion) >= 8)
@@ -25,26 +26,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
     var myLocationAccuracy:CLLocationAccuracy!
     var timer:NSTimer!
     var delay10Seconds:NSTimer! = nil
+    var locationStatus : NSString = "Not Started"
+
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
 
         //--
-        // Ask for Authorisation from the User.
-        self.locManager.requestAlwaysAuthorization()
+        initLocationManager();
         
-        // For use in foreground
-//        self.locManager.requestWhenInUseAuthorization()
         
-        if CLLocationManager.locationServicesEnabled() {
-            locManager.delegate = self
-            locManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            locManager.activityType =  .OtherNavigation
-            locManager.startUpdatingLocation()
-            
-            self.locManager.startMonitoringSignificantLocationChanges()
-            
-        }
         
         
         
@@ -87,9 +78,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
         //performFetchWithCompletionHandler
     }
     
-
+    func initLocationManager() {
+        delay(0.001) {
+        self.locationManager = CLLocationManager()
+        self.locationManager.delegate = self
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        CLLocationManager.locationServicesEnabled()
+        self.locationManager.requestAlwaysAuthorization()
+        self.locationManager.startMonitoringSignificantLocationChanges()
+        }
+        
+    }
     
-    
+    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
+        locationManager.stopUpdatingLocation()
+                print("location error:- \(error)")
+            
+        
+    }
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 //        let locValue:CLLocationCoordinate2D = manager.location!.coordinate
 //        print("locations = \(locValue.latitude) \(locValue.longitude)")
@@ -104,9 +110,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
             let dict:NSMutableDictionary = [:]
             dict["lat"] = newLocation.coordinate.latitude
             dict["lov"] = newLocation.coordinate.longitude
-            dict["date"] = NSDate()
+            
+            
+            
+            
+            
+            var formatter = NSDateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss ZZZ"
+            let defaultTimeZoneStr = formatter.stringFromDate(NSDate())
+            // "2014-07-23 11:01:35 -0700" <-- same date, local, but with seconds
+            formatter.timeZone = NSTimeZone(abbreviation: "IST")
+            let utcTimeZoneStr = formatter.stringFromDate(NSDate())
+            
+            dict["date"] = utcTimeZoneStr
             let arr:NSMutableArray = []
             arr.addObject(dict)
+
             
             if NSUserDefaults.standardUserDefaults().valueForKey("data") != nil {
                 
@@ -120,11 +139,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
             NSUserDefaults.standardUserDefaults().setObject(data, forKey: "data")
             }
         }
-
-        
-
     }
     
+    // authorization status
+    func locationManager(manager: CLLocationManager!,
+                         didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        var shouldIAllow = false
+        
+        switch status {
+        case CLAuthorizationStatus.Restricted:
+            locationStatus = "Restricted Access to location"
+        case CLAuthorizationStatus.Denied:
+            locationStatus = "User denied access to location"
+        case CLAuthorizationStatus.NotDetermined:
+            locationStatus = "Status not determined"
+        default:
+            locationStatus = "Allowed to location Access"
+            shouldIAllow = true
+        }
+        NSNotificationCenter.defaultCenter().postNotificationName("LabelHasbeenUpdated", object: nil)
+        if (shouldIAllow == true) {
+            NSLog("Location to Allowed")
+            // Start location services
+            locationManager.startUpdatingLocation()
+        } else {
+            NSLog("Denied access: \(locationStatus)")
+        }
+    }
 //    func application(application: UIApplication, supportedInterfaceOrientationsForWindow window: UIWindow?) -> UIInterfaceOrientationMask {
 //        if self.window?.rootViewController?.presentedViewController is chartViewController {
 //            
@@ -189,13 +230,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        self.locManager.stopMonitoringSignificantLocationChanges()
+        self.locationManager.stopMonitoringSignificantLocationChanges()
 
         
         if(IS_OS_8_OR_LATER) {
-             self.locManager.requestAlwaysAuthorization()
+             self.locationManager.requestAlwaysAuthorization()
         }
-        self.locManager.startMonitoringSignificantLocationChanges()
+        self.locationManager.startMonitoringSignificantLocationChanges()
 
     }
 
@@ -206,17 +247,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         
+        delay(0.001) {
+        self.locationManager.stopMonitoringSignificantLocationChanges()
+        self.locationManager = CLLocationManager()
+        self.locationManager.delegate = self
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        self.locationManager.activityType = .OtherNavigation
         
-        self.locManager.stopMonitoringSignificantLocationChanges()
-        self.locManager = CLLocationManager()
-        self.locManager.delegate = self
-        self.locManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        self.locManager.activityType = .OtherNavigation
-        
-        if(IS_OS_8_OR_LATER) {
-            self.locManager.requestAlwaysAuthorization()
+        if(self.IS_OS_8_OR_LATER) {
+            self.locationManager.requestAlwaysAuthorization()
         }
-        self.locManager.startMonitoringSignificantLocationChanges()
+        self.locationManager.startMonitoringSignificantLocationChanges()
+        }
     }
     
 

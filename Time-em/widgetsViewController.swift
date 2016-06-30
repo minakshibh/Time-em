@@ -2,15 +2,27 @@
 
 import Foundation
 
+
+
+
+
+
 class widgetsViewController: UIViewController {
       private let reuseIdentifier = "WidgetCell"
     var selectedWidgets : NSMutableArray = []
     
     @IBOutlet var widgetCollectionView: UICollectionView!
     
+    override func viewDidLoad() {
+        if NSUserDefaults.standardUserDefaults().valueForKey("selectedWidgets") != nil {
+            let data:NSData = NSUserDefaults.standardUserDefaults().valueForKey("selectedWidgets") as! NSData
+            
+            selectedWidgets = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableArray
+        }
+    }
+    
+    
     override func viewWillDisappear(animated: Bool) {
-        let dashView = dashboardViewController()
-        dashView.selectedWidgets = selectedWidgets
         
     }
     
@@ -18,6 +30,14 @@ class widgetsViewController: UIViewController {
     
         self.dismissViewControllerAnimated(true, completion: {})
         self.navigationController?.popViewControllerAnimated(true)
+    }
+    @IBAction func btnDone(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: {})
+        self.navigationController?.popViewControllerAnimated(true)
+        let selectedWidgetsData:NSData = NSKeyedArchiver.archivedDataWithRootObject(selectedWidgets)
+
+        NSUserDefaults.standardUserDefaults().setObject(selectedWidgetsData, forKey: "selectedWidgets")
+
     }
 }
 
@@ -50,6 +70,19 @@ extension widgetsViewController : UICollectionViewDataSource {
         cell.widgetLabel.text = "Label \(indexPath.row)"
         cell.widgetLabel?.textAlignment = NSTextAlignment.Center
         
+        
+        if selectedWidgets.count>0 {
+           
+            if selectedWidgets.containsObject("\(indexPath.row)") {
+              cell.checkBoxImg.hidden = false
+            }else{
+              
+            }
+        }
+        
+
+        
+        
         return cell
     }
     
@@ -63,11 +96,12 @@ extension widgetsViewController : UICollectionViewDelegate {
         
         if cell.checkBoxImg.hidden == true {
             cell.checkBoxImg.hidden = false
-            selectedWidgets.addObject(indexPath.row)
+            print(selectedWidgets)
+            selectedWidgets.addObject("\(indexPath.row)")
         }else{
             cell.checkBoxImg.hidden = true
-            selectedWidgets.removeObject(indexPath.row)
+            print(selectedWidgets)
+            selectedWidgets.removeObject("\(indexPath.row)")
         }
-        
 }
 }
