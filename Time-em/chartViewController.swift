@@ -8,13 +8,13 @@
 
 import UIKit
 
-class chartViewController: UIViewController {
+class chartViewController: UIViewController,UIScrollViewDelegate {
 
     var isPresented:Bool = true
     var graphBoundryLeft:UILabel! = UILabel()
     var graphBoundryTop:UILabel! = UILabel()
     var scrollView:UIScrollView!
-    
+    var scrollView2:UIScrollView!
     
     var graphleftSpace:CGFloat = 60.0
     var leftSpace:CGFloat = 0.0
@@ -33,7 +33,21 @@ class chartViewController: UIViewController {
          dataDict.setObject(x, forKey: "CreatedDate")
  */
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(chartViewController.rotated1), name: UIDeviceOrientationDidChangeNotification, object: nil)
-
+       
+        
+        scrollView2 = UIScrollView(frame: CGRectMake(0, 0, 35, self.view.frame.size.height))
+//        scrollView2.backgroundColor = UIColor.blackColor()
+        scrollView2.scrollEnabled = true
+        scrollView2.delegate = self
+        scrollView2.backgroundColor = UIColor.clearColor()
+        scrollView2.contentOffset = CGPoint(x: 0, y: 0)
+        scrollView2.contentSize = CGSizeMake(0, 600)
+        
+        
+        
+        
+        self.view.addSubview(scrollView2)
+        
         
         graph()
     }
@@ -75,6 +89,19 @@ class chartViewController: UIViewController {
         for a:Int in 0 ..< WorkSiteNameArr.count {
             WorkSiteNamewithColorDict.setObject(getRandomColor(), forKey: "\(WorkSiteNameArr[a])")
         }
+        scrollView2.contentSize = CGSizeMake(0, CGFloat(WorkSiteNameArr.count) * 200)
+        
+        var y:CGFloat = 0
+        for (var a=0;a<WorkSiteNameArr.count;a++){
+            let lbl = UILabel(frame: CGRectMake(-scrollView2.frame.size.width*2-12, y + 100, 200, scrollView2.frame.size.width))
+            lbl.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
+            lbl.text = "\(WorkSiteNameArr[a] as! String)"
+            lbl.textAlignment = .Center
+            lbl.backgroundColor = WorkSiteNamewithColorDict.valueForKey(WorkSiteNameArr[a] as! String) as! UIColor
+            scrollView2.addSubview(lbl)
+            y = y + 200
+        }
+        
 //-->
          scrollView = UIScrollView(frame: CGRectMake(graphleftSpace, leftSpace, self.view.frame.size.width-graphleftSpace-5, self.view.frame.size.height-leftSpace-20))
 //        scrollView.backgroundColor = UIColor.grayColor()
@@ -89,7 +116,7 @@ class chartViewController: UIViewController {
         var val:CGFloat = 0.0
         var hourtxt:Int = 0
         for(var x=0;x<5;x+=1){
-        let hourslbl = UILabel(frame: CGRectMake(0, scrollView.frame.origin.y + topGrphStartBoundry + val - 5, scrollView.frame.origin.x, 20))
+        let hourslbl = UILabel(frame: CGRectMake(25 , scrollView.frame.origin.y + topGrphStartBoundry + val - 5, scrollView.frame.origin.x-10, 20))
             hourslbl.textAlignment = .Center
             hourslbl.text = "\(hourtxt)hr."
             hourslbl.font = hourslbl.font.fontWithSize(10)

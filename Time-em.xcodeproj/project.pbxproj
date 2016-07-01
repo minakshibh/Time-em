@@ -50,9 +50,6 @@
 		D9D378011CEC9201002E24D9 /* databaseFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378001CEC9201002E24D9 /* databaseFile.swift */; };
 		D9D378031CEC92C8002E24D9 /* TaskData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378021CEC92C8002E24D9 /* TaskData.swift */; };
 		D9D378051CECAC6D002E24D9 /* MyTeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D378041CECAC6D002E24D9 /* MyTeamViewController.swift */; };
-		D9D66A7E1D1D30CD0064F886 /* StackedBarsExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D66A7D1D1D30CD0064F886 /* StackedBarsExample.swift */; };
-		D9D66A811D1D31170064F886 /* ExamplesDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D66A801D1D31170064F886 /* ExamplesDefaults.swift */; };
-		D9D66A831D1D313A0064F886 /* Env.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D66A821D1D313A0064F886 /* Env.swift */; };
 		D9D66A851D1D38B00064F886 /* chartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D66A841D1D38B00064F886 /* chartViewController.swift */; };
 		D9DA40041CE982A600D6B572 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D9DA40031CE982A600D6B572 /* libsqlite3.tbd */; };
 		D9DA400A1CE9871B00D6B572 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9DA40091CE9871B00D6B572 /* AVFoundation.framework */; };
@@ -146,9 +143,6 @@
 		D9D378001CEC9201002E24D9 /* databaseFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = databaseFile.swift; sourceTree = "<group>"; };
 		D9D378021CEC92C8002E24D9 /* TaskData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskData.swift; sourceTree = "<group>"; };
 		D9D378041CECAC6D002E24D9 /* MyTeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyTeamViewController.swift; sourceTree = "<group>"; };
-		D9D66A7D1D1D30CD0064F886 /* StackedBarsExample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackedBarsExample.swift; sourceTree = "<group>"; };
-		D9D66A801D1D31170064F886 /* ExamplesDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExamplesDefaults.swift; sourceTree = "<group>"; };
-		D9D66A821D1D313A0064F886 /* Env.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Env.swift; sourceTree = "<group>"; };
 		D9D66A841D1D38B00064F886 /* chartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = chartViewController.swift; sourceTree = "<group>"; };
 		D9DA40031CE982A600D6B572 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		D9DA40071CE984EB00D6B572 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -378,9 +372,6 @@
 		D9D66A7F1D1D31080064F886 /* charts */ = {
 			isa = PBXGroup;
 			children = (
-				D9D66A821D1D313A0064F886 /* Env.swift */,
-				D9D66A801D1D31170064F886 /* ExamplesDefaults.swift */,
-				D9D66A7D1D1D30CD0064F886 /* StackedBarsExample.swift */,
 				D9D66A841D1D38B00064F886 /* chartViewController.swift */,
 			);
 			name = charts;
@@ -638,14 +629,12 @@
 				18CBF1261D07EE9C0072DF12 /* UserLoginGraphViewController.swift in Sources */,
 				F947CF481CF30A03009635B4 /* resetPinAndPassword.swift in Sources */,
 				F95985FD1CEDDFA8002582C4 /* AssignedTasks.swift in Sources */,
-				D9D66A811D1D31170064F886 /* ExamplesDefaults.swift in Sources */,
 				D970050F1CE31B150036B5EA /* LoginViewController.swift in Sources */,
 				18CBF12A1D07EEA90072DF12 /* WeekView.m in Sources */,
 				D9D378011CEC9201002E24D9 /* databaseFile.swift in Sources */,
 				D9AD39231CE5F29D005D5029 /* async.swift in Sources */,
 				F9F012951CF33489003698C6 /* DPDConstants.swift in Sources */,
 				D9AD391F1CE5CD8D005D5029 /* dashboardViewController.swift in Sources */,
-				D9D66A7E1D1D30CD0064F886 /* StackedBarsExample.swift in Sources */,
 				D9DA40281CE9B28A00D6B572 /* NSDictionary+CL.m in Sources */,
 				D9DA401A1CE9B27100D6B572 /* DayTitleLabel.m in Sources */,
 				D92804A01CF5AE0100F99D28 /* BarCodeViewController.swift in Sources */,
@@ -664,7 +653,6 @@
 				18527EF71D0550A20079A6F8 /* NotificationDetailViewController.swift in Sources */,
 				D9D66A851D1D38B00064F886 /* chartViewController.swift in Sources */,
 				D9D378031CEC92C8002E24D9 /* TaskData.swift in Sources */,
-				D9D66A831D1D313A0064F886 /* Env.swift in Sources */,
 				F9F0129C1CF334A2003698C6 /* DropDown.swift in Sources */,
 				D9DA40291CE9B28A00D6B572 /* UIColor+CL.m in Sources */,
 				D9D378051CECAC6D002E24D9 /* MyTeamViewController.swift in Sources */,

@@ -838,8 +838,6 @@ public class ApiRequest {
                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         }
-                        
-                        
                     }else{
                         let userInfo = ["response" : "FAILURE"]
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -847,9 +845,7 @@ public class ApiRequest {
                 }else if "\(response.result)" == "FAILURE"{
                     let userInfo = ["response" : "FAILURE"]
                     NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
-                    
                 }
-                
                 MBProgressHUD.hideHUDForView(view, animated: true)
         }
     }
@@ -904,7 +900,50 @@ public class ApiRequest {
                 MBProgressHUD.hideHUDForView(view, animated: true)
         }
     }
-    
+    //--
+    func sendUsersTimeIn(userId:String,points:String)  {
+        let notificationKey = "com.time-em.sendUsersTimeIn"
+        //UserId,points(latitude,longitude)
+        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/Worksite/AddUsersTimeIn", parameters: ["UserId":userId,"points":points])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                        print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        
+                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
+                            
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            
+                            
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+                        }else{
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+//                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+    }
     func fetchUserSignedGraphDataFromAPI(userId:String,view:UIView)  {
         let notificationKey = "com.time-em.getUserSignedGraphData"
         

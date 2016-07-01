@@ -940,10 +940,17 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         //3
         cell.widgetLabel.text = "Label \(selectedWidgets[indexPath.row])"
         cell.widgetLabel?.textAlignment = NSTextAlignment.Center
-        
-        
-        
         return cell
     }
+    
+   
+    func collectionView(collectionView: UICollectionView,
+                        didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let alert = UIAlertController(title: "Time'em", message: "Label \(selectedWidgets[indexPath.row]) selected.", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
 
+    }
+
+    
 }

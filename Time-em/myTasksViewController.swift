@@ -62,8 +62,19 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
         //        changeSignINButton()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
         
+
+        if currentUserID != nil{
+            btnAddTask.hidden = true
+            lblMyTasksHeader.text = currentUserFullName!
+            assignedTasks.GetUserWorksiteActivityGraph(currentUserID,view: self.view)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
+//            self.getDataFromDatabase(currentUserID)
+//            getuserTask(currentUserID, createdDate: selectedDate)
+        }else{
+//            self.getDataFromDatabase(logedInUserId!)
+//            getuserTask(logedInUserId!, createdDate: selectedDate)
+        }
 
     }
     func rotated()
