@@ -24,12 +24,15 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
     @IBOutlet var btnSignInOut2: UIButton!
     @IBOutlet var lblpopupBackground: UILabel!
      @IBOutlet var imageViewLogoPopup: UIImageView!
+    
      @IBOutlet var lblStartWorking: UILabel!
     @IBOutlet var lblStartWorkingOnTasks: UILabel!
+    
     @IBOutlet var btnBackgroundPopUP: UIButton!
     var val:Int = 0
     var count:Int = 0
     var currentUser: User!
+    var boxView:UIView!
     @IBOutlet var btnUserInfo: UIButton!
      @IBOutlet var btnSync: UIButton!
     @IBOutlet var btnMenu: UIButton!
@@ -55,6 +58,14 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         super.viewDidLoad()
         sideView.hidden = true
         
+        lblStartWorking.text = "Hello \(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_FullName")!)"
+        if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0" {
+            lblStartWorkingOnTasks.text = "You are currently Signed Out. Please click Sign In to go Online."
+        }else{
+            lblStartWorkingOnTasks.text = "You are currently Signed In. Please click Sign Out to go offline."
+        }
+
+        
 //        self.fetchUserTaskGraphDataFromAPI()
 //        self.fetchUserTaskGraphDataFromDatabase()
 
@@ -69,7 +80,12 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         self.view.bringSubviewToFront(self.sideView)
         self.view.bringSubviewToFront(btnMenu)
         
+      
+        
+        
         if fromPassCodeView != "yes" {
+            
+            
             if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil {
             if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0" {
                 
@@ -93,6 +109,8 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
                     }, completion: nil)
                 }
             }
+        }else{
+            self.viewStartWorking.hidden = true
         }
        
 //        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(dashboardViewController.showMenuFunction), userInfo: nil, repeats: false)
@@ -106,6 +124,36 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         btnNotificationSecond.hidden = true
         
         
+        //---
+         boxView = UIView(frame: CGRect(x: view.frame.midX - 90, y: view.frame.midY - 25, width: 180, height: 50))
+        boxView.backgroundColor = UIColor.whiteColor()
+        boxView.alpha = 0.8
+        boxView.layer.cornerRadius = 10
+        
+        if Reachability.DeviceType.IS_IPHONE_6 ||  Reachability.DeviceType.IS_IPHONE_6P {
+           boxView.frame = CGRectMake(boxView.frame.origin.x, boxView.frame.origin.y-60, boxView.frame.size.width, boxView.frame.size.height)
+        }
+        
+        
+        //Here the spinnier is initialized
+        var activityView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+        activityView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        activityView.startAnimating()
+        
+        var textLabel = UILabel(frame: CGRect(x: 60, y: 0, width: 200, height: 50))
+        textLabel.textColor = UIColor.grayColor()
+        textLabel.text = "Loading Graph"
+        
+        boxView.addSubview(activityView)
+        boxView.addSubview(textLabel)
+        
+        view.addSubview(boxView)
+        self.view.bringSubviewToFront(viewStartWorking)
+        self.view.bringSubviewToFront(self.sideView)
+        self.view.bringSubviewToFront(btnMenu)
+
+        
+       
     }
     
     func implementGraphViews(){
@@ -257,17 +305,23 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
                 imageSyncMenu.image = UIImage(named: "sync - green")
                 
             }
+        }else{
+            NSUserDefaults.standardUserDefaults().setObject("no", forKey: "sync")
+            imageSyncMenu.image = UIImage(named: "sync - green")
         }
     }
     
     func iphone5UiAdjustments() {
 //        imageWorkunderConst.frame = CGRectMake(imageWorkunderConst.frame.origin.x, imageWorkunderConst.frame.origin.y, imageWorkunderConst.frame.size.width, imageWorkunderConst.frame.size.height+10)
         imageViewLogoPopup.frame = CGRectMake(imageViewLogoPopup.frame.origin.x, imageViewLogoPopup.frame.origin.y-30, imageViewLogoPopup.frame.size.width, imageViewLogoPopup.frame.size.height)
-        lblStartWorking.frame = CGRectMake(lblStartWorking.frame.origin.x, lblStartWorking.frame.origin.y-30, lblStartWorking.frame.size.width, lblStartWorking.frame.size.height)
-        lblStartWorkingOnTasks.frame = CGRectMake(lblStartWorkingOnTasks.frame.origin.x, lblStartWorkingOnTasks.frame.origin.y-30, lblStartWorkingOnTasks.frame.size.width, lblStartWorkingOnTasks.frame.size.height)
+        lblStartWorking.frame = CGRectMake(lblStartWorking.frame.origin.x, lblStartWorking.frame.origin.y-40, lblStartWorking.frame.size.width, lblStartWorking.frame.size.height)
+        lblStartWorkingOnTasks.frame = CGRectMake(lblStartWorkingOnTasks.frame.origin.x, lblStartWorkingOnTasks.frame.origin.y-40, lblStartWorkingOnTasks.frame.size.width, lblStartWorkingOnTasks.frame.size.height+18)
+        lblStartWorkingOnTasks.numberOfLines = 2
         btnSignInOutPOPUP.frame = CGRectMake(btnSignInOutPOPUP.frame.origin.x, btnSignInOutPOPUP.frame.origin.y-30, btnSignInOutPOPUP.frame.size.width, btnSignInOutPOPUP.frame.size.height)
         lblpopupBackground.frame = CGRectMake(lblpopupBackground.frame.origin.x, lblpopupBackground.frame.origin.y, lblpopupBackground.frame.size.width, lblpopupBackground.frame.size.height-30)
-        
+       if Reachability.DeviceType.IS_IPHONE_6 ||  Reachability.DeviceType.IS_IPHONE_6P{
+            btnSignInOutPOPUP.frame = CGRectMake(btnSignInOutPOPUP.frame.origin.x, btnSignInOutPOPUP.frame.origin.y+10, btnSignInOutPOPUP.frame.size.width, btnSignInOutPOPUP.frame.size.height)
+        }
     }
      func layoutSubviews() {
         
@@ -301,10 +355,9 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
     
         if val == 0 {
             val += 1
-            if Reachability.DeviceType.IS_IPHONE_5 {
+            if Reachability.DeviceType.IS_IPHONE_5 || Reachability.DeviceType.IS_IPHONE_6 || Reachability.DeviceType.IS_IPHONE_6P {
                 iphone5UiAdjustments()
             }
-            
         }
 
     let value = "\(NSUserDefaults.standardUserDefaults().valueForKey("forGraph")!)"
@@ -376,7 +429,7 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
     func displayGraphResponse() {
 //        self.fetchUserTaskGraphDataFromDatabase()
         NSUserDefaults.standardUserDefaults().setObject("no", forKey:"forGraph")
-
+         boxView.hidden = true
         self.implementGraphViews()
 
         let userGraph = UserGraphViewController()
@@ -429,6 +482,15 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         var dataArray:NSMutableArray = []
         dataArray =  database.getDataFromSync()
 //        print(dataArray)
+        if dataArray.count == 0 {
+            var alert :UIAlertController!
+            alert = UIAlertController(title: "Time'em", message: "No offline data available to sync.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+           return
+        }
+        
+        
         
         let addyaToSynkData:NSMutableArray = []
         let addyaToSynkNotification:NSMutableArray = []
@@ -530,6 +592,9 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
             let api = ApiRequest()
             let data = NSData()
 //            api.addUpdateTaskSynk(addyaToSynkData,type:"",uniqueno:"", data:data ,view: self.view)
+            let notiricationkey = "com.time-em.sendSyncDataToServer"
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dashboardViewController.sendSyncDataToServerResponse), name: notiricationkey, object: nil)
+
             api.sendSyncDataToServer(addyaToSynkData,NotificationData:addyaToSynkNotification,imagesDataDict:uniqueDict,view:self.view)
         }
         
@@ -902,6 +967,17 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         refreshsyncImage()
     }
     
+    func sendSyncDataToServerResponse(notification:NSNotification) {
+        
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        
+        //        var alert :UIAlertController!
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.sendSyncDataToServer", object:nil)
+        refreshsyncImage()
+        
+    }
     // MARK: - Container View Controller
     override func shouldAutomaticallyForwardAppearanceMethods() -> Bool {
         return true

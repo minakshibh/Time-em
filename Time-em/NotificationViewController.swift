@@ -9,6 +9,7 @@
 import UIKit
 import MGSwipeTableCell
 import StoreKit
+import MBProgressHUD
 
 class NotificationViewController: UIViewController, SKProductsRequestDelegate, SKPaymentTransactionObserver {
 
@@ -144,6 +145,18 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
     }
     @IBAction func btnAddNotificatiom(sender: AnyObject) {
 //        self.performSegueWithIdentifier("iap", sender: self)
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+
+        if productsArray.count == 0 {
+            let refreshAlert1 = UIAlertController(title: "Time'em", message: "Please wait a moment. Produts are loading.", preferredStyle: UIAlertControllerStyle.Alert)
+            refreshAlert1.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
+                print("Handle Ok logic here")
+                
+            }))
+            presentViewController(refreshAlert1, animated: true, completion: nil)
+            MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+            return
+        }
         let product = productsArray[0]
         
         let refreshAlert = UIAlertController(title: product.localizedTitle, message: product.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
@@ -157,8 +170,9 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
         
         refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) in
             print("Handle Cancel Logic here")
-            self.dismissViewControllerAnimated(true, completion: {});
-            self.navigationController?.popViewControllerAnimated(true)
+//            self.dismissViewControllerAnimated(true, completion: {});
+//            self.navigationController?.popViewControllerAnimated(true)
+             MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
         }))
         
         presentViewController(refreshAlert, animated: true, completion: nil)
@@ -410,14 +424,16 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
                 SKPaymentQueue.defaultQueue().finishTransaction(transaction)
                 transactionInProgress = false
                 delegate.didBuyColorsCollection(selectedProductIndex)
-                
+                 MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
                 
             case SKPaymentTransactionState.Failed:
                 print("Transaction Failed");
                 SKPaymentQueue.defaultQueue().finishTransaction(transaction)
                 transactionInProgress = false
+                 MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
                 
             default:
+                 print("Transaction default");
                 print(transaction.transactionState.rawValue)
             }
         }

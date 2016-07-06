@@ -50,7 +50,7 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
                 print("destructive")
             }
         }))
-        self.presentViewController(alert, animated: true, completion: nil)
+//        self.prese ntViewController(alert, animated: true, completion: nil)
     }
     
     override func viewDidAppear(animated: Bool) {

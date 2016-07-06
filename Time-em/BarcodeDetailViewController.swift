@@ -67,8 +67,9 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         }
         
         let api = ApiRequest()
-        api.getuserListByLoginCode(ids)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarcodeDetailViewController.responseForLoginCodes), name: "com.time-em.getuserListByLoginCode", object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BarcodeDetailViewController.responseForLoginCodes), name: "com.time-em.getuserListByLoginCode", object: nil)
+
+            api.getuserListByLoginCode(ids,view:self.view)
         }
         
         
@@ -92,6 +93,21 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
     
 
     @IBAction func btnback(sender: AnyObject) {
+        
+    if NSUserDefaults.standardUserDefaults().valueForKey("todashboard") != nil{
+            let msg = "\(NSUserDefaults.standardUserDefaults().valueForKey("todashboard")!)"
+            if msg == "yes"{
+                
+                
+                self.performSegueWithIdentifier("todashboard", sender: self)
+                //segue
+                NSUserDefaults.standardUserDefaults().setObject("no", forKey: "todashboard")
+
+                return
+            }
+        }
+        
+        
         self.dismissViewControllerAnimated(true, completion: {});
         self.navigationController?.popViewControllerAnimated(true)
     }
@@ -193,7 +209,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
 
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
-            alert = UIAlertController(title: "Time'em", message: "Successfull", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert = UIAlertController(title: "Time'em", message: "Successfull", preferredStyle: UIAlertControllerStyle.Alert)
             if NSUserDefaults.standardUserDefaults().valueForKey("getuserListByLoginCode") != nil {
                 let data =    NSUserDefaults.standardUserDefaults().valueForKey("getuserListByLoginCode") as? NSData
                 remainingDataArr = []
@@ -203,10 +219,40 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
             }
 
         }else{
-            alert = UIAlertController(title: "Time'em", message: "Failed", preferredStyle: UIAlertControllerStyle.Alert)
+            if status == "No Record Found !" {
+                alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
+                    print("Handle Ok logic here")
+                    if             NSUserDefaults.standardUserDefaults().valueForKey("todashboard") != nil{
+                        let msg = "\(NSUserDefaults.standardUserDefaults().valueForKey("todashboard")!)"
+                        if msg == "yes"{
+                            self.performSegueWithIdentifier("todashboard", sender: self)
+                            NSUserDefaults.standardUserDefaults().setObject("no", forKey: "todashboard")
+
+                            //segue
+                            return
+                        }
+
+                    }
+
+                    self.dismissViewControllerAnimated(true, completion: {});
+                    self.navigationController?.popViewControllerAnimated(true)
+                }))
+            }else{
+
+//            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+            }
+            self.presentViewController(alert, animated: true, completion: nil)
+
         }
+        if status == "No Record Found !" {
+        }else{
+             var alert :UIAlertController!
+            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+            self.presentViewController(alert, animated: true, completion: nil)
+
+        }
     }
     
     func displayResponse(notification:NSNotification) {
@@ -218,14 +264,15 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
 
         var alert :UIAlertController!
         if status.lowercaseString.rangeOfString("success") != nil {
-            alert = UIAlertController(title: "Time'em", message: "Successfull", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert = UIAlertController(title: "Time'em", message: "Successfull", preferredStyle: UIAlertControllerStyle.Alert)
             self.performSegueWithIdentifier("barcodeToTeam", sender: self)
 
         }else{
             alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
         }
-        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-//        self.presentViewController(alert, animated: true, completion: nil)
+        
         getDataFromDatabse()
     }
 
@@ -233,6 +280,10 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
          if segue.identifier == "barcodeToTeam"{
             let teamView = segue.destinationViewController as! MyTeamViewController
             teamView.fromBarcode = "true"
+         }else if segue.identifier == "todashboard"{
+            let dash = segue.destinationViewController as! dashboardViewController
+            dash.fromPassCodeView = "yes"
         }
     }
+    
 }

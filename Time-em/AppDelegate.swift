@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
     var storyboard:UIStoryboard?
     let navigator:UINavigationController? = nil
     var locationManager = CLLocationManager()
-
+    var localNotification:UILocalNotification =  UILocalNotification()
     var afterResume:Bool!
     var anotherLocationManager:CLLocationManager!
     var  IS_OS_8_OR_LATER = (Int(UIDevice.currentDevice().systemVersion) >= 8)
@@ -74,6 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
         
+        
         /// setup for notifications
         let notificationTypes = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(notificationTypes)
@@ -102,22 +103,47 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         CLLocationManager.locationServicesEnabled()
         self.locationManager.requestAlwaysAuthorization()
-        self.locationManager.startUpdatingLocation()
+                if #available(iOS 9.0, *) {
+                    self.locationManager.allowsBackgroundLocationUpdates = true
+                    
+                } else {
+                    // Fallback on earlier versions
+                }
+            
+            self.locationManager.startUpdatingLocation()
+            self.locationManager.startUpdatingHeading()
 //        self.locationManager.startMonitoringSignificantLocationChanges()
         }
         
+        
     }
     
-    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         locationManager.stopUpdatingLocation()
                 print("location error:- \(error)")
             
         
     }
+    func locationManager(manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        //    UIAlertView*alert=[[UIAlertView alloc]initWithTitle:KalertTittle message:[NSString stringWithFormat"%@",newHeading] delegate:self cancelButtonTitle"OK" otherButtonTitles: nil];
+        //    [alert show];
+        //    NSLog(@"%@",newHeading);
+    }
+    
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 //        let locValue:CLLocationCoordinate2D = manager.location!.coordinate
 //        print("locations = \(locValue.latitude) \(locValue.longitude)")
 //        NSLog("locationManager didUpdateLocations: %@", locations)
+        
+        if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil{
+            UIApplication.sharedApplication().cancelAllLocalNotifications()
+            localNotification.alertAction = "Time'em"
+            localNotification.alertBody = "App is going offline. To stay online open the app."
+            localNotification.fireDate = NSDate(timeIntervalSinceNow: 3)
+            UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
+        }
+        
+        
         var strlatlon:String!
         for var i = 0; i < locations.count; i++ {
             
@@ -126,11 +152,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
             var theAccuracy: CLLocationAccuracy = newLocation.horizontalAccuracy
             self.myLocation = theLocation
             self.myLocationAccuracy = theAccuracy
-            let dict:NSMutableDictionary = [:]
-            dict["lat"] = newLocation.coordinate.latitude
-            dict["lov"] = newLocation.coordinate.longitude
-            dict["app mode"] = "\(UIApplication.sharedApplication().applicationState)"
+//            let dict:NSMutableDictionary = [:]
+//            dict["lat"] = newLocation.coordinate.latitude
+//            dict["lov"] = newLocation.coordinate.longitude
             
+            let state = UIApplication.sharedApplication().applicationState
+            if state == .Background {
+                print("App in Background")
+//                dict["app mode"] = "App is in Background"
+            }else if state == .Active {
+//                dict["app mode"] = "App is Active"
+                print("App in Active")
+            }else if state == .Inactive {
+//                dict["app mode"] = "App is Inactive"
+                print("App in Inactive")
+            }
             
             
             
@@ -141,19 +177,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
             formatter.timeZone = NSTimeZone(abbreviation: "IST")
             let utcTimeZoneStr = formatter.stringFromDate(NSDate())
             
-            dict["date"] = utcTimeZoneStr
+//            dict["date"] = utcTimeZoneStr
             let arr:NSMutableArray = []
-            arr.addObject(dict)
-            let latlat = roundToPlaces(newLocation.coordinate.latitude, places: 2)
-            let lonlon = roundToPlaces(newLocation.coordinate.longitude, places: 2)
-            let strlatlon = "\(latlat),\(lonlon)"
+//            arr.addObject(dict)
+            
 //             strlatlon = "19.225842,72.9766845"
 
             if NSUserDefaults.standardUserDefaults().valueForKey("data") != nil {
                 
                let data = NSUserDefaults.standardUserDefaults().valueForKey("data")!
                 let arr1:NSMutableArray =  (NSKeyedUnarchiver.unarchiveObjectWithData(data as! NSData) as? NSMutableArray)!
-                arr1.addObject(dict)
+//                arr1.addObject(dict)
                  let data1 = NSKeyedArchiver.archivedDataWithRootObject(arr1)
                 NSUserDefaults.standardUserDefaults().setObject(data1, forKey: "data")
             }else{
@@ -164,13 +198,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
            
             
         }
-        if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil{
-            let strUSerId = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
-            let api = ApiRequest()
-//            api.sendUsersTimeIn(strUSerId, points: strlatlon)
+        
+        if self.timer != nil{
+           return
         }
         
+        self.timer = NSTimer.scheduledTimerWithTimeInterval(300, target: self, selector: #selector(AppDelegate.updateLocationPer5mins), userInfo: nil, repeats: true)
     }
+    
+    func updateLocationPer5mins() {
+        print("timer.timer")
+        if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil{
+            if locationManager.location?.coordinate.latitude != nil {
+            print("jijijijij\(locationManager.location?.coordinate.latitude)")
+            let strUSerId = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
+            let latlat = roundToPlaces((locationManager.location?.coordinate.latitude)!, places: 2)
+            let lonlon = roundToPlaces((locationManager.location?.coordinate.longitude)!, places: 2)
+            let strlatlon = "\(latlat),\(lonlon)"
+            
+            let api = ApiRequest()
+            api.sendUsersTimeIn(strUSerId, points: strlatlon)
+            }
+        }
+    }
+    
     func roundToPlaces(value:Double, places:Int) -> Double {
         let divisor = pow(10.0, Double(places))
         return round(value * divisor) / divisor
@@ -273,12 +324,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         self.locationManager.stopUpdatingLocation()
-//        self.locationManager.stopMonitoringSignificantLocationChanges()
+        self.locationManager.stopMonitoringSignificantLocationChanges()
 
         
         if(IS_OS_8_OR_LATER) {
              self.locationManager.requestAlwaysAuthorization()
         }
+        self.locationManager.startUpdatingLocation()
         self.locationManager.startMonitoringSignificantLocationChanges()
 
     }
@@ -296,7 +348,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
         self.locationManager.activityType = .OtherNavigation
-        
+                if #available(iOS 9.0, *) {
+                    self.locationManager.allowsBackgroundLocationUpdates = true
+                } else {
+                    // Fallback on earlier versions
+                }
         if(self.IS_OS_8_OR_LATER) {
             self.locationManager.requestAlwaysAuthorization()
         }
@@ -306,6 +362,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
     
 
     func applicationWillTerminate(application: UIApplication) {
+        self.locationManager.stopUpdatingLocation()
+        self.locationManager.startMonitoringSignificantLocationChanges()
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 

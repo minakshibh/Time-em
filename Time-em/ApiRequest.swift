@@ -14,6 +14,9 @@ import Toast_Swift
 
 public class ApiRequest {
     
+    let apiUrl:String = "http://timeemapi.azurewebsites.net/api"
+    
+    
     func loginApi(loginId:String,password:String,view:UIView) {
         let notificationKey = "com.time-em.loginResponse"
         if Reachability.isConnectedToNetwork() == true {
@@ -23,7 +26,7 @@ public class ApiRequest {
         }
         MBProgressHUD.showHUDAddedTo(view, animated: true)
         
-        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/User/GetValidateUser", parameters: ["loginId":loginId,"password":password])
+        Alamofire.request(.GET, "\(apiUrl)/User/GetValidateUser", parameters: ["loginId":loginId,"password":password])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -225,7 +228,7 @@ public class ApiRequest {
         //--
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserTask/DeleteTask", parameters: ["Id":Id])
+        Alamofire.request(.POST, "\(apiUrl)/UserTask/DeleteTask", parameters: ["Id":Id])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -272,7 +275,7 @@ public class ApiRequest {
         let notificationKey = "com.time-em.passcodeloginResponse"
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/User/GetValidateUserByPin", parameters: ["loginId":loginId,"SecurityPin":SecurityPin])
+        Alamofire.request(.GET, "\(apiUrl)/User/GetValidateUserByPin", parameters: ["loginId":loginId,"SecurityPin":SecurityPin])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -366,7 +369,7 @@ public class ApiRequest {
             MBProgressHUD.showHUDAddedTo(view, animated: true)
         }
         
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserTask/GetUserActivityTask", parameters: ["userId":userId,"createdDate":createdDate, "TimeStamp":TimeStamp])
+        Alamofire.request(.POST, "\(apiUrl)/UserTask/GetUserActivityTask", parameters: ["userId":userId,"createdDate":createdDate, "TimeStamp":TimeStamp])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -656,7 +659,7 @@ public class ApiRequest {
         
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/UserActivity/SignOutByUserId", parameters: ["Userids":userId])
+        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignOutByUserId", parameters: ["Userids":userId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -675,7 +678,7 @@ public class ApiRequest {
                                 let database = databaseFile()
                                 NSUserDefaults.standardUserDefaults().setObject("0", forKey: "currentUser_IsSignIn")
                                 database.currentUserSignOutSync()
-                                let userInfo = ["response" : "\(JSON.valueForKey("successfull")!)"]
+                                let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                                 NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                                 MBProgressHUD.hideHUDForView(view, animated: true)
 
@@ -763,7 +766,14 @@ public class ApiRequest {
                             if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("user already signed in.") != nil{
                                  let database = databaseFile()
                                 database.currentUserSignInSync()
+                                NSUserDefaults.standardUserDefaults().setObject("\(1)", forKey: "currentUser_IsSignIn")
                                 NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                
+                                let arr = JSON.valueForKey("SignedinUser") as? NSArray
+                                
+//                                let database1 = databaseFile()
+//                                database1.currentUserSignIn(arr!)
+
                                 MBProgressHUD.hideHUDForView(view, animated: true)
                                 return
                             }
@@ -801,7 +811,7 @@ public class ApiRequest {
     func getTeamDetail(userId:String,TimeStamp:String,view:UIView)  {
         let notificationKey = "com.time-em.getTeamResponse"
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/User/GetAllUsersList", parameters: ["userId":userId,"TimeStamp":TimeStamp])
+        Alamofire.request(.POST, "\(apiUrl)/User/GetAllUsersList", parameters: ["userId":userId,"TimeStamp":TimeStamp])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -853,7 +863,7 @@ public class ApiRequest {
     func fetchUserTaskGraphDataFromAPI(userId:String,view:UIView)  {
         let notificationKey = "com.time-em.getUserTaskGraphData"
         
-        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/usertask/UserTaskGraph", parameters: ["userId":userId])
+        Alamofire.request(.GET, "\(apiUrl)/usertask/UserTaskGraph", parameters: ["userId":userId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -904,7 +914,7 @@ public class ApiRequest {
     func sendUsersTimeIn(userId:String,points:String)  {
         let notificationKey = "com.time-em.sendUsersTimeIn"
         //UserId,points(latitude,longitude)
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/Worksite/AddUsersTimeIn", parameters: ["UserId":userId,"points":points])
+        Alamofire.request(.POST, "\(apiUrl)/Worksite/AddUsersTimeIn", parameters: ["UserId":userId,"points":points])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -947,7 +957,7 @@ public class ApiRequest {
     func fetchUserSignedGraphDataFromAPI(userId:String,view:UIView)  {
         let notificationKey = "com.time-em.getUserSignedGraphData"
         
-        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/usertask/UsersGraph", parameters: ["userId":userId])
+        Alamofire.request(.GET, "\(apiUrl)/usertask/UsersGraph", parameters: ["userId":userId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -998,7 +1008,7 @@ public class ApiRequest {
     func GetUserWorksiteActivityGraph(userId:String,view:UIView)  {
         let notificationKey = "com.time-em.getUserSignedGraphData"
         
-        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/Worksite/GetUserWorksiteActivity", parameters: ["userid":userId])
+        Alamofire.request(.GET, "\(apiUrl)/Worksite/GetUserWorksiteActivity", parameters: ["userid":userId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1064,7 +1074,7 @@ public class ApiRequest {
     
     func GetAssignedTaskIList(userId:String,view:UIView)  {
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/Task/GetAssignedTaskIList", parameters: ["userId":userId])
+        Alamofire.request(.GET, "\(apiUrl)/Task/GetAssignedTaskIList", parameters: ["userId":userId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1176,7 +1186,7 @@ public class ApiRequest {
             //
             
             database.addTaskSync(imageData, videoData: videoData, ActivityId: ActivityId, TaskId: TaskId, UserId: UserId, TaskName: TaskName, TimeSpent: TimeSpent, Comments: Comments, CreatedDate: CreatedDate, ID: ID, isVideoRecorded: "\(isVideoRecorded)",uniqueno:uniqueno)
-            let userInfo = ["response" : "success"]
+            let userInfo = ["response" : "success sync"]
             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             
             return
@@ -1196,7 +1206,7 @@ public class ApiRequest {
             "ID"            :ID
         ]
                 print(param)
-        let url = NSURL(string: "http://timeemapi.azurewebsites.net/api/UserTask/AddUpdateUserTaskActivity")
+        let url = NSURL(string: "\(apiUrl)/UserTask/AddUpdateUserTaskActivity")
         
         let request = NSMutableURLRequest(URL: url!)
         request.HTTPMethod = "POST"
@@ -1335,7 +1345,7 @@ public class ApiRequest {
             "notifyto"                  :notifyto
         ]
         //        print(param)
-        let url = NSURL(string: "http://timeemapi.azurewebsites.net/api/Notification/AddNotification")
+        let url = NSURL(string: "\(apiUrl)/Notification/AddNotification")
         
         let request = NSMutableURLRequest(URL: url!)
         request.HTTPMethod = "POST"
@@ -1419,7 +1429,7 @@ public class ApiRequest {
         let notificationKey = "com.time-em.resetPassword"
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/USER/ForgetPassword", parameters: ["email":emailId])
+        Alamofire.request(.POST, "\(apiUrl)/USER/ForgetPassword", parameters: ["email":emailId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1468,7 +1478,7 @@ public class ApiRequest {
         let notificationKey = "com.time-em.resetPin"
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/USER/ForgetPin", parameters: ["email":emailId])
+        Alamofire.request(.POST, "\(apiUrl)/USER/ForgetPin", parameters: ["email":emailId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1637,7 +1647,7 @@ public class ApiRequest {
         
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/UserActivity/SignOutByUserId", parameters: ["Userids":userId])
+        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignOutByUserId", parameters: ["Userids":userId])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1650,6 +1660,19 @@ public class ApiRequest {
                     if "\(response.result)" == "SUCCESS"{
                         if "\(JSON.valueForKey("isError")!)" ==  "0" {
                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            
+                            if "\(JSON.valueForKey("Message")!)".lowercaseString ==  "user already signed out." {
+                                
+                                 let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                                let databse = databaseFile()
+                                databse.teamSignOutbyId(userId)
+                              NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                MBProgressHUD.hideHUDForView(view, animated: true)
+
+                                return
+                            }
+                            
+                            
                             
                             let arr = JSON.valueForKey("SignedOutUser") as? NSArray
                             let val:NSDictionary = (arr![0] as? NSDictionary)!
@@ -1921,7 +1944,7 @@ public class ApiRequest {
     func registerUserDevice(UserID:String,DeviceUId:String,DeviceOS:String) {
         let notificationKey = "com.time-em.registerUserDevice"
         
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/User/RegisterUserDevice", parameters: ["UserID":UserID,"DeviceUId":DeviceUId,"DeviceOS":DeviceOS])
+        Alamofire.request(.POST, "\(apiUrl)/User/RegisterUserDevice", parameters: ["UserID":UserID,"DeviceUId":DeviceUId,"DeviceOS":DeviceOS])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1957,7 +1980,7 @@ public class ApiRequest {
     func getActiveUserList(userid:String,timeStamp:String,view:UIView) {
         let notificationKey = "com.time-em.NotificationTypeloginResponse"
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/user/GetActiveUserList", parameters:  ["UserId":userid,"timeStamp":timeStamp])
+        Alamofire.request(.POST, "\(apiUrl)/user/GetActiveUserList", parameters:  ["UserId":userid,"timeStamp":timeStamp])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -2014,10 +2037,10 @@ public class ApiRequest {
         
     }
     //http://timeemapi.azurewebsites.net/api/User/GetUsersListByLoginCode?Logincode=9105
-    func getuserListByLoginCode(Logincode:String) {
+    func getuserListByLoginCode(Logincode:String,view:UIView) {
         let notificationKey = "com.time-em.getuserListByLoginCode"
-        
-        Alamofire.request(.GET, "http://timeemapi.azurewebsites.net/api/User/GetUsersListByLoginCode", parameters:  ["Logincode":Logincode])
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        Alamofire.request(.GET, "\(apiUrl)/User/GetUsersListByLoginCode", parameters:  ["Logincode":Logincode])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -2030,12 +2053,20 @@ public class ApiRequest {
                     if "\(response.result)" == "SUCCESS"{
                         print(JSON.valueForKey("isError"))
                         print(JSON.valueForKey("Message"))
+//                        print("\(JSON)")
+                        if "\(JSON.valueForKey("Message")!)".rangeOfString("No Record Found !") != nil{
+                          let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            return
+                        }
+                        
+                        
                         
                         let userInfo = ["response" : "success"]
                         
                         let data = JSON.valueForKey("AppUserViewModel")! as! NSArray
                         print(data.count)
-                        if data.count == 0{
+                        if data.count != 0{
                         let userDict = NSKeyedArchiver.archivedDataWithRootObject(data)
                        
                         NSUserDefaults.standardUserDefaults().setObject(userDict, forKey: "getuserListByLoginCode")
@@ -2052,15 +2083,17 @@ public class ApiRequest {
                     NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     
                 }
+                MBProgressHUD.hideHUDForView(view, animated: true)
+
         }
         
     }
     
     func sendSyncDataToServer(dataArr:NSMutableArray,NotificationData:NSMutableArray,imagesDataDict:NSMutableDictionary,view:UIView) {
         let notificationKey = "com.time-em.sendSyncDataToServer"
-//        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
 
-//        print(dataArr)
+        print(dataArr)
         var tempJson : NSString = ""
         var parameter:[String:AnyObject] = [:]
         let dict:NSMutableDictionary = [:]
@@ -2081,7 +2114,7 @@ public class ApiRequest {
 //        print("$$$$\(dict.valueForKey("UniqueNumber")!)")
 //        print("$$$$\(dict.valueForKey("ActivityId")!)")
 //        print("$$$$\(dict.valueForKey("TaskId")!)")
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/UserActivity/Sync", parameters:parameter)
+        Alamofire.request(.POST, "\(apiUrl)/UserActivity/Sync", parameters:parameter)
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -2147,13 +2180,25 @@ public class ApiRequest {
         
                         
 
-                        
+                        if JSON.valueForKey("NotificationData")!.count
+                        == 0 && JSON.valueForKey("UsersData")!.count
+                            == 0 {
+                            
+                            let userInfo = ["response" : "FAILURE"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            MBProgressHUD.hideHUDForView(view, animated: true)
+
+                            return
+                            
+                            
+                        }else{
                         // delete sync data
                         let database:databaseFile = databaseFile()
-//                        database.deleteSYNCData()
-//                        database.deleteTasksSync()
-                        NSUserDefaults.standardUserDefaults().setObject("no", forKey:"sync")
+                        database.deleteSYNCData()
+                        database.deleteTasksSync()
+                        }
                         
+                        NSUserDefaults.standardUserDefaults().setObject("no", forKey:"sync")
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         
                     }else{
@@ -2184,19 +2229,17 @@ public class ApiRequest {
         
         let interval:Int = 100/noOfImages
         
-        
         let param = [
             "Id"    :Id,
             "FileUploadFor"        :FileUploadFor
                     ]
         print(param)
-        let url = NSURL(string: "http://timeemapi.azurewebsites.net/api/UserActivity/SyncFileUpload")
+        let url = NSURL(string: "\(apiUrl)/UserActivity/SyncFileUpload")
         
         let request = NSMutableURLRequest(URL: url!)
         request.HTTPMethod = "POST"
         
         let boundary = generateBoundaryString()
-        
         
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         var image = UIImage()
@@ -2312,7 +2355,7 @@ public class ApiRequest {
         //--
       let  param = ["userTaskActivities":dataArr]
         print(param)
-        let url = NSURL(string: "http://timeemapi.azurewebsites.net/api/UserActivity/Sync")
+        let url = NSURL(string: "\(apiUrl)/UserActivity/Sync")
         
         let request = NSMutableURLRequest(URL: url!)
         request.HTTPMethod = "POST"
@@ -2418,7 +2461,7 @@ public class ApiRequest {
     func getNotifications(UserId:String,timeStamp:String) {
         let notificationKey = "com.time-em.getNotificationListByLoginCode"
         
-        Alamofire.request(.POST, "http://timeemapi.azurewebsites.net/api/notification/NotificationByUserId", parameters:  ["UserId":UserId,"timeStamp":timeStamp])
+        Alamofire.request(.POST, "\(apiUrl)/notification/NotificationByUserId", parameters:  ["UserId":UserId,"timeStamp":timeStamp])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response

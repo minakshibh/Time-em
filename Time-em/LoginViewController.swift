@@ -208,7 +208,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         do {
             let rs = try database.executeQuery("select * from userdata", values: nil)
             while rs.next() {
-                let x = rs.stringForColumn("userId")
+//                let x = rs.stringForColumn("userId")
                 let y = rs.dataForColumn("userData")
                 let userDict:NSMutableDictionary = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSMutableDictionary
                 print(userDict)

@@ -29,6 +29,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
     @IBOutlet var imageView: UIImageView!
     var videoStatus:Bool = false
     var videoData:NSData!
+    @IBOutlet var lblAttachment: UILabel!
     
     
     override func viewDidLoad() {
@@ -90,15 +91,15 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         
 
        // image or video processing
-        
-        
-        if taskData.valueForKey("AttachmentImageFile") != nil {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             
-            if taskData.valueForKey("AttachmentImageFile") as? String != "" {
-             
+        if self.taskData.valueForKey("AttachmentImageFile") != nil {
+            self.lblAttachment.hidden = false
+            if self.taskData.valueForKey("AttachmentImageFile") as? String != "" {
+             self.lblAttachment.hidden = false
                 let database = databaseFile()
                 let dataArr:NSMutableArray!
-                dataArr = database.getImageForUrl("\(taskData.valueForKey("AttachmentImageFile")!)",imageORvideo:"AttachmentImageFile")
+                dataArr = database.getImageForUrl("\(self.taskData.valueForKey("AttachmentImageFile")!)",imageORvideo:"AttachmentImageFile")
                 
                 if dataArr.count > 0 {
                     if "\(dataArr[0])".characters.count != 0 {
@@ -111,27 +112,39 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                         return
                     }
                     }else{
-                       downloadImage() 
+                       self.downloadImage()
                     }
                 }
-                downloadImage()
+                self.downloadImage()
 
             }else{
-              imageView.hidden = true
+              self.imageView.hidden = true
+                self.lblAttachment.hidden = true
             }
             
         }else{
-            imageView.hidden = true
+            self.imageView.hidden = true
+            self.lblAttachment.hidden = true
+
+        }
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                
+            });
         }
         
-        if taskData.valueForKey("AttachmentVideoFile") != nil {
-            
-            if taskData.valueForKey("AttachmentVideoFile") as? String != "" {
-                
+        
+        
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        if self.taskData.valueForKey("AttachmentVideoFile") != nil {
+            self.lblAttachment.hidden = false
+            if self.taskData.valueForKey("AttachmentVideoFile") as? String != "" {
+                self.lblAttachment.hidden = false
                 // check and get image from databse
                 let database = databaseFile()
                 let dataArr:NSMutableArray!
-                dataArr = database.getImageForUrl("\(taskData.valueForKey("AttachmentVideoFile")!)",imageORvideo:"AttachmentVideoFile")
+                dataArr = database.getImageForUrl("\(self.taskData.valueForKey("AttachmentVideoFile")!)",imageORvideo:"AttachmentVideoFile")
                 if dataArr.count > 0 {
                      if "\(dataArr[0])".characters.count != 0 {
                    let data1:NSData = dataArr[0] as! NSData
@@ -139,26 +152,37 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                     if count > 0 {
                         let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentVideoFile")!)")
                         
-                        generateThumbnail(url!)
+                        self.generateThumbnail(url!)
                         
                         let data:NSData = dataArr[0] as! NSData
                         let userVideoData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
-                        videoData = userVideoData
+                        self.videoData = userVideoData
                         return
                     }
                      }else{
-                        downloadVideo()
+                        self.downloadVideo()
                     }
                 }
                 
                 
                 
 //                downloadVideo  and save to databse
-                downloadVideo()
+                self.downloadVideo()
+
+            }else{
+                self.lblAttachment.hidden = true
 
             }
+        }else{
+            self.lblAttachment.hidden = true
+            
         }
-       
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                
+            });
+        }
+
         
     }
     func downloadImage() {
@@ -268,7 +292,13 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         TextHeadingHeightConstraint.constant = sizeThatFitsTextView1.height
 
         
+        if imageView.hidden == true{
+            self.lblAttachment.hidden = true
+        }else{
+            self.lblAttachment.hidden = false
+        }
 
+        
     }
     @IBAction func btnBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});

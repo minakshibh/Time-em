@@ -53,7 +53,7 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
                 print("destructive")
             }
         }))
-        self.presentViewController(alert, animated: true, completion: nil)
+//        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     override func viewDidAppear(animated: Bool) {

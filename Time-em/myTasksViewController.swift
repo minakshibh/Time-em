@@ -41,6 +41,8 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         super.viewDidLoad()
         NSUserDefaults.standardUserDefaults().setObject("false", forKey: "isEditingOrAdding")
 
+        tableView.reloadData()
+        
         
         self.dateConversion(NSDate())
         // Do any additional setup after loading the view.
@@ -48,13 +50,12 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let assignedTasks = ApiRequest()
         
         
-        assignedTasks.GetUserWorksiteActivityGraph("10",view: self.view)
+//        assignedTasks.GetUserWorksiteActivityGraph("10",view: self.view)
         
         
         
-        let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
-        assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
         
+//        print(taskDataArray)
         
         
         
@@ -74,6 +75,8 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         }else{
 //            self.getDataFromDatabase(logedInUserId!)
 //            getuserTask(logedInUserId!, createdDate: selectedDate)
+            let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
+            assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
         }
 
     }
@@ -83,7 +86,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let vc:UIViewController = storyboard.instantiateViewControllerWithIdentifier("chart") as! chartViewController
-
+            NSUserDefaults.standardUserDefaults().setObject(currentUserID, forKey: "currentUSerID")
             self.configureChildViewController(vc, onView: self.view)
             print("landscape")
         }
@@ -147,7 +150,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         if webservicehitCount != 0 {
             refreshData()
              }
-        NSTimer.scheduledTimerWithTimeInterval(0.8, target: self, selector: #selector(myTasksViewController.callFunctionView), userInfo: nil, repeats: false)
+//        NSTimer.scheduledTimerWithTimeInterval(0.8, target: self, selector: #selector(myTasksViewController.callFunctionView), userInfo: nil, repeats: false)
     }
     
     func callFunctionView() {
@@ -189,10 +192,11 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         }else{
             let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
             getuserTask(logedInUserId!, createdDate: selectedDate)
+            self.getDataFromDatabase(logedInUserId!)
         }
         
-        let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
-        self.getDataFromDatabase(logedInUserId!)
+//        let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+//        self.getDataFromDatabase(logedInUserId!)
 
         //12-22-2015
     }

@@ -71,7 +71,11 @@ class chartViewController: UIViewController,UIScrollViewDelegate {
         let database = databaseFile()
         var graphArr:NSMutableArray = []
         let WorkSiteNameArr:NSMutableArray = []
-        graphArr = database.getUserWorksiteActivityGraph()
+        var userId = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUSerID")!)"
+
+        graphArr = database.getUserWorksiteActivityGraph(userId)
+        
+
         print(graphArr)
         for i:Int in 0 ..< graphArr.count {
             let dict:NSMutableDictionary = graphArr[i] as! NSMutableDictionary
@@ -92,6 +96,7 @@ class chartViewController: UIViewController,UIScrollViewDelegate {
         scrollView2.contentSize = CGSizeMake(0, CGFloat(WorkSiteNameArr.count) * 200)
         
         var y:CGFloat = 0
+        
         for (var a=0;a<WorkSiteNameArr.count;a++){
             let lbl = UILabel(frame: CGRectMake(-scrollView2.frame.size.width*2-12, y + 100, 200, scrollView2.frame.size.width))
             lbl.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))

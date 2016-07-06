@@ -794,7 +794,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1e1b5b09-d5ec-422d-ae09-e9afd18abfc4";
+				PROVISIONING_PROFILE = "2f92bf2d-71f3-4eca-9517-da4ef06b75ad";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -818,7 +818,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.krishnais.Time-em";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "eb33d980-b0a1-40b5-99ab-a5c0c85e967e";
+				PROVISIONING_PROFILE = "e012bffe-3367-4f70-8355-9fd52f3f37ba";
 				SWIFT_OBJC_BRIDGING_HEADER = "Time-em/Time-em-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

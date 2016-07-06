@@ -187,7 +187,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
                 cell.detailTextLabel?.font = myFont
                 
               }else if Reachability.DeviceType.IS_IPHONE_6 {
-                cell.detailTextLabel?.frame = CGRectMake((cell.detailTextLabel?.frame.origin.x)!, (cell.detailTextLabel?.frame.origin.y)!, (cell.detailTextLabel?.frame.size.width)!+150, (cell.detailTextLabel?.frame.size.height)!+25)
+                cell.detailTextLabel?.frame = CGRectMake((cell.detailTextLabel?.frame.origin.x)!, (cell.detailTextLabel?.frame.origin.y)!, (cell.detailTextLabel?.frame.size.width)!+150, (cell.detailTextLabel?.frame.size.height)!+40)
                 }
                 cell.detailTextLabel?.numberOfLines = 2
             }
@@ -256,7 +256,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
                 
             }
             if finalStrSignInAt != nil && finalStrSignOutAt != nil {
-            cell.detailTextLabel?.text = "\(finalStrSignInAt)\n\(finalStrSignOutAt)"
+            cell.detailTextLabel?.text = "\(finalStrSignInAt)"+"\n"+"\(finalStrSignOutAt)"
             if  Reachability.DeviceType.IS_IPHONE_5 {
             let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
                 cell.detailTextLabel?.font = myFont
@@ -265,7 +265,11 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
                 let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
                 cell.detailTextLabel?.font = myFont
 
-            }
+            } else if Reachability.DeviceType.IS_IPHONE_6P{
+                cell.detailTextLabel?.frame = CGRectMake((cell.detailTextLabel?.frame.origin.x)!, (cell.detailTextLabel?.frame.origin.y)!, (cell.detailTextLabel?.frame.size.width)!+150, (cell.detailTextLabel?.frame.size.height)!+40)
+                let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
+                cell.detailTextLabel?.font = myFont
+                }
             cell.detailTextLabel?.numberOfLines = 2
             }
         }
@@ -344,7 +348,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             
         }else if segue.identifier == "teamTodashboard"{
             let dash = (segue.destinationViewController as! dashboardViewController)
-            
+            dash.fromPassCodeView = "yes"
             
         }
         

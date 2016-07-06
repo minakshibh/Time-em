@@ -99,7 +99,7 @@ class BarCodeViewController: RSCodeReaderViewController {
     }
     
     override func viewWillDisappear(animated: Bool) {
-       
+      scanedBarCodes = []
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -122,23 +122,53 @@ class BarCodeViewController: RSCodeReaderViewController {
     }
     func btnbackCopy(sender:UIButton!)
     {
+        print(scanedBarCodes.count)
+        if scanedBarCodes.count > 0 {
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "todashboard")
+            self.performSegueWithIdentifier("barcodeDetail", sender: self)
+            return
+        }
           self.dismissViewControllerAnimated(true, completion: {});
         self.navigationController?.popViewControllerAnimated(true)
     }
     
     @IBAction func btnback(sender: AnyObject) {
+        print(scanedBarCodes.count)
+        if scanedBarCodes.count > 0 {
+            NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "todashboard")
+           self.performSegueWithIdentifier("barcodeDetail", sender: self)
+            return
+        }
+        
         self.dismissViewControllerAnimated(true, completion: {});
-        self.navigationController?.popViewControllerAnimated(true)    }
+        self.navigationController?.popViewControllerAnimated(true)
+    }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         self.navigationController?.navigationBarHidden = false
         
         if segue.identifier == "barcodeDetail" {
             let destinationVC = segue.destinationViewController as! BarcodeDetailViewController
-            destinationVC.scannedBarcodeArr = scanedBarCodes
+            print(removeDuplicates(scanedBarCodes))
+            destinationVC.scannedBarcodeArr = removeDuplicates(scanedBarCodes)
         }
     }
        
-    
+    func removeDuplicates(arr:NSMutableArray) -> NSMutableArray {
+        let result:NSMutableArray = []
+        
+        for value in arr {
+            
+            if result.containsObject(value) {
+                
+            }else{
+                result.addObject(value)
+            }
+            
+            
+        }
+        
+        return result
+    }
     
 }

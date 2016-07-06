@@ -472,6 +472,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             videoRecordedData = videoData
             isVideoRecorded = true
         }
+        numberOfHoursTxt.resignFirstResponder()
+        commentsTxt.resignFirstResponder()
+        scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+        scrollView.scrollEnabled = false
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AddNewTaskViewController.displayResponse), name: notificationKey, object: nil)
         assignedTasks.AddUpdateNewTask(imageData,videoData: videoRecordedData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: editId as String, view: self.view, isVideoRecorded:isVideoRecorded,isoffline:self.isoffline,uniqueno: self.uniqueno)
         
@@ -482,13 +486,24 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         self.dismissViewControllerAnimated(true, completion: {});
         self.navigationController?.popViewControllerAnimated(true)
     }
+    func update()  {
+        self.resetTheView()
+        self.navigationController?.popViewControllerAnimated(true)
+        self.dismissViewControllerAnimated(true, completion: {});
+        NSUserDefaults.standardUserDefaults().setObject("true", forKey: "isEditingOrAdding")
+    }
     func displayResponse(notification:NSNotification) {
         
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name:notificationKey, object:nil)
-
+        if status.lowercaseString == "success sync" {
+            NSTimer.scheduledTimerWithTimeInterval(1.5, target: self, selector: "update", userInfo: nil, repeats: true)
+            return
+        }
+        
+        
         if status.lowercaseString == "success"{
          self.resetTheView()
             self.navigationController?.popViewControllerAnimated(true)

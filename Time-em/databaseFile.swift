@@ -275,7 +275,7 @@ fileURL.path)
             
             let  Company:String!
             if let field = dict.valueForKey("Company") as? String{
-                Company = field as? String ?? ""
+                Company = field
             }else{
                 Company = ""
             }
@@ -432,7 +432,7 @@ fileURL.path)
             
             let  Worksite:String!
             if let field = dict.valueForKey("Worksite") as? String {
-                Worksite = field as! String
+                Worksite = field
             }else{
                 Worksite = ""
             }
@@ -755,7 +755,7 @@ fileURL.path)
             print("Unable to open database")
             return
         }
-        var encodedData:NSData!
+//        var encodedData:NSData!
         var currentUserId:String!
         do {
             try database.executeUpdate("UPDATE teamData SET IsSignedIn=? WHERE Id=?", values: ["1", userId])
@@ -1619,7 +1619,7 @@ fileURL.path)
         }
         database.close()
     }
-    func getUserWorksiteActivityGraph() -> NSMutableArray{
+    func getUserWorksiteActivityGraph(userid:String) -> NSMutableArray{
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
@@ -1631,7 +1631,7 @@ fileURL.path)
         var dataARR:NSMutableArray = []
         
         do {
-            let rs = try database.executeQuery("select * from geofensingGraph", values: nil)
+            let rs = try database.executeQuery("select * from geofensingGraph where userId = ?", values: [userid])
 //            try database.executeUpdate("create table geofensingGraph(CreatedDate text, workSiteList text, userId tex)", values: nil)
 
             while rs.next() {
