@@ -147,6 +147,8 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     }
     
     override func viewWillAppear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.usertasksResponsefromAddTask), name: "com.time-em.usertasksResponsefromAddTask", object: nil)
+        
         if webservicehitCount != 0 {
             refreshData()
              }
@@ -243,7 +245,25 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         apiCall.getUserTask(userId, createdDate: createdDate,TimeStamp: TimeStamp, view: self.view)
         
     }
-    
+    func usertasksResponsefromAddTask(notification:NSNotification) {
+        
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        var alert :UIAlertController!
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.usertasksResponsefromAddTask", object:nil)
+        if status == "Failed to upload image. Kindly try again by edit the task."{
+            
+            do{
+            alert = UIAlertController(title: "Time'em", message: "\(status)", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            }catch{
+                
+            }
+        }
+        
+    }
     func usertasksResponse(notification:NSNotification) {
         
         let userInfo:NSDictionary = notification.userInfo!
@@ -251,6 +271,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         var alert :UIAlertController!
         NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.usertaskResponse", object:nil)
+        
+        
+        
         if status.lowercaseString == "success"{
             
             

@@ -265,8 +265,8 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         var alert :UIAlertController!
         if status.lowercaseString.rangeOfString("success") != nil {
 //            alert = UIAlertController(title: "Time'em", message: "Successfull", preferredStyle: UIAlertControllerStyle.Alert)
-            self.performSegueWithIdentifier("barcodeToTeam", sender: self)
-
+//            self.performSegueWithIdentifier("barcodeToTeam", sender: self)
+            self.performSegueWithIdentifier("todashboard", sender: self)
         }else{
             alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))

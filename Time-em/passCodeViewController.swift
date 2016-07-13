@@ -72,7 +72,13 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
         if textField == txtFieldone{
             print(txtFieldone.text)
             if txtFieldone.text?.characters.count > 0 {
-                
+                if string == "" {
+                    txtFieldone.text = ""
+                    
+                }else{
+                self.txtFieldtwo.text = ""
+                self.txtFieldtwo.becomeFirstResponder()
+                }
             }else {
             main {
                 self.txtFieldtwo.becomeFirstResponder()
@@ -80,7 +86,13 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
            }
         }else if textField == txtFieldtwo{
             if txtFieldtwo.text?.characters.count > 0 {
-                
+                if string == "" {
+                  txtFieldtwo.text = ""
+                    
+                }else{
+                self.txtFieldthree.text = ""
+                self.txtFieldthree.becomeFirstResponder()
+                }
             }else {
             main {
                 self.txtFieldthree.becomeFirstResponder()
@@ -88,7 +100,15 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
            }
         }else if textField == txtFieldthree{
             if txtFieldthree.text?.characters.count > 0 {
-                
+                if string == "" {
+                    txtFieldthree.text = ""
+                    
+                }else{
+                self.txtFieldFour.text = ""
+               self.txtFieldFour.becomeFirstResponder()
+                    self.txtFieldFour.resignFirstResponder()
+                    self.timer = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(passCodeViewController.callFunction), userInfo: nil, repeats: false)
+                }
             }else {
             main {
                 self.txtFieldFour.becomeFirstResponder()
@@ -96,7 +116,13 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
            }
         }else if textField == txtFieldFour{
             if txtFieldFour.text?.characters.count > 0 {
-                
+                if string == "" {
+                    txtFieldFour.text = ""
+                    
+                }else{
+               self.txtFieldFour.resignFirstResponder()
+                self.timer = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(passCodeViewController.callFunction), userInfo: nil, repeats: false)
+                }
             }else {
             main {
                 self.txtFieldFour.resignFirstResponder()

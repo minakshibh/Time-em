@@ -480,6 +480,8 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         assignedTasks.AddUpdateNewTask(imageData,videoData: videoRecordedData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: editId as String, view: self.view, isVideoRecorded:isVideoRecorded,isoffline:self.isoffline,uniqueno: self.uniqueno)
         
         
+//        assignedTasks.newAddTaskwebservice(activityId, TaskId: taskIds as String, UserId: userId, TaskName: taskName, TimeSpent: timespend, Comments: comments, CreatedDate: createdDates, ID: editId, view: self.view)
+        
     }
     
     @IBAction func backBtn(sender: AnyObject) {
@@ -548,6 +550,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
        
         return true
     }
+    
     func textViewDidBeginEditing(textView: UITextView) {
         commentPlaceholder.hidden = true
         scrollView.scrollEnabled = true
@@ -718,4 +721,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             }
             }
     }
+    
+    
 }
+

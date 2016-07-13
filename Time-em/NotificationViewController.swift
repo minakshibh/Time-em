@@ -1,7 +1,7 @@
 //
 //  NotificationViewController.swift
 //  Time-em
-//
+//  Driver app: map on all views during ride,annotations on ride view
 //  Created by Krishna Mac Mini 2 on 27/05/16.
 //  Copyright © 2016 Krishna_Mac_2. All rights reserved.
 //
@@ -98,7 +98,7 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
         alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
 
-        //        self.presentViewController(alert, animated: true, completion: nil)
+        //self.presentViewController(alert, animated: true, completion: nil)
         fetchNotificationDataFromDatabase()
     }
 
@@ -114,6 +114,7 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
         notificationsListArray = allNotificationsListArray.filter { predicate.evaluateWithObject($0) }
         print(notificationsListArray)
         self.notificationsTableView.reloadData()
+        
     }
 
     @IBAction func btnBack(sender: AnyObject) {
@@ -144,38 +145,37 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
         self.showNotificationsInTable()
     }
     @IBAction func btnAddNotificatiom(sender: AnyObject) {
-//        self.performSegueWithIdentifier("iap", sender: self)
-        MBProgressHUD.showHUDAddedTo(view, animated: true)
-
-        if productsArray.count == 0 {
-            let refreshAlert1 = UIAlertController(title: "Time'em", message: "Please wait a moment. Produts are loading.", preferredStyle: UIAlertControllerStyle.Alert)
-            refreshAlert1.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
-                print("Handle Ok logic here")
-                
-            }))
-            presentViewController(refreshAlert1, animated: true, completion: nil)
-            MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
-            return
-        }
-        let product = productsArray[0]
-        
-        let refreshAlert = UIAlertController(title: product.localizedTitle, message: product.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        
-        refreshAlert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
-            print("Handle Ok logic here")
-            let payment = SKPayment(product: product as SKProduct)
-            SKPaymentQueue.defaultQueue().addPayment(payment)
-            self.transactionInProgress = true
-        }))
-        
-        refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) in
-            print("Handle Cancel Logic here")
-//            self.dismissViewControllerAnimated(true, completion: {});
-//            self.navigationController?.popViewControllerAnimated(true)
-             MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
-        }))
-        
-        presentViewController(refreshAlert, animated: true, completion: nil)
+//        MBProgressHUD.showHUDAddedTo(view, animated: true)
+//
+//        if productsArray.count == 0 {
+//            let refreshAlert1 = UIAlertController(title: "Time'em", message: "Please wait a moment. Produts are loading.", preferredStyle: UIAlertControllerStyle.Alert)
+//            refreshAlert1.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
+//                print("Handle Ok logic here")
+//                
+//            }))
+//            presentViewController(refreshAlert1, animated: true, completion: nil)
+//            MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+//            return
+//        }
+//        let product = productsArray[0]
+//        
+//        let refreshAlert = UIAlertController(title: product.localizedTitle, message: product.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+//        
+//        refreshAlert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
+//            print("Handle Ok logic here")
+//            let payment = SKPayment(product: product as SKProduct)
+//            SKPaymentQueue.defaultQueue().addPayment(payment)
+//            self.transactionInProgress = true
+//        }))
+//        
+//        refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) in
+//            print("Handle Cancel Logic here")
+////            self.dismissViewControllerAnimated(true, completion: {});
+////            self.navigationController?.popViewControllerAnimated(true)
+//             MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+//        }))
+//        
+//        presentViewController(refreshAlert, animated: true, completion: nil)
         
     }
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat

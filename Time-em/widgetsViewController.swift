@@ -103,5 +103,6 @@ extension widgetsViewController : UICollectionViewDelegate {
             print(selectedWidgets)
             selectedWidgets.removeObject("\(indexPath.row)")
         }
+        
 }
 }

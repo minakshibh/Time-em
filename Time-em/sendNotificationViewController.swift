@@ -337,6 +337,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         
         let sendNotification = ApiRequest()
         sendNotification.sendNotification(imageData, UserId: UserId!, Subject: subject, Message: comments, NotificationTypeId: NotificationTypeId, notifyto: ids, view: self.view)
+        
+//    sendNotification.newSendnotificationWebservice(UserId!, Subject: subject, Message: comments, NotificationTypeId: NotificationTypeId, notifyto: ids, view: self.view)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.sendnotificationResponse), name: "com.time-em.sendnotification", object: nil)
     }
     func sendnotificationResponse(notification:NSNotification) {

@@ -93,6 +93,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/MGSwipeTableCell.framework"
   install_framework "Pods/RSBarcodes_Swift.framework"
   install_framework "Pods/SCRecorder.framework"
+  install_framework "Pods/SDWebImage.framework"
   install_framework "Pods/TSMessages.framework"
   install_framework "Pods/Toast_Swift.framework"
 fi
@@ -106,6 +107,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/MGSwipeTableCell.framework"
   install_framework "Pods/RSBarcodes_Swift.framework"
   install_framework "Pods/SCRecorder.framework"
+  install_framework "Pods/SDWebImage.framework"
   install_framework "Pods/TSMessages.framework"
   install_framework "Pods/Toast_Swift.framework"
 fi

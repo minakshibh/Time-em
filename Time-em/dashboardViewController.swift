@@ -91,8 +91,8 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
                 
                 self.viewStartWorking.alpha = 0
                 self.viewStartWorking.hidden = false
-                 self.btnSignInOutPOPUP.setTitle("SIGN IN", forState: .Normal)
-                self.btnSignInOut2.setTitle("SIGN IN", forState: .Normal)
+                 self.btnSignInOutPOPUP.setTitle("Sign In", forState: .Normal)
+                self.btnSignInOut2.setTitle("Sign In", forState: .Normal)
 
                 UIView.animateWithDuration(1.0, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: {
                     self.viewStartWorking.alpha = 1
@@ -101,8 +101,8 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
                 }else{
                 self.viewStartWorking.alpha = 0
                 self.viewStartWorking.hidden = false
-                self.btnSignInOutPOPUP.setTitle("SIGN OUT", forState: .Normal)
-                self.btnSignInOut2.setTitle("SIGN OUT", forState: .Normal)
+                self.btnSignInOutPOPUP.setTitle("Sign Out", forState: .Normal)
+                self.btnSignInOut2.setTitle("Sign Out", forState: .Normal)
 
                 UIView.animateWithDuration(1.0, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: {
                     self.viewStartWorking.alpha = 1

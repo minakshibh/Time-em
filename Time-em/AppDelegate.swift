@@ -158,14 +158,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
             
             let state = UIApplication.sharedApplication().applicationState
             if state == .Background {
-                print("App in Background")
+//                print("App in Background")
 //                dict["app mode"] = "App is in Background"
             }else if state == .Active {
 //                dict["app mode"] = "App is Active"
-                print("App in Active")
+//                print("App in Active")
             }else if state == .Inactive {
 //                dict["app mode"] = "App is Inactive"
-                print("App in Inactive")
+//                print("App in Inactive")
             }
             
             
@@ -210,7 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
         print("timer.timer")
         if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") != nil{
             if locationManager.location?.coordinate.latitude != nil {
-            print("jijijijij\(locationManager.location?.coordinate.latitude)")
+            print("jijijijiji\(locationManager.location?.coordinate.latitude)")
             let strUSerId = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")!)"
             let latlat = roundToPlaces((locationManager.location?.coordinate.latitude)!, places: 2)
             let lonlon = roundToPlaces((locationManager.location?.coordinate.longitude)!, places: 2)

@@ -10,7 +10,9 @@ import UIKit
 import AVFoundation
 import Foundation
 import AVKit
+import SDWebImage
 
+//cross-popup
 class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
 
     var err: NSError? = nil
@@ -88,55 +90,59 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         scrollView.backgroundColor = UIColor.clearColor()
         scrollView.contentSize = self.view.bounds.size
         scrollView.contentOffset = CGPoint(x: 450, y: 2000)
+    }
+    override func viewWillAppear(animated: Bool) {
+        // image or video processing
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
         
-
-       // image or video processing
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            
         if self.taskData.valueForKey("AttachmentImageFile") != nil {
             self.lblAttachment.hidden = false
             if self.taskData.valueForKey("AttachmentImageFile") as? String != "" {
-             self.lblAttachment.hidden = false
-                let database = databaseFile()
-                let dataArr:NSMutableArray!
-                dataArr = database.getImageForUrl("\(self.taskData.valueForKey("AttachmentImageFile")!)",imageORvideo:"AttachmentImageFile")
                 
-                if dataArr.count > 0 {
-                    if "\(dataArr[0])".characters.count != 0 {
-                    let data1:NSData = dataArr[0] as! NSData
-                    let count = data1.length / sizeof(UInt8)
-                    if count > 0 {
-                        let data:NSData = dataArr[0] as! NSData
-                        let userImageData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
-                        self.imageView.image = UIImage(data: userImageData)
-                        return
+                if "\(self.taskData.valueForKey("isoffline")!)" == "true" {
+                    let database = databaseFile()
+                    let dataArr:NSMutableArray!
+                    dataArr = database.getImageForUrl("\(self.taskData.valueForKey("AttachmentImageFile")!)",imageORvideo:"AttachmentImageFile")
+                    
+                    if dataArr.count > 0 {
+                        if "\(dataArr[0])".characters.count != 0 {
+                            let data1:NSData = dataArr[0] as! NSData
+                            let count = data1.length / sizeof(UInt8)
+                            if count > 0 {
+                                delay(0.001){
+                                    let data:NSData = dataArr[0] as! NSData
+                                    let userImageData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
+                                    self.lblAttachment.hidden = false
+                                    self.imageView.image = UIImage(data: userImageData)
+                                }
+                                return
+                            }
+                        }
                     }
-                    }else{
-                       self.downloadImage()
-                    }
+                    
                 }
-                self.downloadImage()
-
+             imageView.sd_setImageWithURL(NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)"), placeholderImage: UIImage(named: "cross-popup"), options: .RefreshCached)
+            self.lblAttachment.hidden = false
             }else{
-              self.imageView.hidden = true
+                self.imageView.hidden = true
                 self.lblAttachment.hidden = true
             }
             
         }else{
             self.imageView.hidden = true
             self.lblAttachment.hidden = true
-
+            
         }
-            dispatch_async(dispatch_get_main_queue(), {
-                
-                
-            });
-        }
+        //            dispatch_async(dispatch_get_main_queue(), {
+        //
+        //
+        //            });
+        //        }
         
         
         
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        //        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
         if self.taskData.valueForKey("AttachmentVideoFile") != nil {
             self.lblAttachment.hidden = false
             if self.taskData.valueForKey("AttachmentVideoFile") as? String != "" {
@@ -146,45 +152,87 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                 let dataArr:NSMutableArray!
                 dataArr = database.getImageForUrl("\(self.taskData.valueForKey("AttachmentVideoFile")!)",imageORvideo:"AttachmentVideoFile")
                 if dataArr.count > 0 {
-                     if "\(dataArr[0])".characters.count != 0 {
-                   let data1:NSData = dataArr[0] as! NSData
-                    let count = data1.length / sizeof(UInt8)
-                    if count > 0 {
+                    if "\(dataArr[0])".characters.count != 0 {
+                        let data1:NSData = dataArr[0] as! NSData
+                        let count = data1.length / sizeof(UInt8)
+                        if count > 0 {
+                            
+                            let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentVideoFile")!)")
+                            
+                            generateThumbnail(url!)
+                            
+                            let data:NSData = dataArr[0] as! NSData
+                            let userVideoData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
+                            self.videoData = userVideoData
+                            self.lblAttachment.hidden = false
+                            return
+                        }
+                    }else{
                         let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentVideoFile")!)")
+                        generateThumbnail(url!)
+//                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                        delay(0.001){
+                            let data = NSData(contentsOfURL: url!)
+//                            dispatch_async(dispatch_get_main_queue(), {
                         
-                        self.generateThumbnail(url!)
-                        
-                        let data:NSData = dataArr[0] as! NSData
-                        let userVideoData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
-                        self.videoData = userVideoData
-                        return
-                    }
-                     }else{
-                        self.downloadVideo()
+                                //----
+                                let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
+                                let database = databaseFile()
+                                database.addImageToTask("\(self.taskData.valueForKey("AttachmentVideoFile")!)", AttachmentImageData: encodedData,imageORvideo:"AttachmentVideoFile")
+                                self.videoData = data!
+//                            });
+                    
+//                        }
+                        }
                     }
                 }
                 
                 
                 
-//                downloadVideo  and save to databse
-                self.downloadVideo()
-
+                //                downloadVideo  and save to databse
+                let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentVideoFile")!)")
+                self.generateThumbnail(url!)
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                
+                    let data = NSData(contentsOfURL: url!)
+//                    dispatch_async(dispatch_get_main_queue(), {
+                delay(0.001){
+                        //----
+                        let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
+                        let database1 = databaseFile()
+                        database1.addImageToTask("\(self.taskData.valueForKey("AttachmentVideoFile")!)", AttachmentImageData: encodedData,imageORvideo:"AttachmentVideoFile")
+                        self.videoData = data!
+                }
+//                    });
+//                }
+                
             }else{
-                self.lblAttachment.hidden = true
-
+                if self.lblAttachment.hidden {
+                    self.lblAttachment.hidden = true
+                }else{
+                
+                }
+                
+                if imageView.hidden || imageViewVideo.hidden{
+                    self.lblAttachment.hidden = true
+                }else{
+                   self.lblAttachment.hidden = false
+                }
+                
             }
         }else{
             self.lblAttachment.hidden = true
             
         }
-            dispatch_async(dispatch_get_main_queue(), {
-                
-                
-            });
-        }
-
+//                    dispatch_async(dispatch_get_main_queue(), {
+        //
+        //                
+//                    });
+//                }
+        
         
     }
+    
     func downloadImage() {
         let url = NSURL(string: "\(self.taskData.valueForKey("AttachmentImageFile")!)")
         
@@ -292,11 +340,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         TextHeadingHeightConstraint.constant = sizeThatFitsTextView1.height
 
         
-        if imageView.hidden == true{
-            self.lblAttachment.hidden = true
-        }else{
-            self.lblAttachment.hidden = false
-        }
+        
 
         
     }

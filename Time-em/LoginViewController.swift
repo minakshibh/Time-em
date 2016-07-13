@@ -22,6 +22,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var sepratorPassword: UILabel!
     @IBOutlet var btnLogin: UIButton!
     @IBOutlet var btnForgotPassword: UIButton!
+    
     var webData:NSMutableData!
     var currentUser: User!
     let notificationKey = "com.time-em.loginResponse"
