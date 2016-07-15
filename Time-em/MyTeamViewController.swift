@@ -16,6 +16,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     var teamDataArray:NSMutableArray! = []
     var selectedUser:String!
     var selectedUserFullname:String!
+    var selectedUserActivityId:String!
     var fromBarcode:String!
     
     @IBOutlet var btnUserDetail: UIButton!
@@ -306,6 +307,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         let dict:NSMutableDictionary  = teamDataArray[indexPath.row] as! NSMutableDictionary
         selectedUser =  "\(dict["Id"]!)"
         selectedUserFullname = "\(dict["FullName"]!)"
+        selectedUserActivityId = "\(dict["ActivityId"]!)"
         self.performSegueWithIdentifier("myteam_mytask", sender: self)
     }
     
@@ -345,7 +347,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             let mytask = (segue.destinationViewController as! myTasksViewController)
             mytask.currentUserID = selectedUser
             mytask.currentUserFullName = selectedUserFullname
-            
+            mytask.currentUserActivityId = selectedUserActivityId
         }else if segue.identifier == "teamTodashboard"{
             let dash = (segue.destinationViewController as! dashboardViewController)
             dash.fromPassCodeView = "yes"

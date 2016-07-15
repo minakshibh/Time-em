@@ -11,6 +11,8 @@ import UIKit
 class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFieldDelegate {
 
     
+    @IBOutlet var btnPhoneIicon: UIButton!
+    @IBOutlet var lblpartitionPhoneNo: UILabel!
     @IBOutlet var btnBack: UIButton!
     @IBOutlet var btnEditprofile: UIButton!
     @IBOutlet var imageprofile: UIImageView!
@@ -57,6 +59,8 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
         let phoneNoStr = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_PhoneNumber")!)"
         if phoneNoStr == "0" {
            lblPhoneNo.text = ""
+            btnPhoneIicon.hidden = true
+            lblpartitionPhoneNo.hidden = true
         }else{
             lblPhoneNo.text = phoneNoStr
         }

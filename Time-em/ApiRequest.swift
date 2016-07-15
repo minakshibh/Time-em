@@ -1306,6 +1306,7 @@ public class ApiRequest:UIViewController {
             }
             
             self.taskORsync = "task"
+                NSUserDefaults.standardUserDefaults().setObject("no", forKey: "forSync")
             self.sendImageVideoSync(newString, FileUploadFor: "usertaskactivity", data: dataobject, type: type, uniqueno: newString, view: view)
             }
             
@@ -1462,6 +1463,8 @@ public class ApiRequest:UIViewController {
                 
                 
                 self.taskORsync = "noti"
+                NSUserDefaults.standardUserDefaults().setObject("no", forKey: "forSync")
+
                 self.sendImageVideoSync(newString, FileUploadFor: "notification", data: dataobject, type: type, uniqueno: newString, view: view)
             }
             
@@ -1809,14 +1812,15 @@ public class ApiRequest:UIViewController {
                             
                             if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("user already signed in.") != nil{
                                 
-                                
+                                print("aa")
                                 let idArray = userId.componentsSeparatedByString(",")
                                 let database = databaseFile()
                                 for k in idArray {
                                     database.teamSignInUpdate(k)
                                 }
-                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                                 MBProgressHUD.hideHUDForView(view, animated: true)
+
+                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                                 return
                             }
                             
@@ -1900,8 +1904,8 @@ public class ApiRequest:UIViewController {
                                 for k in idArray {
                                     database.signOutUpdate(k)
                                 }
-                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                                 MBProgressHUD.hideHUDForView(view, animated: true)
+                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                                 return
                             }
                             
@@ -2112,10 +2116,12 @@ public class ApiRequest:UIViewController {
                     if "\(response.result)" == "SUCCESS"{
                         print(JSON.valueForKey("isError"))
                         print(JSON.valueForKey("Message"))
-//                        print("\(JSON)")
+                        print("http:hello//")
+
                         if "\(JSON.valueForKey("Message")!)".rangeOfString("No Record Found !") != nil{
                           let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            MBProgressHUD.hideHUDForView(view, animated: true)
                             return
                         }
                         
@@ -2209,6 +2215,8 @@ public class ApiRequest:UIViewController {
                                         let array = (imagesDataDict.valueForKey(uniqueNoStr) as? NSArray)!
                                         let imageVideo = "\(array[0])"
                                         let data:NSData = (array[1] as? NSData)!
+                                        NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "forSync")
+                                        self.taskORsync = ""
                                         self.sendImageVideoSync(idStr, FileUploadFor: "notification", data: data, type: imageVideo,uniqueno:uniqueNoStr,view: view)
                                     }
                                 }
@@ -2229,6 +2237,8 @@ public class ApiRequest:UIViewController {
                                         let array = (imagesDataDict.valueForKey(uniqueNoStr) as? NSArray)!
                                         let imageVideo = "\(array[0])"
                                         let data:NSData = (array[1] as? NSData)!
+                                        NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "forSync")
+                                        self.taskORsync = ""
                                         self.sendImageVideoSync(idStr, FileUploadFor: "usertaskactivity", data: data, type: imageVideo,uniqueno:uniqueNoStr,view: view)
                                     }
                                 }
@@ -2284,7 +2294,7 @@ public class ApiRequest:UIViewController {
         NSUserDefaults.standardUserDefaults().setObject(count, forKey: "count")
         let loadingNotification:MBProgressHUD!
         if taskORsync == "task" ||  taskORsync == "noti" {
-            taskORsync = ""
+            
         }else{
          loadingNotification = MBProgressHUD.showHUDAddedTo(view, animated: true)
         loadingNotification.mode = MBProgressHUDMode.Indeterminate
@@ -2367,11 +2377,15 @@ public class ApiRequest:UIViewController {
             let data, let response, let error) in
             delay(0.001){
             MBProgressHUD.hideAllHUDsForView(view, animated: true)
-           
-            let loadingNotification = MBProgressHUD.showHUDAddedTo(view, animated: true)
+           var loadingNotification = MBProgressHUD()
+             if self.taskORsync == "task" ||  self.taskORsync == "noti" {
+             }else{
+            loadingNotification = MBProgressHUD.showHUDAddedTo(view, animated: true)
             loadingNotification.mode = MBProgressHUDMode.Indeterminate
             loadingNotification.progress = 0
             loadingNotification.show(true)
+            }
+                
                 let count1:Int = Int("\(NSUserDefaults.standardUserDefaults().valueForKey("count")!)")!
                 count = count1 + 1
                 NSUserDefaults.standardUserDefaults().setObject(count, forKey: "count")
@@ -2403,11 +2417,24 @@ public class ApiRequest:UIViewController {
             delay(0.001){
 //                MBProgressHUD.hideHUDForView(view, animated: true)
                 if "\(dataString!.lowercaseString)".rangeOfString("activity id does not exist") != nil{
-                    let userInfo = ["response" : "please signin before adding task"]
+                    let userInfo = ["response" : "Kindly sign in before adding task"]
+                    
+                    NSNotificationCenter.defaultCenter().postNotificationName("com.time-em.usertasksResponsefromAddTask", object: nil, userInfo: userInfo)
 //                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     return
+                }else if "\(dataString!.lowercaseString)".rangeOfString("error occured") != nil{
+                    let userInfo = ["response" : "uploading failed. Kindly try again."]
+                    
+                    NSNotificationCenter.defaultCenter().postNotificationName("com.time-em.usertasksResponsefromAddTask", object: nil, userInfo: userInfo)
+                    //                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    return
                 }
-                let userInfo = ["response" : "SUCCESS"]
+                
+                
+                
+                let userInfo = ["response" : "image upload successfully"]
+                NSNotificationCenter.defaultCenter().postNotificationName("com.time-em.usertasksResponsefromAddTask", object: nil, userInfo: userInfo)
+
 //                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             }
         }

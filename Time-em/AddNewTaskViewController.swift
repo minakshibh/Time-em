@@ -30,6 +30,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     @IBOutlet var scrollView: UIScrollView!
     @IBOutlet var titleLbl: UILabel!
      @IBOutlet var lblDate: UILabel!
+    @IBOutlet var video_play: UIImageView!
     let dropDown = DropDown()
     let imagePicker = UIImagePickerController()
     var imageData = NSData()
@@ -45,6 +46,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     var editId: String! = "0"
      var isoffline: String! = "false"
     var uniqueno: String! = ""
+    var videoStatus:Bool = false
+    var currentUserID:String! = nil
+    var currentUserActivityId:String! = nil
+    
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
@@ -75,7 +80,9 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
                 self.commentPlaceholder.hidden = true
             }
             self.uniqueno = "\(editTaskDict.valueForKey("uniqueno")!)"
-            self.numberOfHoursTxt.text = "\(editTaskDict.valueForKey("TimeSpent")!)"
+            numberOfHoursTxt.text = "\(roundToPlaces(Double("\(editTaskDict.valueForKey("TimeSpent")!)")!, places: 2))"
+
+//            self.numberOfHoursTxt.text = "\(editTaskDict.valueForKey("TimeSpent")!)"
             self.taskId = "\(editTaskDict.valueForKey("TaskId")!)"
             self.createdDate = "\(editTaskDict.valueForKey("CreatedDate")!)"
             let dateStr = "\(self.createdDate)".componentsSeparatedByString(" ")[0]
@@ -90,34 +97,34 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
                 
                 if editTaskDict.valueForKey("AttachmentImageFile") as? String != "" {
                     
-                    let database = databaseFile()
-                    let dataArr:NSMutableArray!
-                    dataArr = database.getImageForUrl("\(editTaskDict.valueForKey("AttachmentImageFile")!)",imageORvideo:"AttachmentImageFile")
-                    
-                    if dataArr.count > 0 {
-                        if "\(dataArr[0])" != "" {
-                            let data:NSData = dataArr[0] as! NSData
-                            let userImageData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
-                            self.uploadedImage.image = UIImage(data: userImageData)
-                            self.uploadImageView.hidden = false
-                            return
-                        }
-                    }
-                    
-                    let url = NSURL(string: "\(self.editTaskDict.valueForKey("AttachmentImageFile")!)")
-                    
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                        let data = NSData(contentsOfURL: url!)
-                        dispatch_async(dispatch_get_main_queue(), {
-                            if self.uploadedImage != nil && data != nil {
-                                self.uploadedImage.image = UIImage(data: data!)
-                                self.uploadImageView.hidden = false
+                    if "\(self.editTaskDict.valueForKey("isoffline")!)" == "true" {
+                        let database = databaseFile()
+                        let dataArr:NSMutableArray!
+                        dataArr = database.getImageForUrl("\(self.editTaskDict.valueForKey("AttachmentImageFile")!)",imageORvideo:"AttachmentImageFile")
+                        
+                        if dataArr.count > 0 {
+                            if "\(dataArr[0])".characters.count != 0 {
+                                let data1:NSData = dataArr[0] as! NSData
+                                let count = data1.length / sizeof(UInt8)
+                                if count > 0 {
+                                    delay(0.001){
+                                        let data:NSData = dataArr[0] as! NSData
+                                        let userImageData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
+                                        self.uploadImageView.hidden = false
+                                        self.uploadedImage.image = UIImage(data: userImageData)
+                                    }
+                                    return
+                                }
                             }
-                            let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
-                            let database = databaseFile()
-                            database.addImageToTask("\(self.editTaskDict.valueForKey("AttachmentImageFile")!)", AttachmentImageData: encodedData, imageORvideo:"AttachmentImageFile")
-                        });
+                        }
+                        
                     }
+                    
+                    uploadedImage.sd_setImageWithURL(NSURL(string: "\(self.editTaskDict.valueForKey("AttachmentImageFile")!)"), placeholderImage: UIImage(named: "cross-popup"), options: .RefreshCached)
+                    self.uploadImageView.hidden = false
+                    
+                    
+
                 }else{
                     uploadedImage.hidden = true
                 }
@@ -125,6 +132,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             }else{
                 uploadedImage.hidden = true
             }
+            
+            
+            
+            
             
             
             
@@ -144,6 +155,9 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
                             let data:NSData = dataArr[0] as! NSData
                             let userVideoData:NSData = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSData
                             videoData = userVideoData
+                            generateThumbnail(url!)
+                            self.uploadImageView.hidden = false
+                            uploadedImage.hidden = false
                             return
                         }
                     }
@@ -163,6 +177,8 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
                             let database = databaseFile()
                             database.addImageToTask("\(self.editTaskDict.valueForKey("AttachmentVideoFile")!)", AttachmentImageData: encodedData,imageORvideo:"AttachmentVideoFile")
                             self.videoData = data!
+                            self.generateThumbnail(url!)
+
                         });
                     }
                     
@@ -260,6 +276,59 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         numberToolbar.sizeToFit()
         numberOfHoursTxt.inputAccessoryView = numberToolbar
     }
+    @IBAction func btnPlayVideo(sender: AnyObject) {
+        playVideo(videoData)
+    }
+    func playVideo(data:NSData) {
+        
+        let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
+        let temppath:String = documentDirectory.stringByAppendingString("/video.mp4")
+        videoStatus = data.writeToFile(temppath, atomically: true)
+        
+        if videoStatus {
+            let videoAsset = (AVAsset(URL: NSURL(fileURLWithPath: temppath)))
+            let playerItem = AVPlayerItem(asset:videoAsset)
+            
+            let player = AVPlayer(playerItem: playerItem)
+            let playerViewController = AVPlayerViewController()
+            playerViewController.player = player
+            
+            presentViewController(playerViewController, animated:true){
+                playerViewController.player!.play()
+            }
+            
+        }
+    }
+    override func viewDidDisappear(animated: Bool) {
+        
+        if videoStatus {
+            let filemanager = NSFileManager.defaultManager()
+            let documentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .   UserDomainMask, true)[0] as String
+            let temppath:String = documentDirectory.stringByAppendingString("/video.mp4")
+            do{
+                try filemanager.removeItemAtPath(temppath)
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
+        }
+    }
+    func generateThumbnail (url:NSURL) {
+        do {
+            let asset = AVURLAsset(URL: url, options: nil)
+            let imgGenerator = AVAssetImageGenerator(asset: asset)
+            let cgImage = try imgGenerator.copyCGImageAtTime(CMTimeMake(0, 1), actualTime: nil)
+            let uiImage = UIImage(CGImage: cgImage)
+            self.uploadImageView.hidden = false
+            uploadedImage.hidden = false
+            video_play.hidden = false
+            self.uploadedImage.image = uiImage
+            
+        } catch let error as NSError {
+            print("Error generating thumbnail: \(error)")
+        }
+        
+    }
+
     override func viewWillAppear(animated: Bool) {
         let sizeThatFitsTextView: CGSize = self.commentsTxt.sizeThatFits(CGSizeMake(self.commentsTxt.frame.size.width, CGFloat(MAXFLOAT)))
         self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
@@ -397,24 +466,33 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     
     @IBAction func removeUploadedImage(sender: AnyObject) {
         uploadImageView.hidden = true
+        videoData = NSData()
+        uploadedImage.image = nil
     }
     
    @IBAction func btnplayVideo(sender: AnyObject) {
+    var count:Int = 0
+    count = videoData.length / sizeof(UInt8)
     
-    let paths = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
-    let documentsDirectory:AnyObject = paths[0]
-    let dataPath = documentsDirectory.stringByAppendingPathComponent("Test.mp4")
-    
-    let videoAsset = (AVAsset(URL: NSURL(fileURLWithPath: dataPath)))
-    let playerItem = AVPlayerItem(asset:videoAsset)
-    
-    let player = AVPlayer(playerItem: playerItem)
-    let playerViewController = AVPlayerViewController()
-    playerViewController.player = player
-    
-    presentViewController(playerViewController, animated:true){
-        playerViewController.player!.play()
+    if(count > 0)
+    {
+        playVideo(videoData)
     }
+    
+//    let paths = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
+//    let documentsDirectory:AnyObject = paths[0]
+//    let dataPath = documentsDirectory.stringByAppendingPathComponent("Test.mp4")
+//    
+//    let videoAsset = (AVAsset(URL: NSURL(fileURLWithPath: dataPath)))
+//    let playerItem = AVPlayerItem(asset:videoAsset)
+//    
+//    let player = AVPlayer(playerItem: playerItem)
+//    let playerViewController = AVPlayerViewController()
+//    playerViewController.player = player
+//    
+//    presentViewController(playerViewController, animated:true){
+//        playerViewController.player!.play()
+//    }
     }
     
     @IBAction func addUpdateTask(sender: AnyObject) {
@@ -449,13 +527,20 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         let timespend = self.numberOfHoursTxt.text! as String
 
         var userId:String = ""
-        let activityId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_ActivityId") as! String
-        if let field = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")
-        {
-            userId = field as! String
+        var activityId:String = ""
+        if currentUserID != nil {
+            userId = currentUserID
+            activityId = currentUserActivityId
         }else{
-            userId = ""
+            activityId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_ActivityId") as! String
+            if let field = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id")
+            {
+                userId = field as! String
+            }else{
+                userId = ""
+            }
         }
+        
         let  taskName = self.selectTaskTxt.text! as String
        
         let createdDates = self.createdDate! as String
@@ -646,10 +731,12 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
 //    }
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            video_play.hidden = true
             uploadImageView.hidden = false
             uploadedImage.hidden = false
             uploadedImage.contentMode = .ScaleToFill
             uploadedImage.image = pickedImage
+            videoData = NSData()
         }
         
         if let pickedVideo:NSURL = (info[UIImagePickerControllerMediaURL] as? NSURL) {
@@ -662,6 +749,12 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             let dataPath = documentsDirectory.stringByAppendingPathComponent("Test.mp4")
             videoData.writeToFile(dataPath, atomically: false)
             btnplayVideo.hidden = false
+            
+            self.uploadImageView.hidden = false
+            self.uploadedImage.backgroundColor = UIColor.grayColor()
+            uploadedImage.hidden = false
+            video_play.hidden = false
+            
         }
         
         dismissViewControllerAnimated(true, completion: nil)
@@ -721,7 +814,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             }
             }
     }
-    
+    func roundToPlaces(value:Double, places:Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return round(value * divisor) / divisor
+    }
     
 }
 

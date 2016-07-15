@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>DBAlertController.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>FMDB.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -72,32 +77,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>00D0989A427BC58F10CD7AAF7F8920A2</key>
+		<key>098058DB8AA265D704661FE96460EF62</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>0180A085A23D4045CA5EC60121DEC093</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>058D2CBB472A6FF8F58A29B4FFFCFE62</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>0735EB6A025C39CEDA5DFE1C7B89EDE6</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>08E3DF7DCD9A1897D63B40CD39568D87</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>0F3EFDFB711241954BD774DB54B37F5F</key>
+		<key>0ACB9A73E613AE21EA0C288FB88EBC43</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -107,7 +92,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>24F3A9BACD6D9CA77698E21DBD80F781</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>4E1263BFF45F6446CF3DE29AE234C893</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5FB057380148022C2F3FE20BBF3FF41B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -117,7 +112,22 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>883EAB51FDCAB58F7D122E28086303BE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>892FE5BFDD0FD8B38E22D76135459FE4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A3E4CCAD11435B5D0CCDBCFE094643D5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AB2548DA0C21157EFD6AFF4085932531</key>
 		<dict>
 			<key>primary</key>
 			<true/>

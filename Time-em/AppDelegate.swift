@@ -10,6 +10,7 @@ import UIKit
 import AVFoundation
 import TSMessages
 import CoreLocation
+import DBAlertController
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate {
@@ -45,7 +46,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
 //        }
         initLocationManager();
         
-        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.usertasksResponsefromAddTask), name: "com.time-em.usertasksResponsefromAddTask", object: nil)
+
         
         
         
@@ -139,7 +141,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
             UIApplication.sharedApplication().cancelAllLocalNotifications()
             localNotification.alertAction = "Time'em"
             localNotification.alertBody = "App is going offline. To stay online open the app."
-            localNotification.fireDate = NSDate(timeIntervalSinceNow: 3)
+            localNotification.fireDate = NSDate(timeIntervalSinceNow: 10)
             UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
         }
         
@@ -405,6 +407,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
             NSLog("DB exists, no need to copy.")
         }
     }
-    
+    func usertasksResponsefromAddTask(notification:NSNotification) {
+        
+        let userInfo:NSDictionary = notification.userInfo!
+        let status: String = (userInfo["response"] as! String)
+        
+        var str:String = ""
+        if NSUserDefaults.standardUserDefaults().valueForKey("forSync") != nil{
+            if "\(NSUserDefaults.standardUserDefaults().valueForKey("forSync")!)" == "yes" {
+                str = "yes"
+            }
+        }
+
+        
+        
+        if status == "Failed to upload image. Kindly try again by edit the task."{
+            
+                let alertController = DBAlertController(title: "Time'em", message: "Failed to upload file. Kindly try again by edit the task.", preferredStyle: .Alert)
+                alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+            if str == "yes"{
+            }else{
+                alertController.show()
+            }
+            
+        }else if status == "image upload successfully" {
+            let alertController = DBAlertController(title: "Time'em", message: "File upload successfully", preferredStyle: .Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+            if str == "yes"{
+            }else{
+                alertController.show()
+            }
+        }else{
+            let alertController = DBAlertController(title: "Time'em", message: status, preferredStyle: .Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+            if str == "yes"{
+            }else{
+                alertController.show()
+            }
+        }
+        
+    }
 }
 

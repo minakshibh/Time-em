@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '8BD86F9D3D0506133DA3A893'
-               BlueprintName = 'Alamofire'
+               BlueprintIdentifier = 'DA94C88F9A8F5DC04B98C083'
+               BlueprintName = 'DBAlertController'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'Alamofire.framework'>
+               BuildableName = 'DBAlertController.framework'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

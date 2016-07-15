@@ -24,6 +24,7 @@
             font = [UIFont fontWithName:@"HelveticaNeue" size:12];
         }
     }
+    NSLog(self.text);
     CGSize expectedLabelSize = [self.text sizeWithFont:font constrainedToSize:maximumLabelSize lineBreakMode:self.lineBreakMode];
     self.contentMode = UIControlContentVerticalAlignmentTop;
     CGRect newFrame = self.frame;
@@ -72,7 +73,7 @@
 
     CGSize expectedLabelSize = [self.text sizeWithFont:font constrainedToSize:maximumLabelSize lineBreakMode:self.lineBreakMode];
     self.contentMode = UIControlContentVerticalAlignmentTop;
-    int numberOfLines = expectedLabelSize.height / [UIFont fontWithName:@"HelveticaNeue" size:15].pointSize;
+    int numberOfLines = expectedLabelSize.height / font.pointSize;
     return  numberOfLines;
 }
 - (void)alignTop

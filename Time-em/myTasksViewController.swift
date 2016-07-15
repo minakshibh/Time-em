@@ -22,6 +22,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     @IBOutlet var btnAddTask: UIButton!
     var currentUserID:String! = nil
     var currentUserFullName:String! = nil
+    var currentUserActivityId:String! = nil
     var selectedDate:String!
     var selectedTaskData:NSMutableDictionary! = [:]
     var selectededitRowDict:NSMutableDictionary = [:]
@@ -147,7 +148,6 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     }
     
     override func viewWillAppear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.usertasksResponsefromAddTask), name: "com.time-em.usertasksResponsefromAddTask", object: nil)
         
         if webservicehitCount != 0 {
             refreshData()
@@ -245,25 +245,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         apiCall.getUserTask(userId, createdDate: createdDate,TimeStamp: TimeStamp, view: self.view)
         
     }
-    func usertasksResponsefromAddTask(notification:NSNotification) {
-        
-        let userInfo:NSDictionary = notification.userInfo!
-        let status: String = (userInfo["response"] as! String)
-        
-        var alert :UIAlertController!
-        NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.usertasksResponsefromAddTask", object:nil)
-        if status == "Failed to upload image. Kindly try again by edit the task."{
-            
-            do{
-            alert = UIAlertController(title: "Time'em", message: "\(status)", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-            }catch{
-                
-            }
-        }
-        
-    }
+
     func usertasksResponse(notification:NSNotification) {
         
         let userInfo:NSDictionary = notification.userInfo!
@@ -320,7 +302,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let dataDic:NSMutableDictionary = taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
         let Description: UILabel = UILabel(frame: CGRectMake(15, 0, 250+85 , 58))
         if Reachability.DeviceType.IS_IPHONE_5 {
-            Description.frame = CGRectMake(15,  10 - 10 , 250  + 30  , 58)
+            Description.frame = CGRectMake(15,  10 - 10 , 250  + 20  , 58)
             let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 12.0)!
             Description.font = myFont
         }else if Reachability.DeviceType.IS_IPHONE_6 {
@@ -332,6 +314,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         Description.text =  "\(dataDic.valueForKey("Comments")!)"
         //        Description.text= [notificationDataArr objectAtIndex:indexPath.row];
         Description.font  = UIFont(name: "HelveticaNeue", size: 15)
+        if Reachability.DeviceType.IS_IPHONE_5 {
+            Description.font  = UIFont(name: "HelveticaNeue", size: 12)
+        }
         let lines = Description.getNoOflines()
         if lines > 3 {
             if Reachability.DeviceType.IS_IPHONE_5 {
@@ -432,7 +417,8 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         }else if Reachability.DeviceType.IS_IPHONE_6 {
             timelabel.frame = CGRectMake(Description.frame.origin.x + Description.frame.size.width , TitleLabel.frame.origin.y, 65 , 45)
         }
-        timelabel.text =  "\(dataDic.valueForKey("TimeSpent")!)\nhours"
+        timelabel.text = "\(roundToPlaces(Double("\(dataDic.valueForKey("TimeSpent")!)")!, places: 2))"
+//        timelabel.text =  "\(dataDic.valueForKey("TimeSpent")!)\nhours"
         timelabel.numberOfLines = 2
         timelabel.textAlignment = .Center
         timelabel.textColor = UIColor.blackColor()
@@ -564,9 +550,16 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             let destinationVC = segue.destinationViewController as! AddNewTaskViewController
             destinationVC.editTaskDict = selectededitRowDict
             destinationVC.isEditting = "true"
+            if currentUserID != nil{
+            destinationVC.currentUserID =  currentUserID
+            destinationVC.currentUserActivityId = currentUserActivityId
+            }
         }
     }
     
-    
+    func roundToPlaces(value:Double, places:Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return round(value * divisor) / divisor
+    }
 }
 //

@@ -51,7 +51,8 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         
     txtTaskDescription.text = taskData.valueForKey("TaskName") as? String
     txtComments.text = taskData.valueForKey("Comments") as? String
-    lblHourWorked.text = taskData.valueForKey("TimeSpent")!  as? String
+     lblHourWorked.text = "\(roundToPlaces(Double("\(taskData.valueForKey("TimeSpent")!)")!, places: 2))"
+//    lblHourWorked.text = taskData.valueForKey("TimeSpent")!  as? String
     print(taskData.valueForKey("CreatedDate")!)
         
         if taskData.valueForKey("TaskName") != nil {
@@ -346,6 +347,11 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
     }
     @IBAction func btnBack(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
-        self.navigationController?.popViewControllerAnimated(true)    }
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    func roundToPlaces(value:Double, places:Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return round(value * divisor) / divisor
+    }
 
 }

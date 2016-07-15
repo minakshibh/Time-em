@@ -220,6 +220,11 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
 
         }else{
             if status == "No Record Found !" {
+                
+                if dataArray.count > 0 {
+                    
+                }else{
+                
                 alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
                     print("Handle Ok logic here")
@@ -238,11 +243,13 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
                     self.dismissViewControllerAnimated(true, completion: {});
                     self.navigationController?.popViewControllerAnimated(true)
                 }))
+                self.presentViewController(alert, animated: true, completion: nil)
+
+            }
             }else{
 
 //            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
             }
-            self.presentViewController(alert, animated: true, completion: nil)
 
         }
         if status == "No Record Found !" {

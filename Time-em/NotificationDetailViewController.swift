@@ -68,16 +68,22 @@ class NotificationDetailViewController: UIViewController {
             if notificationData.valueForKey("AttachmentFullPath") as? String != "" {
                 let url = NSURL(string: "\(self.notificationData.valueForKey("AttachmentFullPath")!)")
                 
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                    let data = NSData(contentsOfURL: url!)
-                    dispatch_async(dispatch_get_main_queue(), {
+                
+                self.attachmentLbl.hidden = false
+                self.attachmentImgBackView.hidden = false
+                
+                attachmentImageView.sd_setImageWithURL(url, placeholderImage: UIImage(named: "cross-popup"), options: .RefreshCached)
+
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+//                    let data = NSData(contentsOfURL: url!)
+//                    dispatch_async(dispatch_get_main_queue(), {
                         if self.attachmentImageView != nil {
-                            self.attachmentImageView.image = UIImage(data: data!)
+//                            self.attachmentImageView.image = UIImage(data: data!)
                             self.attachmentLbl.hidden = false
                             self.attachmentImgBackView.hidden = false
                         }
-                    });
-                }
+//                    });
+//                }
             }
         }
 
@@ -117,7 +123,8 @@ class NotificationDetailViewController: UIViewController {
     
     @IBAction func backBtn(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: {});
-        self.navigationController?.popViewControllerAnimated(true)    }
+        self.navigationController?.popViewControllerAnimated(true)
+    }
     
     func dateConversion(date : NSDate) -> NSString {
         let dateFormatter: NSDateFormatter = NSDateFormatter()

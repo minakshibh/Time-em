@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (3.4.0)
+  - DBAlertController (0.2.6)
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
@@ -19,6 +20,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - DBAlertController
   - FMDB
   - JLToast (~> 1.4)
   - KGModal (~> 1.2.0)
@@ -32,6 +34,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   Alamofire: c19a627cefd6a95f840401c49ab1f124e07f54ee
+  DBAlertController: f6bc826127685e6e44b2d5003034d9ff1c952322
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   HexColors: abfd172e329dab59888614ccba6f216cec59289d
   JLToast: f2ccfdb8726e562e6c0154fa3658cd432021b1cc
