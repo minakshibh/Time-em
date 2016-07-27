@@ -561,6 +561,16 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         commentsTxt.resignFirstResponder()
         scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
         scrollView.scrollEnabled = false
+        
+       let currentUSerSIGNIN =  "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)"
+        
+        if currentUSerSIGNIN == "0"{
+            let alert = UIAlertController(title: "Time'em", message: "Please SignIn before adding task.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AddNewTaskViewController.displayResponse), name: notificationKey, object: nil)
         assignedTasks.AddUpdateNewTask(imageData,videoData: videoRecordedData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: editId as String, view: self.view, isVideoRecorded:isVideoRecorded,isoffline:self.isoffline,uniqueno: self.uniqueno)
         

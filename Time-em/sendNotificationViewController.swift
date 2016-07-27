@@ -400,7 +400,11 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         }
 //        cell.backgroundColor = UIColor(red: 235/256, green: 235/256, blue: 235/256, alpha: 1)
         cell.selectionStyle = .None
-        
+        if selectedRecipientsIdArr.containsObject("\(dict.valueForKey("userid")!)") {
+            cell.accessoryType = .Checkmark
+        }else{
+            cell.accessoryType = .None
+        }
         
         return cell
     }
@@ -426,7 +430,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         let dict:NSDictionary = (recipientsArray[indexPath.row] as? NSDictionary)!
         selectedRecipientsNameArr.removeObject("\(dict.valueForKey("FullName")!)")
         selectedRecipientsIdArr.removeObject("\(dict.valueForKey("userid")!)")
-        var usernames:String!
+        var usernames:String! = ""
         for (var j=0; j<selectedRecipientsNameArr.count;j+=1) {
             if j==0 {
                 usernames = "\(selectedRecipientsNameArr[0])"

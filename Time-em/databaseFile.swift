@@ -121,7 +121,7 @@ fileURL.path)
         let dataArray:NSMutableArray! = []
         let str = "\(Date.componentsSeparatedByString("-")[1])/\(Date.componentsSeparatedByString("-")[0])/\(Date.componentsSeparatedByString("-")[2])"
         do {
-            let rs = try database.executeQuery("select * from tasksData", values: nil)
+            let rs = try database.executeQuery("select * from tasksData where UserId = ?", values: [USERID])
             while rs.next() {
                 let dict: NSMutableDictionary = [:]
                 dict.setObject(rs.stringForColumn("ActivityId"), forKey: "ActivityId")
@@ -1154,11 +1154,25 @@ fileURL.path)
             print("Unable to open database")
             return
         }
-        
+        let idArr:NSMutableArray = []
         do {
-            try database.executeUpdate("insert into notificationActiveUserList (userid,FullName) values (?,?)", values: [userid,FullName])
+            let rs = try database.executeQuery("select * from notificationActiveUserList", values: nil)
+            
+            while rs.next() {
+                let x = rs.stringForColumn("userid")
+                idArr.addObject(x)
+            }
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
+        }
+        if idArr.containsObject(userid){
+            
+        }else{
+        do {
+                try database.executeUpdate("insert into notificationActiveUserList (userid,FullName) values (?,?)", values: [userid,FullName])
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
         }
         database.close()
     }
@@ -1345,6 +1359,7 @@ fileURL.path)
         let TaskNameArr:NSMutableArray = []
         let TimeSpentArr:NSMutableArray = []
         let CreatedDateArr:NSMutableArray = []
+        let uniquenoArr:NSMutableArray = []
         do {
             let rs = try database.executeQuery("select * from tasksData", values: nil)
             while rs.next() {
@@ -1352,10 +1367,12 @@ fileURL.path)
                  let a = rs.stringForColumn("TaskName")
                  let b = rs.stringForColumn("TimeSpent")
                  let c = rs.stringForColumn("CreatedDate")
+                 let d = rs.stringForColumn("uniqueno")
                 TaskIdsArr.addObject(x)
                 TaskNameArr.addObject(a)
                 TimeSpentArr.addObject(b)
                 CreatedDateArr.addObject(c)
+                uniquenoArr.addObject(d)
             }
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
@@ -1511,7 +1528,7 @@ fileURL.path)
         
         if Id == "0" {
 
-            if TaskNameArr.containsObject("\(TaskName)") && TimeSpentArr.containsObject("\(TimeSpent)") && CreatedDateArr.containsObject("\(CreatedDate)") {
+            if uniquenoArr.containsObject(uniqueno) {
                 if isActive == "false" {
                     let databse = databaseFile()
                     databse.deleteTaskFromDatabse("\(TaskId!)")
@@ -1521,7 +1538,7 @@ fileURL.path)
                         if dict.valueForKey("AttachmentImageData") != nil {
                             try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, AttachmentImageData = ? , isoffline = ? ,uniqueno = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, dict.valueForKey("AttachmentImageData")!,"true",uniqueno,Id])
                         }else{
-                            try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, isoffline = ?,uniqueno = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, "true",uniqueno,Id])
+                            try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, isoffline = ?, Id = ? WHERE  uniqueno=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, "true",Id,uniqueno])
                         }
                     } catch let error as NSError {
                         print("failed: \(error.localizedDescription)")
@@ -1594,8 +1611,20 @@ fileURL.path)
             print("Unable to open database")
             return
         }
+        let idArr:NSMutableArray = []
         do {
-            try database.executeUpdate("DELETE FROM geofensingGraph", values: nil )
+            let rs = try database.executeQuery("select * from geofensingGraph", values: nil)
+            while rs.next() {
+                let x = rs.stringForColumn("userId")
+                if !idArr.containsObject("\(x)"){
+                idArr.addObject("\(x)")
+                }
+            }
+        } catch let error as NSError {
+            print("geofensingGraph failed: \(error.localizedDescription)")
+        }
+        do {
+            try database.executeUpdate("delete  from  geofensingGraph WHERE userId=?", values: [userId])
         } catch let error as NSError {
             print("geofensingGraph failed: \(error.localizedDescription)")
         }
@@ -1619,6 +1648,54 @@ fileURL.path)
         }
         database.close()
     }
+    func saveUserWorksiteActivityGraphAllUsers(data:NSArray,userId:String) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        //        let idArr:NSMutableArray = []
+        //        do {
+        //            let rs = try database.executeQuery("select * from geofensingGraph", values: nil)
+        //            while rs.next() {
+        //                let x = rs.stringForColumn("userId")
+        //                idArr.addObject(x)
+        //            }
+        //        } catch let error as NSError {
+        //            print("geofensingGraph failed: \(error.localizedDescription)")
+        //        }
+        do {
+            try database.executeUpdate("DELETE FROM geofensingGraph", values: nil )
+        } catch let error as NSError {
+            print("geofensingGraph failed: \(error.localizedDescription)")
+        }
+        for i:Int in 0 ..< data.count {
+            
+            let dict:NSMutableDictionary = data[i] as! NSMutableDictionary
+            let  UserId = "\(dict.valueForKey("UserId")!)"
+            let mutiUserworkSiteList = dict.valueForKey("mutiUserworkSiteList")! as! NSArray
+            var  CreatedDate = ""
+            for j:Int in 0 ..< mutiUserworkSiteList.count {
+                CreatedDate = "\(mutiUserworkSiteList[j].valueForKey("CreatedDate")!)"
+                let workSiteList:NSArray = mutiUserworkSiteList[j].valueForKey("workSiteList") as! NSArray
+                if workSiteList.count == 0 {
+                    continue
+                }
+                let workSiteListData = NSKeyedArchiver.archivedDataWithRootObject(workSiteList)
+                do {
+                    try database.executeUpdate("insert into geofensingGraph (CreatedDate,workSiteList,userId) values (?,?,?)", values: [CreatedDate,workSiteListData,UserId])
+                } catch let error as NSError {
+                    print("geofensingGraph 2 failed: \(error.localizedDescription)")
+                }
+            }
+        }
+            database.close()
+    }
+
     func getUserWorksiteActivityGraph(userid:String) -> NSMutableArray{
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")

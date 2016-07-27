@@ -2110,11 +2110,79 @@
                                     <outlet property="delegate" destination="cAv-NM-ffX" id="Jf8-Vb-AwC"/>
                                 </connections>
                             </tableView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t2y-ss-Y6U">
+                                <rect key="frame" x="0.0" y="531" width="414" height="205"/>
+                                <subviews>
+                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="urw-UW-Zpy">
+                                        <rect key="frame" x="0.0" y="29" width="414" height="177"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="urw-UW-Zpy" secondAttribute="height" multiplier="138:59" id="U1G-03-B0v"/>
+                                            <constraint firstAttribute="height" constant="177" id="jMF-al-QwV"/>
+                                        </constraints>
+                                        <date key="date" timeIntervalSinceReferenceDate="490872896.35704798">
+                                            <!--2016-07-22 09:34:56 +0000-->
+                                        </date>
+                                        <connections>
+                                            <action selector="datePicker:" destination="cAv-NM-ffX" eventType="valueChanged" id="1qz-WR-ARv"/>
+                                        </connections>
+                                    </datePicker>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xFy-I0-Gd9">
+                                        <rect key="frame" x="288" y="0.0" width="126" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="3PD-Ok-ueQ"/>
+                                            <constraint firstAttribute="width" secondItem="xFy-I0-Gd9" secondAttribute="height" multiplier="21:5" id="gcX-EW-7Fq"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                                        <state key="normal" title="Done"/>
+                                        <connections>
+                                            <action selector="datepickerDone:" destination="cAv-NM-ffX" eventType="touchUpInside" id="F4D-VK-qPH"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dQJ-nk-wY6">
+                                        <rect key="frame" x="0.0" y="0.0" width="121" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="dQJ-nk-wY6" secondAttribute="height" multiplier="121:30" id="Zrb-1C-9D1"/>
+                                            <constraint firstAttribute="height" constant="30" id="l7M-ud-afY"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                                        <state key="normal" title="Cancel"/>
+                                        <connections>
+                                            <action selector="datepickerCancel:" destination="cAv-NM-ffX" eventType="touchUpInside" id="zlG-hK-e6w"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="dQJ-nk-wY6" firstAttribute="leading" secondItem="t2y-ss-Y6U" secondAttribute="leading" id="81v-e3-45z"/>
+                                    <constraint firstItem="dQJ-nk-wY6" firstAttribute="top" secondItem="t2y-ss-Y6U" secondAttribute="top" id="RjY-v7-bdf"/>
+                                    <constraint firstAttribute="trailing" secondItem="urw-UW-Zpy" secondAttribute="trailing" id="XDe-RB-l0T"/>
+                                    <constraint firstItem="urw-UW-Zpy" firstAttribute="leading" secondItem="t2y-ss-Y6U" secondAttribute="leading" id="XKt-zo-Qom"/>
+                                    <constraint firstAttribute="height" constant="205" id="Xhp-lP-6rF"/>
+                                    <constraint firstAttribute="width" secondItem="t2y-ss-Y6U" secondAttribute="height" multiplier="414:205" id="cph-bi-mCM"/>
+                                    <constraint firstItem="xFy-I0-Gd9" firstAttribute="top" secondItem="t2y-ss-Y6U" secondAttribute="top" id="n9r-6j-BfE"/>
+                                    <constraint firstAttribute="bottom" secondItem="urw-UW-Zpy" secondAttribute="bottom" constant="-1" id="xPR-1y-W3b"/>
+                                    <constraint firstAttribute="trailing" secondItem="xFy-I0-Gd9" secondAttribute="trailing" id="ze7-Fg-L9I"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y96-48-ZFm">
+                                <rect key="frame" x="239" y="146" width="164" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Y96-48-ZFm" secondAttribute="height" multiplier="46:31" constant="116.51612903225806" id="Lq9-z5-m4J"/>
+                                    <constraint firstAttribute="height" constant="32" id="vn8-fo-x7X"/>
+                                </constraints>
+                                <state key="normal" image="calender">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnShowDatePicker:" destination="cAv-NM-ffX" eventType="touchUpInside" id="DD7-7l-t8T"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="0oM-dk-SBA" firstAttribute="top" secondItem="Xcl-9n-Jkw" secondAttribute="bottom" id="0wb-N4-0IT"/>
                             <constraint firstItem="iSH-Pt-R84" firstAttribute="leading" secondItem="uhc-NS-Xzp" secondAttribute="leadingMargin" constant="-20" id="2nM-hG-fAc"/>
+                            <constraint firstItem="Y96-48-ZFm" firstAttribute="leading" secondItem="eGu-EL-pdT" secondAttribute="trailing" constant="-175" id="3RQ-Br-g89"/>
                             <constraint firstItem="eGu-EL-pdT" firstAttribute="top" secondItem="iSH-Pt-R84" secondAttribute="bottom" id="40P-n8-4N4"/>
                             <constraint firstAttribute="trailingMargin" secondItem="e3U-VS-9Mg" secondAttribute="trailing" constant="-20" id="5v4-cu-fu6"/>
                             <constraint firstItem="e3U-VS-9Mg" firstAttribute="top" secondItem="eGu-EL-pdT" secondAttribute="bottom" id="7d6-Ep-mAl"/>
@@ -2122,19 +2190,23 @@
                             <constraint firstAttribute="trailingMargin" secondItem="eGu-EL-pdT" secondAttribute="trailing" constant="-20" id="9ah-05-Zyo"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Xcl-9n-Jkw" secondAttribute="trailing" constant="-20" id="Avd-kN-Sxh"/>
                             <constraint firstItem="iSH-Pt-R84" firstAttribute="top" secondItem="ZGr-aB-gOg" secondAttribute="bottom" id="BwG-tH-BrO"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="t2y-ss-Y6U" secondAttribute="trailing" constant="-20" id="CMf-Vs-vGK"/>
                             <constraint firstItem="iMH-Ke-3gx" firstAttribute="top" secondItem="0oM-dk-SBA" secondAttribute="bottom" id="DBa-9k-B8W"/>
                             <constraint firstItem="Xcl-9n-Jkw" firstAttribute="leading" secondItem="uhc-NS-Xzp" secondAttribute="leadingMargin" constant="-20" id="EYj-9f-LxV"/>
                             <constraint firstItem="ZGr-aB-gOg" firstAttribute="leading" secondItem="uhc-NS-Xzp" secondAttribute="leadingMargin" constant="-20" id="IRc-IS-9kq"/>
                             <constraint firstAttribute="trailingMargin" secondItem="e3U-VS-9Mg" secondAttribute="trailing" constant="-20" id="LVz-5c-Tdv"/>
                             <constraint firstAttribute="trailingMargin" secondItem="0oM-dk-SBA" secondAttribute="trailing" constant="-20" id="UEY-Uz-zco"/>
+                            <constraint firstItem="iMH-Ke-3gx" firstAttribute="top" secondItem="t2y-ss-Y6U" secondAttribute="bottom" id="Wqg-HF-WdT"/>
                             <constraint firstAttribute="trailingMargin" secondItem="iSH-Pt-R84" secondAttribute="trailing" constant="-20" id="Z4F-a1-1do"/>
                             <constraint firstItem="Xcl-9n-Jkw" firstAttribute="top" secondItem="uhc-NS-Xzp" secondAttribute="topMargin" id="bwb-Qs-o3R"/>
                             <constraint firstItem="e3U-VS-9Mg" firstAttribute="leading" secondItem="uhc-NS-Xzp" secondAttribute="leadingMargin" constant="-20" id="byg-aY-xcy"/>
                             <constraint firstItem="ZGr-aB-gOg" firstAttribute="top" secondItem="HfJ-Bq-RTk" secondAttribute="bottom" id="cNR-CB-c8l"/>
+                            <constraint firstItem="Y96-48-ZFm" firstAttribute="top" secondItem="eGu-EL-pdT" secondAttribute="bottom" constant="-32" id="d1F-66-hYU"/>
                             <constraint firstAttribute="trailingMargin" secondItem="pNN-ou-yxR" secondAttribute="trailing" constant="-20" id="dpg-ap-4dU"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ZGr-aB-gOg" secondAttribute="trailing" constant="-20" id="fMM-kf-6FL"/>
                             <constraint firstItem="iMH-Ke-3gx" firstAttribute="top" secondItem="e3U-VS-9Mg" secondAttribute="bottom" id="hQh-k6-XVx"/>
                             <constraint firstItem="pNN-ou-yxR" firstAttribute="top" secondItem="HfJ-Bq-RTk" secondAttribute="bottom" id="jiv-pa-NIC"/>
+                            <constraint firstItem="t2y-ss-Y6U" firstAttribute="leading" secondItem="uhc-NS-Xzp" secondAttribute="leadingMargin" constant="-20" id="k9d-g5-PUV"/>
                             <constraint firstItem="1DB-Yv-KiP" firstAttribute="top" secondItem="HfJ-Bq-RTk" secondAttribute="bottom" id="p6J-jf-Mnh"/>
                             <constraint firstItem="0oM-dk-SBA" firstAttribute="leading" secondItem="uhc-NS-Xzp" secondAttribute="leadingMargin" constant="-20" id="sZK-E8-glJ"/>
                             <constraint firstItem="1DB-Yv-KiP" firstAttribute="leading" secondItem="uhc-NS-Xzp" secondAttribute="leadingMargin" constant="-20" id="zaF-HL-aKT"/>
@@ -2144,6 +2216,10 @@
                     <connections>
                         <outlet property="btnAddTask" destination="pNN-ou-yxR" id="hHN-ys-FF7"/>
                         <outlet property="btnBack" destination="1DB-Yv-KiP" id="tKw-tR-fIw"/>
+                        <outlet property="btnShowDatePicker" destination="Y96-48-ZFm" id="eqo-rY-Yjw"/>
+                        <outlet property="datePicker" destination="urw-UW-Zpy" id="8we-wi-rda"/>
+                        <outlet property="datepickerDone" destination="xFy-I0-Gd9" id="Dcs-cv-9rU"/>
+                        <outlet property="datepickerView" destination="t2y-ss-Y6U" id="aIR-O7-Wbx"/>
                         <outlet property="lblMyTasksHeader" destination="ZGr-aB-gOg" id="2zf-uh-hGV"/>
                         <outlet property="tableView" destination="e3U-VS-9Mg" id="sXc-EO-fmM"/>
                         <outlet property="viewCalanderBackground" destination="iSH-Pt-R84" id="ylA-Fq-ynP"/>
@@ -4115,6 +4191,7 @@
         <image name="black-message" width="14" height="14"/>
         <image name="black-person" width="14" height="14"/>
         <image name="black-phone" width="14" height="14"/>
+        <image name="calender" width="32" height="32"/>
         <image name="checkMark.png" width="200" height="200"/>
         <image name="closebar.png" width="330" height="328"/>
         <image name="cross-popup" width="10" height="10"/>
@@ -4145,10 +4222,10 @@
         <image name="video_play" width="28" height="27"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="9mw-38-tLx"/>
         <segue reference="1Ot-67-owb"/>
         <segue reference="bCb-v0-qUk"/>
-        <segue reference="9mw-38-tLx"/>
-        <segue reference="t3F-eT-UCv"/>
+        <segue reference="oOf-Cp-Bgw"/>
         <segue reference="sXm-1h-J69"/>
     </inferredMetricsTieBreakers>
 </document>

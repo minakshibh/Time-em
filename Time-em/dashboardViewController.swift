@@ -9,6 +9,7 @@
 import UIKit
 import KGModal
 import FMDB
+import MBProgressHUD
 
 class dashboardViewController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource {
 
@@ -80,8 +81,20 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         self.view.bringSubviewToFront(self.sideView)
         self.view.bringSubviewToFront(btnMenu)
         
-      
-        
+      ///-->> fetch all data on dashboard
+        self.fetchNotificationList()
+        NSUserDefaults.standardUserDefaults().setObject("true", forKey:"exicuteOnlyOnce")
+        self.fetchTeamList()
+        let assignedTasks = ApiRequest()
+        let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
+        assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
+        assignedTasks.GetNotificationType()
+        self.getActiveUserList()
+        NSUserDefaults.standardUserDefaults().setObject("false", forKey:"isEditingOrAdding")
+        assignedTasks.getUserTask(currentUserId as! String, createdDate: "",TimeStamp: "", view: self.view)
+//        assignedTasks.GetUserWorksiteListActivity("2,8049,7,10", view: self.view)
+        MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+
         
         if fromPassCodeView != "yes" {
             
@@ -861,8 +874,9 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
     NSUserDefaults.standardUserDefaults().removeObjectForKey("teamTimeStamp")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_Email")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_PhoneNumber")
-        NSUserDefaults.standardUserDefaults().removeObjectForKey("forGraph")
-        NSUserDefaults.standardUserDefaults().removeObjectForKey("selectedWidgets")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("forGraph")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("selectedWidgets")
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_LoginCode")
 
 ////        self.navigationController?.popToRootViewControllerAnimated(true)
 //        self.dismissViewControllerAnimated(true, completion: nil)
@@ -1027,6 +1041,44 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         self.presentViewController(alert, animated: true, completion: nil)
 
     }
-
-    
+    func fetchNotificationList() {
+        
+        let userid = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+        
+        let timestm:String!
+        if NSUserDefaults.standardUserDefaults().valueForKey("notificationsTimeStamp") != nil {
+            timestm = NSUserDefaults.standardUserDefaults().valueForKey("notificationsTimeStamp") as? String
+        }else{
+            timestm = ""
+        }
+        let api = ApiRequest()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.displayResponse), name: "com.time-em.getNotificationListByLoginCode", object: nil)
+        api.getNotifications(userid!, timeStamp: timestm)
+    }
+    func fetchTeamList() {
+        let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+        let timestm:String!
+        if NSUserDefaults.standardUserDefaults().valueForKey("teamTimeStamp") != nil {
+            timestm = NSUserDefaults.standardUserDefaults().valueForKey("teamTimeStamp") as? String
+        }else{
+            timestm = ""
+        }
+        let api = ApiRequest()
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.displayResponse), name: "com.time-em.getTeamResponse", object: nil)
+        api.getTeamDetail(logedInUserId!, TimeStamp:timestm, view: self.view)
+    }
+    func getActiveUserList(){
+        // Do any additional setup after loading the view.
+        let api = ApiRequest()
+        
+        
+        let userIdStr = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+        let TimeStamp:String!
+        if NSUserDefaults.standardUserDefaults().objectForKey("activeUserListTimeStamp") != nil {
+            TimeStamp = NSUserDefaults.standardUserDefaults().objectForKey("activeUserListTimeStamp") as? String
+        }else{
+            TimeStamp = ""
+        }
+        api.getActiveUserList(userIdStr!,timeStamp:TimeStamp,view:self.view)
+    }
 }

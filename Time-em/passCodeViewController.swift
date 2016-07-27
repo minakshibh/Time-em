@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Toast_Swift
 
 class passCodeViewController: UIViewController,UITextFieldDelegate {
 
@@ -144,9 +145,29 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
 
         
     let password = "\(txtFieldone.text!)\(txtFieldtwo.text!)\(txtFieldthree.text!)\(txtFieldFour.text!)"
-    let currentUser_LoginId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginId") as? String
-        let api = ApiRequest()
-        api.loginThroughPasscode(currentUser_LoginId!, SecurityPin: password, view: self.view)
+        
+        if Reachability.isConnectedToNetwork() == true {
+            let currentUser_LoginId = NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginId") as? String
+            let api = ApiRequest()
+            api.loginThroughPasscode(currentUser_LoginId!, SecurityPin: password, view: self.view)
+        }else{
+            if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginCode") != nil {
+                let passCode: String =  "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginCode")!)"
+                if passCode == password {
+                    self.performSegueWithIdentifier("passcode_dashboard", sender: self)
+                }else{
+                view.makeToast("Worng passcode entered. Please try again.")
+                }
+            }else{
+                txtFieldone.text = ""
+                txtFieldtwo.text = ""
+                txtFieldthree.text = ""
+                txtFieldFour.text = ""
+                view.makeToast("Internet Connection not working.", duration: 2, position: .Top)
+                txtFieldone.becomeFirstResponder()
+            }
+        }
+    
     }
     
     func textFieldShouldEndEditing(textField: UITextField) -> Bool {  //delegate method

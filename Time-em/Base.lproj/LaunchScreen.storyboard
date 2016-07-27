@@ -55,6 +55,7 @@
                             <constraint firstAttribute="trailingMargin" secondItem="zEG-Br-jyz" secondAttribute="trailing" constant="-20" id="yJP-fG-bUi"/>
                         </constraints>
                     </view>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wtZ-Tv-1jf" userLabel="First Responder" sceneMemberID="firstResponder"/>

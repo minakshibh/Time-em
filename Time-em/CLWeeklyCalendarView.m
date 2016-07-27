@@ -335,6 +335,51 @@ static float const CLCalendarSelectedDatePrintFontSizeDefault = 15.f;
 }
 -(void)delegateSwipeAnimation: (BOOL)blnSwipeRight blnToday: (BOOL)blnToday selectedDate:(NSDate *)selectedDate
 {
+    // logic
+    int state ;
+    if (blnSwipeRight) {
+        state = -1;
+    }else{
+        state = +1;
+    }
+    NSDate * date = [NSDate.date addDays:state*30];
+    NSDate *dtStart;
+    
+    if(blnToday){
+        dtStart = [[NSDate new] getWeekStartDate:self.weekStartConfig.integerValue];
+    }else{
+        dtStart = (selectedDate)? [selectedDate getWeekStartDate:self.weekStartConfig.integerValue]:[self.startDate addDays:state*7];
+    }
+    
+    NSDate *lastDate = date;
+    NSDate *dateSwiped = dtStart;
+    
+    if ([lastDate compare:dateSwiped] == NSOrderedDescending) {
+        //"date1 is later than date2
+        NSLog(@"isTokonValid = YES;");
+        if (blnSwipeRight) {
+           return;
+        }else{
+            
+        }
+        
+        
+    } else if ([lastDate compare:dateSwiped] == NSOrderedAscending) {
+        //date1 is earlier than date2
+        NSLog(@"isTokonValid = NO;");
+        if (blnSwipeRight) {
+            
+        }else{
+           return;
+        }
+    } else {
+        //dates are the same
+        NSLog(@"isTokonValid = NO;");
+        
+    }
+    //
+    
+    
     CATransition *animation = [CATransition animation];
     [animation setDelegate:self];
     [animation setType:kCATransitionPush];
@@ -367,6 +412,9 @@ static float const CLCalendarSelectedDatePrintFontSizeDefault = 15.f;
     }else{
         dtStart = (selectedDate)? [selectedDate getWeekStartDate:self.weekStartConfig.integerValue]:[self.startDate addDays:step*7];
     }
+    
+
+    
     
     self.startDate = dtStart;
     for (UIView *v in [self.dailySubViewContainer subviews]){

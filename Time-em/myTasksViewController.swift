@@ -8,9 +8,11 @@
 
 import UIKit
 import MGSwipeTableCell
+import Toast_Swift
 
 class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITableViewDataSource,UITableViewDelegate {
     
+    @IBOutlet var datePicker: UIDatePicker!
     var calendarView: CLWeeklyCalendarView!
     @IBOutlet var viewCalanderBackground: UIView!
     @IBOutlet var tableView: UITableView!
@@ -28,10 +30,52 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     var selectededitRowDict:NSMutableDictionary = [:]
     var count:Int = 0
     var webservicehitCount:Int = 0
+    var pickerDateStr:String!
     
     @IBOutlet var btnSignIn: UIButton!
     
     
+    @IBOutlet var datepickerView: UIView!
+    @IBOutlet var btnShowDatePicker: UIButton!
+    @IBAction func btnShowDatePicker(sender: AnyObject) {
+        if datepickerView.hidden {
+          datepickerView.hidden = false
+        }else{
+          datepickerView.hidden = true
+        }
+    }
+    @IBAction func datepickerCancel(sender: AnyObject) {
+        datepickerView.hidden = true
+        NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "btnShowDatePickertitle")
+        btnShowDatePicker.setTitle(" \(selectedDate) ", forState: .Normal)
+    }
+    @IBAction func datepickerDone(sender: AnyObject) {
+        datepickerView.hidden = true
+        selectedDate = pickerDateStr
+        let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+        //-- setting date view
+        var dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy"
+        print(dateFormatter.stringFromDate(datePicker.date))
+        self.calendarView.redrawToDate(datePicker.date)
+        //--
+        
+        getuserTask(logedInUserId!, createdDate: selectedDate)
+        NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "btnShowDatePickertitle")
+        self.getDataFromDatabase(logedInUserId!)
+        btnShowDatePicker.setTitle(" \(pickerDateStr) ", forState: .Normal)
+        
+        
+
+    }//rABtqq
+    @IBOutlet var datepickerDone: UIButton!
+    @IBAction func datePicker(sender: AnyObject) {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy"
+        let strDate = dateFormatter.stringFromDate(datePicker.date)
+        print(strDate)
+        pickerDateStr = strDate
+    }
     
     override func viewDidDisappear(animated: Bool) {
 //        NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -41,9 +85,17 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         NSUserDefaults.standardUserDefaults().setObject("false", forKey: "isEditingOrAdding")
-
+        btnShowDatePicker.setTitle(" ", forState: .Normal)
+        btnShowDatePicker.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        btnShowDatePicker.titleLabel!.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        btnShowDatePicker.imageView!.transform = CGAffineTransformMakeScale(-1.0, 1.0);
+        
+        
         tableView.reloadData()
         
+        var dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy"
+        pickerDateStr = dateFormatter.stringFromDate(NSDate())
         
         self.dateConversion(NSDate())
         // Do any additional setup after loading the view.
@@ -68,6 +120,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
 
         if currentUserID != nil{
             btnAddTask.hidden = true
+            btnShowDatePicker.hidden = true
             lblMyTasksHeader.text = currentUserFullName!
             assignedTasks.GetUserWorksiteActivityGraph(currentUserID,view: self.view)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
@@ -121,9 +174,11 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         if currentUserID != nil{
             btnAddTask.hidden = true
             lblMyTasksHeader.text = currentUserFullName!
+            NSUserDefaults.standardUserDefaults().setObject("no", forKey: "btnShowDatePickertitle")
             self.getDataFromDatabase(currentUserID)
             getuserTask(currentUserID, createdDate: selectedDate)
         }else{
+            NSUserDefaults.standardUserDefaults().setObject("no", forKey: "btnShowDatePickertitle")
             self.getDataFromDatabase(logedInUserId!)
             getuserTask(logedInUserId!, createdDate: selectedDate)
         }
@@ -182,6 +237,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     }
     
     func dailyCalendarViewDidSelect(date: NSDate) {
+        datepickerView.hidden = true
         print(date)
         let dateStr = "\(date)".componentsSeparatedByString(" ")[0]
         let day = dateStr.componentsSeparatedByString("-")[2]
@@ -194,6 +250,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         }else{
             let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
             getuserTask(logedInUserId!, createdDate: selectedDate)
+            NSUserDefaults.standardUserDefaults().setObject("no", forKey: "btnShowDatePickertitle")
             self.getDataFromDatabase(logedInUserId!)
         }
         
@@ -214,6 +271,21 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     
     
     func getDataFromDatabase (id:String) {
+        
+        if         NSUserDefaults.standardUserDefaults().valueForKey("btnShowDatePickertitle") != nil{
+            if "\(NSUserDefaults.standardUserDefaults().valueForKey("btnShowDatePickertitle")!)" == "yes"{
+            
+            }else{
+                btnShowDatePicker.setTitle(" ", forState: .Normal)
+            }
+            
+
+        }
+
+        
+        
+        
+        
         let databaseFetch = databaseFile()
         taskDataArray = databaseFetch.getTasksForUserID(id,Date:selectedDate)
 //        print(taskDataArray)
@@ -251,7 +323,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
         
-        var alert :UIAlertController!
+//        var alert :UIAlertController!
         NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.usertaskResponse", object:nil)
         
         
@@ -262,16 +334,20 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             
         }else{
             
-            alert = UIAlertController(title: "Time'em", message: "\(status)", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            view.makeToast("\(status)")
+
+//            alert = UIAlertController(title: "Time'em", message: "\(status)", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
             
         }
         
         if currentUserID != nil{
+//            NSUserDefaults.standardUserDefaults().setObject("no", forKey: "btnShowDatePickertitle")
             self.getDataFromDatabase(currentUserID)
         }else{
             let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+//            NSUserDefaults.standardUserDefaults().setObject("no", forKey: "btnShowDatePickertitle")
             self.getDataFromDatabase(logedInUserId!)
         }
     }
@@ -352,6 +428,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
                 view.removeFromSuperview()
             }
         }
+        datepickerView.hidden = true
         
         let dataDic:NSMutableDictionary = taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
         
@@ -477,6 +554,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        datepickerView.hidden = true
                 delay(0.001){
                     let dataDic:NSMutableDictionary = self.taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
                     self.selectedTaskData = dataDic
@@ -506,9 +584,11 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         //        changeSignINButton()
         
         if currentUserID != nil{
+//            NSUserDefaults.standardUserDefaults().setObject("no", forKey: "btnShowDatePickertitle")
             self.getDataFromDatabase(currentUserID)
         }else{
             let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+//            NSUserDefaults.standardUserDefaults().setObject("no", forKey: "btnShowDatePickertitle")
             self.getDataFromDatabase(logedInUserId!)
         }
     }

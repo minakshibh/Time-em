@@ -8,6 +8,7 @@
 
 import UIKit
 import MGSwipeTableCell
+import Toast_Swift
 
 class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITableViewDelegate {
 
@@ -214,7 +215,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
                 let data =    NSUserDefaults.standardUserDefaults().valueForKey("getuserListByLoginCode") as? NSData
                 remainingDataArr = []
                 remainingDataArr = NSKeyedUnarchiver.unarchiveObjectWithData(data!) as! NSArray
-                combineRemainingData()
+                 combineRemainingData()
             NSUserDefaults.standardUserDefaults().removeObjectForKey("getuserListByLoginCode")
             }
 
@@ -254,11 +255,16 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         }
         if status == "No Record Found !" {
         }else{
-             var alert :UIAlertController!
-            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-
+//             var alert :UIAlertController!
+//            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+//        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+            if status.lowercaseString == "failure"{
+               view.makeToast("Invalid Status code")
+            }else{
+                view.makeToast("\(status)")
+            }
+            
         }
     }
     
@@ -275,9 +281,10 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
 //            self.performSegueWithIdentifier("barcodeToTeam", sender: self)
             self.performSegueWithIdentifier("todashboard", sender: self)
         }else{
-            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+//            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+            view.makeToast("\(status)")
         }
         
         getDataFromDatabse()

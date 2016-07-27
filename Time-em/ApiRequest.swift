@@ -14,8 +14,9 @@ import Toast_Swift
 
 public class ApiRequest:UIViewController {
     
-//    let apiUrl:String = "http://timeemapi.azurewebsites.net/api"
-    let apiUrl: String = "http://112.196.24.202:8080/api" // for location testing
+    let apiUrl:String = "http://timeemapi.azurewebsites.net/api"
+//    let apiUrl: String = "http://112.196.24.202:8080/api" // for location testing
+//    let apiUrl: String = "http://112.196.24.205:804/api"
     var taskORsync:String = ""
     
     func loginApi(loginId:String,password:String,view:UIView) {
@@ -80,6 +81,7 @@ public class ApiRequest:UIViewController {
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserTypeId)", forKey: "UserTypeId")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Email)", forKey: "currentUser_Email")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.PhoneNumber)", forKey: "currentUser_PhoneNumber")
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginCode)", forKey: "currentUser_LoginCode")
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "forGraph")
 
             var dictionary:NSMutableDictionary = [:]
@@ -606,7 +608,8 @@ public class ApiRequest:UIViewController {
                             
                         }
                         database.close()
-                        
+                        MBProgressHUD.hideHUDForView(view, animated: true)
+
                         let userInfo = ["response" : "SUCCESS"]
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                         
@@ -616,11 +619,14 @@ public class ApiRequest:UIViewController {
                         
                         
                         
-                        
+                        MBProgressHUD.hideHUDForView(view, animated: true)
+
                         NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     }
                 }else if "\(response.result)" == "FAILURE"{
                     let userInfo = ["response" : "FAILURE"]
+                    MBProgressHUD.hideHUDForView(view, animated: true)
+
                     NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     
                 }
@@ -837,6 +843,26 @@ public class ApiRequest:UIViewController {
                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             NSUserDefaults.standardUserDefaults().setObject(JSON.valueForKey("TimeStamp"), forKey: "teamTimeStamp")
                             let dict = JSON.valueForKey("AppUserViewModel") as! NSArray
+                            var idStr:String = ""
+                            for (var c=0; c<dict.count;c++){
+                                if c == 0 {
+                                   idStr = "\(dict[0].valueForKey("Id")!)"
+                                }else{
+                                   idStr = "\(idStr),\(dict[c].valueForKey("Id")!)"
+                                }
+                                
+                            }
+                            
+                    if NSUserDefaults.standardUserDefaults().valueForKey("exicuteOnlyOnce") != nil {
+            print(NSUserDefaults.standardUserDefaults().valueForKey("exicuteOnlyOnce"))
+                             if "\(NSUserDefaults.standardUserDefaults().valueForKey("exicuteOnlyOnce")!)" == "true"{
+                        NSUserDefaults.standardUserDefaults().setObject("false", forKey:"exicuteOnlyOnce")
+                                let assignedTasks = ApiRequest()
+                                assignedTasks.GetUserWorksiteListActivity(idStr, view: self.view)
+                        }
+                }
+
+                            print(idStr)
                             
                             let database = databaseFile()
                             database.insertTeamData(dict)
@@ -1072,7 +1098,73 @@ public class ApiRequest:UIViewController {
                 MBProgressHUD.hideHUDForView(view, animated: true)
         }
     }
-    
+    func GetUserWorksiteListActivity(userId:String,view:UIView)  {
+//        let notificationKey = "com.time-em.getUserSignedGraphData"
+        let notificationKey = ""
+        Alamofire.request(.GET, "\(apiUrl)/Worksite/GetUserlistWorksiteActivity", parameters: ["userid":userId])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                                                if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("error has occurred") != nil{
+                                                    let userInfo = ["response" : "FAILURE"]
+                                                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                                    return
+                                                }
+                        print(JSON.count)
+                        
+                        let dataArr:NSArray = JSON as! NSArray
+                        
+                        let database = databaseFile()
+                        database.saveUserWorksiteActivityGraphAllUsers(dataArr,userId:userId)
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
+                            
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+                        }else{
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+    }
+
     func GetAssignedTaskIList(userId:String,view:UIView)  {
         delay(0.001){
         MBProgressHUD.showHUDAddedTo(view, animated: true)
@@ -1446,6 +1538,21 @@ public class ApiRequest:UIViewController {
             let dataString = NSString(data: data!, encoding: NSUTF8StringEncoding)
             
             print(dataString)
+            //--
+            
+            
+                if "\(dataString!.lowercaseString)".rangeOfString("an error occured") != nil{
+                    let userInfo = ["response" : "Faild to send notification. Kindly try again."]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    delay(0.001){
+                        MBProgressHUD.hideHUDForView(view, animated: true)
+                        }
+                    return
+                }
+            
+            
+            
+            //--
             let stringArray = dataString!.componentsSeparatedByCharactersInSet(
                 NSCharacterSet.decimalDigitCharacterSet().invertedSet)
             let newString = stringArray.joinWithSeparator("")
@@ -2114,7 +2221,7 @@ public class ApiRequest:UIViewController {
                     print("JSON: \(JSON)")
                     
                     if "\(response.result)" == "SUCCESS"{
-                        print(JSON.valueForKey("isError"))
+                        print(JSON.valueForKey("IsError"))
                         print(JSON.valueForKey("Message"))
                         print("http:hello//")
 
