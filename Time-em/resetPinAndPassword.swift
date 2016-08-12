@@ -1,7 +1,7 @@
 
 import Foundation
 
-class resetPinAndPassword: UIViewController
+class resetPinAndPassword: UIViewController,UITextFieldDelegate
 {
     
     @IBOutlet var emailTxt: UITextField!
@@ -39,9 +39,12 @@ class resetPinAndPassword: UIViewController
         return emailTest.evaluateWithObject(testStr)
     }
     @IBAction func send(sender: AnyObject) {
+        send()
+    }
+    func send(){
         let emailStr: String = self.emailTxt.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
         if emailStr.characters.count == 0 {
-           let message = "Please enter an emailaddress."
+            let message = "Please enter an emailaddress."
             let alert = UIAlertController(title: "Time'em", message: message, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
@@ -56,7 +59,7 @@ class resetPinAndPassword: UIViewController
         
         
         let emailIs = self.emailTxt.text!
-      
+        
         let assignedTasks = ApiRequest()
         
         if resetType == "Password" {
@@ -69,7 +72,6 @@ class resetPinAndPassword: UIViewController
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(resetPinAndPassword.displayResponse), name: pinNotificationKey, object: nil)
         }
     }
-    
     func displayResponse(notification:NSNotification) {
         self.emailTxt.text = ""
         
@@ -91,11 +93,17 @@ class resetPinAndPassword: UIViewController
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
             alert = UIAlertController(title: "Time'em", message: messages, preferredStyle: UIAlertControllerStyle.Alert)
-            
+            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler:{ (UIAlertAction)in
+                delay(0.001) {
+                    self.dismissViewControllerAnimated(true, completion: {})
+                }
+                self.navigationController?.popViewControllerAnimated(true)
+            }))
         }else{
             alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
         }
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+       
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
@@ -104,5 +112,10 @@ class resetPinAndPassword: UIViewController
         self.dismissViewControllerAnimated(true, completion: {})
         }
         self.navigationController?.popViewControllerAnimated(true)
+    }
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        send()
+        self.view.endEditing(true)
+        return false
     }
 }

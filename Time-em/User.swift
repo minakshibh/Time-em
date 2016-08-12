@@ -39,8 +39,9 @@ class User: NSObject {
      var isError:Int
     var Email:String = ""
     var PhoneNumber:Int
+    var Pin:String = ""
     
-    required init(ActivityId: Int?, Company: String?, CompanyId: Int?, Department: String?, DepartmentId: Int?, FirstName: String?, FullName: String?, Id: Int?, IsSecurityPin: String?, IsSignIn: Int?, LastName: String?, LoginCode: String?, LoginId: String?, NFCTagId: String?, Password: String?, Project: String?,ProjectId: Int?, RefrenceCount: Int?,ReturnMessage: String? ,Supervisor: String? ,SupervisorId: Int? , Token: String? , UserType: String? = nil, UserTypeId: Int?, Worksite: String?,WorksiteId: Int?, isError: Int?, Email: String?, PhoneNumber: Int?) {
+    required init(ActivityId: Int?, Company: String?, CompanyId: Int?, Department: String?, DepartmentId: Int?, FirstName: String?, FullName: String?, Id: Int?, IsSecurityPin: String?, IsSignIn: Int?, LastName: String?, LoginCode: String?, LoginId: String?, NFCTagId: String?, Password: String?, Project: String?,ProjectId: Int?, RefrenceCount: Int?,ReturnMessage: String? ,Supervisor: String? ,SupervisorId: Int? , Token: String? , UserType: String? = nil, UserTypeId: Int?, Worksite: String?,WorksiteId: Int?, isError: Int?, Email: String?, PhoneNumber: Int?, Pin: String?) {
         self.ActivityId = ActivityId!
         self.Company = Company ?? ""
         self.CompanyId = CompanyId!
@@ -70,6 +71,7 @@ class User: NSObject {
         self.isError = isError!
          self.Email = Email ?? ""
         self.PhoneNumber = PhoneNumber!
+        self.Pin = Pin ?? ""
     }
     
     convenience required init(dict: NSMutableDictionary) {
@@ -100,7 +102,8 @@ class User: NSObject {
                   WorksiteId : dict["WorksiteId"] as? Int,
                   isError : dict["isError"] as? Int,
                   Email : dict["Email"] as? String,
-                  PhoneNumber : dict["PhoneNumber"] as? Int
+                  PhoneNumber : dict["PhoneNumber"] as? Int,
+                  Pin : dict["Pin"] as? String
         )
     }
     
@@ -136,6 +139,7 @@ class User: NSObject {
         data.setObject(self.isError, forKey: "isError")
         data.setObject(self.Email, forKey: "Email")
         data.setObject(self.PhoneNumber, forKey: "PhoneNumber")
+        data.setObject(self.Pin, forKey: "Pin")
         return data
     }
 

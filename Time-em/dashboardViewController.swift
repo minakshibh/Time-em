@@ -480,12 +480,14 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
     
     
     func refreshButtonTitleImage() {
+        if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn") != nil {
         if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0" {
             self.btnSignInOutPOPUP.setTitle("SIGN IN", forState: .Normal)
             self.btnSignInOut2.setTitle("SIGN IN", forState: .Normal)
         }else{
             self.btnSignInOutPOPUP.setTitle("SIGN OUT", forState: .Normal)
             self.btnSignInOut2.setTitle("SIGN OUT", forState: .Normal)
+        }
         }
     }
     
@@ -877,7 +879,9 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
     NSUserDefaults.standardUserDefaults().removeObjectForKey("forGraph")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("selectedWidgets")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_LoginCode")
-
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_Pin")
+   
+        
 ////        self.navigationController?.popToRootViewControllerAnimated(true)
 //        self.dismissViewControllerAnimated(true, completion: nil)
         let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")

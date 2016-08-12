@@ -58,6 +58,15 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
 //        }
         
         if noDataObjects.count > 0 {
+            
+            if dataArray.count == 0 {
+                if Reachability.isConnectedToNetwork() != true {
+                    view.makeToast("No user found. Try scanning some more codes.")
+                    NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "delay2Sec", userInfo: nil, repeats: false)
+                }
+            }
+            
+            
                var ids:String!
         for (var j=0; j<noDataObjects.count;j+=1) {
             if j==0 {
@@ -75,6 +84,11 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
         
         
         tableView.reloadData()
+    }
+    
+    func delay2Sec() {
+        self.dismissViewControllerAnimated(true, completion: {});
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func combineRemainingData () {

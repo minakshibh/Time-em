@@ -333,8 +333,12 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             
             
         }else{
+            if status.lowercaseString == "failure" {
+                view.makeToast("Failed to get tasks.")
+            }else{
+                view.makeToast("\(status)")
+            }
             
-            view.makeToast("\(status)")
 
 //            alert = UIAlertController(title: "Time'em", message: "\(status)", preferredStyle: UIAlertControllerStyle.Alert)
 //            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))

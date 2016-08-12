@@ -82,6 +82,7 @@ public class ApiRequest:UIViewController {
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Email)", forKey: "currentUser_Email")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.PhoneNumber)", forKey: "currentUser_PhoneNumber")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginCode)", forKey: "currentUser_LoginCode")
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Pin)", forKey: "currentUser_Pin")
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "forGraph")
 
             var dictionary:NSMutableDictionary = [:]

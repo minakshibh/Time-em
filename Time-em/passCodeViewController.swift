@@ -151,8 +151,8 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
             let api = ApiRequest()
             api.loginThroughPasscode(currentUser_LoginId!, SecurityPin: password, view: self.view)
         }else{
-            if NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginCode") != nil {
-                let passCode: String =  "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_LoginCode")!)"
+            if     NSUserDefaults.standardUserDefaults().valueForKey("currentUser_Pin") != nil {
+                let passCode: String =  "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_Pin")!)"
                 if passCode == password {
                     self.performSegueWithIdentifier("passcode_dashboard", sender: self)
                 }else{
