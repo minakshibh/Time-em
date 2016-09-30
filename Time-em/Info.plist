@@ -31,6 +31,10 @@
 	<string>app wants to get your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>get location app wants to get your location</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Time&apos;em want to access gallery images.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Time&apos;em wants to use device camera.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lato-Bold.ttf</string>

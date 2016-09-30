@@ -17,7 +17,7 @@ class databaseFile: NSObject {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -70,7 +70,7 @@ class databaseFile: NSObject {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -95,7 +95,7 @@ class databaseFile: NSObject {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
                 let database = FMDatabase(path:
-fileURL.path)
+fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -113,7 +113,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -141,10 +141,15 @@ fileURL.path)
                 dict.setObject(rs.stringForColumn("Comments"), forKey: "Comments")
                 dict.setObject(rs.stringForColumn("isoffline") ?? "", forKey: "isoffline")
                 dict.setObject(rs.stringForColumn("uniqueno") ?? "", forKey: "uniqueno")
+                
+                dict.setObject(rs.stringForColumn("CompanyId") ?? "", forKey: "CompanyId")
+
 //                dict.setObject(rs.stringForColumn("AttachmentImageData") ?? "", forKey: "AttachmentImageData")
 
 //                print(rs.stringForColumn("UserId"))
-                if rs.stringForColumn("UserId") == USERID  && rs.stringForColumn("CreatedDate")!.componentsSeparatedByString(" ")[0] == str {
+                let companyKey:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
+                if rs.stringForColumn("UserId") == USERID  && rs.stringForColumn("CreatedDate")!.componentsSeparatedByString(" ")[0] == str && rs.stringForColumn("CompanyId") == companyKey{
                 dataArray.addObject(dict)
                 }
             }
@@ -160,7 +165,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -186,11 +191,13 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
         }
+        let companyKey:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
         let dataArray:NSMutableArray! = []
         do {
             let rs = try database.executeQuery("select * from teamData", values: nil)
@@ -223,8 +230,14 @@ fileURL.path)
                 dict.setObject(rs.stringForColumn("WorksiteId"), forKey: "WorksiteId")
                 
 //                print(rs.stringForColumn("SupervisorId"))
-                if rs.stringForColumn("SupervisorId") == ID {
+                
+                if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_UserType")!)" == "Admin" && rs.stringForColumn("CompanyId") == companyKey {
                     dataArray.addObject(dict)
+                }else{
+                
+                    if rs.stringForColumn("SupervisorId") == ID && rs.stringForColumn("CompanyId") == "companyKey"{
+                        dataArray.addObject(dict)
+                    }
                 }
             }
         } catch let error as NSError {
@@ -240,7 +253,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -263,7 +276,7 @@ fileURL.path)
         
         
         
-        for (var i = 0; i<dataArr.count;i+=1){
+        for i in (0 ..< dataArr.count){
             let dict = dataArr[i]
             
             let  ActivityId:Int!
@@ -273,15 +286,19 @@ fileURL.path)
                 ActivityId = 0
             }
             
+            
+            
             let  Company:String!
             if let field = dict.valueForKey("Company") as? String{
                 Company = field
             }else{
                 Company = ""
             }
+            
+            let companyKey:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
             let  CompanyId:Int!
-            if let field = dict.valueForKey("CompanyId")  {
-                CompanyId = field as! Int
+            if let field = Int(companyKey)  {
+                CompanyId = field 
             }else{
                 CompanyId = 0
             }
@@ -466,7 +483,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -482,9 +499,11 @@ fileURL.path)
 //        } catch let error as NSError {
 //            print("failed: \(error.localizedDescription)")
 //        }
+        let compId =  "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)"
+        
         do {
-            try database.executeUpdate("DELETE FROM TasksList", values: nil )
-        } catch let error as NSError {
+        try database.executeUpdate("delete  from  TasksList WHERE companyId=?", values: [compId])
+        }catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
 
@@ -508,13 +527,13 @@ fileURL.path)
                 dateStr = ""
             }
             
-            do {
-                try database.executeUpdate("insert into TasksList (timespent , date ) values (?, ?)", values: [timespent , dateStr])
+                do {
+                    try database.executeUpdate("insert into TasksList (timespent , date ,companyId) values (?, ?, ?)", values: [timespent , dateStr,    compId])
                 
-            } catch let error as NSError {
-                print("failed: \(error.localizedDescription)")
-            }
-
+                } catch let error as NSError {
+                    print("failed: \(error.localizedDescription)")
+                }
+            
 
 //            if taskListArr.containsObject("\(dateStr)") {
 //                do {
@@ -539,15 +558,16 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
         }
+        let compId =  "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)"
         
         do {
-            try database.executeUpdate("DELETE FROM UserSignedList", values: nil )
-        } catch let error as NSError {
+            try database.executeUpdate("delete  from  UserSignedList WHERE companyId=?", values: [compId])
+        }catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
         
@@ -591,7 +611,7 @@ fileURL.path)
             }
             
             do {
-                try database.executeUpdate("insert into UserSignedList (signedin ,signedout , date ) values (?, ? ,?)", values: [signedin , signedout , dateStr])
+                try database.executeUpdate("insert into UserSignedList (signedin ,signedout , date, companyId ) values (?, ? ,?, ?)", values: [signedin , signedout , dateStr, compId])
                 
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
@@ -622,14 +642,16 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
         }
         var array:NSMutableArray = []
+        let compId =  "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)"
+
         do {
-            let rs = try database.executeQuery("select * from UserSignedList", values: nil)
+            let rs = try database.executeQuery("select * from UserSignedList where companyId = ?", values: [compId])
             
             while rs.next() {
                 let dict:NSMutableDictionary = [:]
@@ -654,14 +676,15 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
         }
+        let compId =  "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)"
         var array:NSMutableArray = []
         do {
-            let rs = try database.executeQuery("select * from TasksList", values: nil)
+            let rs = try database.executeQuery("select * from TasksList where companyId = ?", values: [compId])
             
             while rs.next() {
                 let dict:NSMutableDictionary = [:]
@@ -686,7 +709,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -707,7 +730,7 @@ fileURL.path)
         }
         
          for i in 0 ..< dataArr.count {
-            let dict:NSMutableDictionary! = dataArr[i] as? NSMutableDictionary
+            let dict:NSDictionary! = dataArr[i] as? NSDictionary
             
             let  TaskId:Int!
             if let field = dict.valueForKey("TaskId")  {
@@ -749,7 +772,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -770,7 +793,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -788,7 +811,7 @@ fileURL.path)
     func teamSignOutbyId (userId:String) {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         if !database.open() {
             print("Unable to open database")
             return
@@ -805,7 +828,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -829,7 +852,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -855,7 +878,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -877,7 +900,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -896,7 +919,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -909,9 +932,13 @@ fileURL.path)
                 let dict:NSMutableDictionary = [:]
                let x =  rs.stringForColumn("type")
                let y =  rs.dataForColumn("data")
+                let z =  rs.stringForColumn("id")
+                
                 let userArr:NSMutableArray = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSMutableArray
+                userArr.addObject(z)
                 dict.setObject(userArr, forKey: x)
                 array.addObject(dict)
+                
                 }
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
@@ -925,7 +952,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -973,7 +1000,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1019,7 +1046,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1060,7 +1087,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1098,7 +1125,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1121,7 +1148,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1148,7 +1175,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1165,11 +1192,14 @@ fileURL.path)
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
+        
+        let companyKey:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
         if idArr.containsObject(userid){
             
         }else{
         do {
-                try database.executeUpdate("insert into notificationActiveUserList (userid,FullName) values (?,?)", values: [userid,FullName])
+                try database.executeUpdate("insert into notificationActiveUserList (userid,FullName,companyid) values (?,?,?)", values: [userid,FullName,companyKey])
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
@@ -1181,21 +1211,25 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
         }
         var userARR:NSMutableArray = []
+        let companyKey:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
         do {
-            let rs = try database.executeQuery("select * from notificationActiveUserList", values: nil)
+            let rs = try database.executeQuery("select * from notificationActiveUserList where companyid = ?", values: [companyKey])
             
             while rs.next() {
                 let dict:NSMutableDictionary = [:]
                 let x = rs.stringForColumn("userid")
                 let y = rs.stringForColumn("FullName")
+                let z = rs.stringForColumn("companyid")
                 dict.setValue(x, forKey: "userid")
                 dict.setValue(y, forKey: "FullName")
+                dict.setValue(z, forKey: "companyid")
                 userARR.addObject(dict)
             }
         } catch let error as NSError {
@@ -1212,7 +1246,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1231,7 +1265,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1273,7 +1307,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1291,7 +1325,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1313,7 +1347,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         if !database.open() {
             print("Unable to open database")
             return
@@ -1330,7 +1364,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         if !database.open() {
             print("Unable to open database")
             return
@@ -1347,7 +1381,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1605,7 +1639,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1634,9 +1668,9 @@ fileURL.path)
             let  CreatedDate = "\(dict.valueForKey("CreatedDate")!)"
             
             let workSiteList:NSArray = dict.valueForKey("workSiteList") as! NSArray
-            if workSiteList.count == 0 {
-                continue
-            }
+//            if workSiteList.count == 0 {
+//         ee       continue
+//            }
             let workSiteListData = NSKeyedArchiver.archivedDataWithRootObject(workSiteList)
 //            try database.executeUpdate("create table geofensingGraph(CreatedDate text, workSiteList text, userId tex)", values: nil)
 
@@ -1652,7 +1686,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1675,7 +1709,7 @@ fileURL.path)
         }
         for i:Int in 0 ..< data.count {
             
-            let dict:NSMutableDictionary = data[i] as! NSMutableDictionary
+            let dict:NSDictionary = data[i] as! NSDictionary
             let  UserId = "\(dict.valueForKey("UserId")!)"
             let mutiUserworkSiteList = dict.valueForKey("mutiUserworkSiteList")! as! NSArray
             var  CreatedDate = ""
@@ -1700,7 +1734,7 @@ fileURL.path)
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1716,7 +1750,7 @@ fileURL.path)
                 let y = rs.dataForColumn("workSiteList")
                 let z = rs.stringForColumn("userId")
                let arr = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSArray
-                var dataDict:NSMutableDictionary = [:]
+                let dataDict:NSMutableDictionary = [:]
                 dataDict.setObject(arr, forKey: "workSiteList")
                 dataDict.setObject(z, forKey: "userId")
                 dataDict.setObject(x, forKey: "CreatedDate")
@@ -1730,5 +1764,71 @@ fileURL.path)
         return dataARR
         
     }
+    
+    
+    func getOffflineTaskFromDatabase() -> NSMutableArray {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL!.path)
+        
+        if !database.open() {
+            print("Unable to open database")
+        }
+        let dataArray:NSMutableArray! = []
+        do {
+            let rs = try database.executeQuery("select * from tasksData where isoffline = ?", values: ["true"])
+            while rs.next() {
+                let dict: NSMutableDictionary = [:]
+                dict.setObject(rs.stringForColumn("ActivityId"), forKey: "ActivityId")
+                dict.setObject(rs.stringForColumn("AttachmentImageFile"), forKey: "AttachmentImageFile")
+                dict.setObject(rs.stringForColumn("AttachmentVideoFile"), forKey: "AttachmentVideoFile")
+                dict.setObject(rs.stringForColumn("CreatedDate"), forKey: "CreatedDate")
+                dict.setObject(rs.stringForColumn("EndTime"), forKey: "EndTime")
+                dict.setObject(rs.stringForColumn("SelectedDate"), forKey: "SelectedDate")
+                dict.setObject(rs.stringForColumn("SignedInHours"), forKey: "SignedInHours")
+                dict.setObject(rs.stringForColumn("StartTime"), forKey: "StartTime")
+                dict.setObject(rs.stringForColumn("TaskId"), forKey: "TaskId")
+                dict.setObject(rs.stringForColumn("TaskName"), forKey: "TaskName")
+                dict.setObject(rs.stringForColumn("TimeSpent"), forKey: "TimeSpent")
+                dict.setObject(rs.stringForColumn("Token"), forKey: "Token")
+                dict.setObject(rs.stringForColumn("UserId"), forKey: "UserId")
+                dict.setObject(rs.stringForColumn("Id"), forKey: "Id")
+                dict.setObject(rs.stringForColumn("Comments"), forKey: "Comments")
+                dict.setObject(rs.stringForColumn("isoffline") ?? "", forKey: "isoffline")
+                dict.setObject(rs.stringForColumn("uniqueno") ?? "", forKey: "uniqueno")
+                //                dict.setObject(rs.stringForColumn("AttachmentImageData") ?? "", forKey: "AttachmentImageData")
+                
+                //                print(rs.stringForColumn("UserId"))
+
+                dataArray.addObject(dict)
+            }
+        } catch let error as NSError {
+            print("failed: \(error.localizedDescription)")
+        }
+        
+        database.close()
+        return dataArray
+    }
+
+    
+    func deleteSYNCDataForID (id:String) {
+        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+        
+        let database = FMDatabase(path: fileURL!.path)
+        if !database.open() {
+            print("Unable to open database")
+            return
+        }
+        do {
+            try database.executeUpdate("DELETE FROM sync WHERE id=?", values: [id] )
+        } catch let error as NSError {
+            print("DELETE failed sync: \(error.localizedDescription)")
+        }
+        database.close()
+    }
+    
+    
 }
 

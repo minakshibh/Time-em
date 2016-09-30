@@ -176,13 +176,16 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                             let data = NSData(contentsOfURL: url!)
 //                            dispatch_async(dispatch_get_main_queue(), {
                         
+                            if Reachability.isConnectedToNetwork() == true {
+                                print("Internet connection OK")
+                            
                                 //----
                                 let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
                                 let database = databaseFile()
                                 database.addImageToTask("\(self.taskData.valueForKey("AttachmentVideoFile")!)", AttachmentImageData: encodedData,imageORvideo:"AttachmentVideoFile")
                                 self.videoData = data!
 //                            });
-                    
+                    }
 //                        }
                         }
                     }
@@ -199,10 +202,13 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
 //                    dispatch_async(dispatch_get_main_queue(), {
                 delay(0.001){
                         //----
+                    if Reachability.isConnectedToNetwork() == true {
+                        print("Internet connection OK")
                         let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
                         let database1 = databaseFile()
                         database1.addImageToTask("\(self.taskData.valueForKey("AttachmentVideoFile")!)", AttachmentImageData: encodedData,imageORvideo:"AttachmentVideoFile")
                         self.videoData = data!
+                    }
                 }
 //                    });
 //                }
@@ -239,6 +245,10 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             let data = NSData(contentsOfURL: url!)
+            
+            if Reachability.isConnectedToNetwork() == true {
+                print("Internet connection OK")
+                
             dispatch_async(dispatch_get_main_queue(), {
                 if self.imageView != nil && data != nil {
                     self.imageView.image = UIImage(data: data!)
@@ -251,6 +261,7 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
                 }
             });
         }
+        }
     
     }
     func downloadVideo() {
@@ -262,10 +273,13 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
             dispatch_async(dispatch_get_main_queue(), {
                 
                 //----
+                if Reachability.isConnectedToNetwork() == true {
+                    print("Internet connection OK")
                 let encodedData = NSKeyedArchiver.archivedDataWithRootObject(data!)
                 let database = databaseFile()
                 database.addImageToTask("\(self.taskData.valueForKey("AttachmentVideoFile")!)", AttachmentImageData: encodedData,imageORvideo:"AttachmentVideoFile")
                 self.videoData = data!
+                }
             });
         }
         
@@ -308,7 +322,10 @@ class TaskDetailViewController: UIViewController ,UIScrollViewDelegate{
     }
     
     @IBAction func btnPlayVideo(sender: AnyObject) {
-        playVideo(videoData)
+        if videoData != nil {
+           playVideo(videoData) 
+        }
+        
     }
     override func viewDidDisappear(animated: Bool) {
         

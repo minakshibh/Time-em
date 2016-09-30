@@ -14,7 +14,8 @@ import Toast_Swift
 
 public class ApiRequest:UIViewController {
     
-    let apiUrl:String = "http://timeemapi.azurewebsites.net/api"
+ //   let apiUrl:String = "http://timeemapi.azurewebsites.net/api"  // live
+    let apiUrl:String = "http://timeem-staging.azurewebsites.net/api"
 //    let apiUrl: String = "http://112.196.24.202:8080/api" // for location testing
 //    let apiUrl: String = "http://112.196.24.205:804/api"
     var taskORsync:String = ""
@@ -72,7 +73,7 @@ public class ApiRequest:UIViewController {
             
             
             
-            let currentUsers =  User(dict: JSON as! NSMutableDictionary)
+            let currentUsers =  User(dict: JSON as! NSDictionary)
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Id)", forKey: "currentUser_id")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.IsSignIn)", forKey: "currentUser_IsSignIn")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.ActivityId)", forKey: "currentUser_ActivityId")
@@ -83,6 +84,7 @@ public class ApiRequest:UIViewController {
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.PhoneNumber)", forKey: "currentUser_PhoneNumber")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginCode)", forKey: "currentUser_LoginCode")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Pin)", forKey: "currentUser_Pin")
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserType)", forKey: "currentUser_UserType")
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "forGraph")
 
             var dictionary:NSMutableDictionary = [:]
@@ -93,7 +95,7 @@ public class ApiRequest:UIViewController {
             let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
             let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
 
-            let database = FMDatabase(path: fileURL.path)
+            let database = FMDatabase(path: fileURL!.path)
             
             if !database.open() {
                 print("Unable to open database")
@@ -101,7 +103,7 @@ public class ApiRequest:UIViewController {
             }
             
             do {
-                try database.executeUpdate("create table tasksData(ActivityId text, AttachmentImageFile text, AttachmentVideoFile text ,Comments text, CreatedDate text, EndTime text,Id text, SelectedDate text, SignedInHours text,StartTime text, TaskId text, TaskName text,TimeSpent text, Token text, UserId text, AttachmentImageData text,isVideoRecorded text, isoffline text, uniqueno text)", values: nil)
+                try database.executeUpdate("create table tasksData(ActivityId text, AttachmentImageFile text, AttachmentVideoFile text ,Comments text, CreatedDate text, EndTime text,Id text, SelectedDate text, SignedInHours text,StartTime text, TaskId text, TaskName text,TimeSpent text, Token text, UserId text, AttachmentImageData text,isVideoRecorded text, isoffline text, uniqueno text, CompanyId text)", values: nil)
                 } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
                 }
@@ -118,7 +120,7 @@ public class ApiRequest:UIViewController {
                 print("failed: \(error.localizedDescription)")
             }
             do {
-                try database.executeUpdate("create table geofensingGraph(CreatedDate text, workSiteList text, userId tex)", values: nil)
+                try database.executeUpdate("create table geofensingGraph(CreatedDate text, workSiteList text, userId text)", values: nil)
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
@@ -128,7 +130,7 @@ public class ApiRequest:UIViewController {
                 print("failed: \(error.localizedDescription)")
             }
             do {
-                try database.executeUpdate("create table notificationActiveUserList(userid text,FullName text)", values: nil)
+                try database.executeUpdate("create table notificationActiveUserList(userid text,FullName text,companyid text)", values: nil)
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
@@ -138,9 +140,9 @@ public class ApiRequest:UIViewController {
                 print("failed: \(error.localizedDescription)")
             }
             do {
-                try database.executeUpdate("create table sync(type text, data text)", values: nil)
+                try database.executeUpdate("create table sync(type text, data text ,id integer primary key autoincrement)", values: nil)
             } catch let error as NSError {
-                print("failed: \(error.localizedDescription)")
+                print("sync failed: \(error.localizedDescription)")
             }
             do {
                 try database.executeUpdate("create table assignedTaskList(TaskId text, TaskName text)", values: nil)
@@ -149,13 +151,13 @@ public class ApiRequest:UIViewController {
             }
             
             do {
-                try database.executeUpdate("create table TasksList(timespent text, date text)", values: nil)
+                try database.executeUpdate("create table TasksList(timespent text, date text,companyId text)", values: nil)
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
             
             do {
-                try database.executeUpdate("create table UserSignedList(signedout text,signedin text, date text)", values: nil)
+                try database.executeUpdate("create table UserSignedList(signedout text, signedin text, date text, companyId text)", values: nil)
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
@@ -247,7 +249,7 @@ public class ApiRequest:UIViewController {
                         
                         if "\(JSON.valueForKey("isError")!)" == "0"{
                             
-                            var databse = databaseFile()
+                            let databse = databaseFile()
                             databse.deleteTask(Id, TimeSpent: TimeSpent, CreatedDate: CreatedDate, isoffline: isoffline, TaskId:TaskId)
                             
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -307,7 +309,7 @@ public class ApiRequest:UIViewController {
                             return
                         }
                         
-                        let currentUsers =  User(dict: JSON as! NSMutableDictionary)
+                        let currentUsers =  User(dict: JSON as! NSDictionary)
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Id)", forKey: "currentUser_id")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.IsSignIn)", forKey: "currentUser_IsSignIn")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.ActivityId)", forKey: "currentUser_ActivityId")
@@ -317,6 +319,7 @@ public class ApiRequest:UIViewController {
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Email)", forKey: "currentUser_Email")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.PhoneNumber)", forKey: "currentUser_PhoneNumber")
                         NSUserDefaults.standardUserDefaults().setObject("no", forKey: "forGraph")
+                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserType)", forKey: "currentUser_UserType")
                         
                         var dictionary:NSMutableDictionary = [:]
                         dictionary = currentUsers.returnDict()
@@ -326,7 +329,7 @@ public class ApiRequest:UIViewController {
                         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
                         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
                         
-                        let database = FMDatabase(path: fileURL.path)
+                        let database = FMDatabase(path: fileURL!.path)
                         
                         if !database.open() {
                             print("Unable to open database")
@@ -373,7 +376,8 @@ public class ApiRequest:UIViewController {
             MBProgressHUD.showHUDAddedTo(view, animated: true)
         }
         
-        Alamofire.request(.POST, "\(apiUrl)/UserTask/GetUserActivityTask", parameters: ["userId":userId,"createdDate":createdDate, "TimeStamp":TimeStamp])
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+        Alamofire.request(.POST, "\(apiUrl)/UserTask/GetUserActivityTask", parameters: ["userId":userId,"createdDate":createdDate, "TimeStamp":TimeStamp, "CompanyId" : str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -438,7 +442,7 @@ public class ApiRequest:UIViewController {
                         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
                         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
                         
-                        let database = FMDatabase(path: fileURL.path)
+                        let database = FMDatabase(path: fileURL!.path)
                         
                         if !database.open() {
                             print("Unable to open database")
@@ -461,13 +465,20 @@ public class ApiRequest:UIViewController {
                         
                         
                         
-                        for (var i = 0; i<dict.count;i+=1){
+                        for i in (0 ..< dict.count){
                             
                             let  ActivityId:Int!
                             if let field = dict[i].valueForKey("ActivityId")   {
                                 ActivityId = field as! Int
                             }else{
                                 ActivityId = 0
+                            }
+                            
+                            var CompanyId:Int!
+                            if let field = dict[i].valueForKey("CompanyId")   {
+                                CompanyId = field as! Int
+                            }else{
+                                CompanyId = 0
                             }
                             
                             let  AttachmentImageFile:String!
@@ -588,7 +599,7 @@ public class ApiRequest:UIViewController {
                                     continue
                                 }
                                 do {
-                                    try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId , Id])
+                                    try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? ,CompanyId = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,CompanyId , Id])
                                 } catch let error as NSError {
                                     print("failed: \(error.localizedDescription)")
                                 }
@@ -600,7 +611,7 @@ public class ApiRequest:UIViewController {
                                 
                                 do {
                                     //                    try database.executeUpdate("delete * from  tasksData", values: nil)
-                                    try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,uniqueno ) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,"", "" ])
+                                    try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,uniqueno ,CompanyId) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,"", "" ,CompanyId])
                                     
                                 } catch let error as NSError {
                                     print("failed: \(error.localizedDescription)")
@@ -664,10 +675,9 @@ public class ApiRequest:UIViewController {
             return
         }
         
-        
-        
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignOutByUserId", parameters: ["Userids":userId])
+        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignOutByUserId", parameters: ["Userids":userId,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -754,9 +764,10 @@ public class ApiRequest:UIViewController {
 //            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             return
         }
-        
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignInByUserId", parameters: ["Userids":userId])
+        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignInByUserId", parameters: ["Userids":userId,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -819,7 +830,9 @@ public class ApiRequest:UIViewController {
     func getTeamDetail(userId:String,TimeStamp:String,view:UIView)  {
         let notificationKey = "com.time-em.getTeamResponse"
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "\(apiUrl)/User/GetAllUsersList", parameters: ["userId":userId,"TimeStamp":TimeStamp])
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
+        Alamofire.request(.POST, "\(apiUrl)/User/GetAllUsersList", parameters: ["userId":userId,"TimeStamp":"","CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -832,6 +845,28 @@ public class ApiRequest:UIViewController {
                     if "\(response.result)" == "SUCCESS"{
                         
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
+                            
+                            // delete old data if new data doesnot exist
+                            let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+                            let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+                            
+                            let database = FMDatabase(path: fileURL!.path)
+                            
+                            if !database.open() {
+                                print("Unable to open database")
+                            }
+                            let compId =  "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)"
+                            
+                            do {
+                                try database.executeUpdate("delete  from  teamData WHERE companyId=?", values: [compId])
+                            }catch let error as NSError {
+                                print("failed: \(error.localizedDescription)")
+                            }
+                            database.close()
+                            //---
+                            
+                            
+                            
                             let userInfo = ["response" : "FAILURE"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             MBProgressHUD.hideHUDForView(view, animated: true)
@@ -845,7 +880,7 @@ public class ApiRequest:UIViewController {
                             NSUserDefaults.standardUserDefaults().setObject(JSON.valueForKey("TimeStamp"), forKey: "teamTimeStamp")
                             let dict = JSON.valueForKey("AppUserViewModel") as! NSArray
                             var idStr:String = ""
-                            for (var c=0; c<dict.count;c++){
+                            for c in (0 ..< dict.count){
                                 if c == 0 {
                                    idStr = "\(dict[0].valueForKey("Id")!)"
                                 }else{
@@ -890,8 +925,9 @@ public class ApiRequest:UIViewController {
     
     func fetchUserTaskGraphDataFromAPI(userId:String,view:UIView)  {
         let notificationKey = "com.time-em.getUserTaskGraphData"
-        
-        Alamofire.request(.GET, "\(apiUrl)/usertask/UserTaskGraph", parameters: ["userId":userId])
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
+        Alamofire.request(.GET, "\(apiUrl)/usertask/UserTaskGraph", parameters: ["userId":userId,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -899,11 +935,33 @@ public class ApiRequest:UIViewController {
                 print(response.result)   // result of response serialization
                 
                 if let JSON = response.result.value {
-//                    print("JSON: \(JSON)")
+                    print("JSON: \(JSON)")
                     
                     if "\(response.result)" == "SUCCESS"{
                         
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
+                            
+                            
+                            // delete old data if new data doesnot exist
+                            let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+                            let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+                            
+                            let database = FMDatabase(path: fileURL!.path)
+                            
+                            if !database.open() {
+                                print("Unable to open database")
+                            }
+                            let compId =  "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)"
+                            
+                            do {
+                                try database.executeUpdate("delete  from  TasksList WHERE companyId=?", values: [compId])
+                            }catch let error as NSError {
+                                print("failed: \(error.localizedDescription)")
+                            }
+                            database.close()
+                            //---
+                            
+                            
                             let userInfo = ["response" : "FAILURE"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             return
@@ -984,8 +1042,9 @@ public class ApiRequest:UIViewController {
     }
     func fetchUserSignedGraphDataFromAPI(userId:String,view:UIView)  {
         let notificationKey = "com.time-em.getUserSignedGraphData"
-        
-        Alamofire.request(.GET, "\(apiUrl)/usertask/UsersGraph", parameters: ["userId":userId])
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
+        Alamofire.request(.GET, "\(apiUrl)/usertask/UsersGraph", parameters: ["userId":userId,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -993,11 +1052,35 @@ public class ApiRequest:UIViewController {
                 print(response.result)   // result of response serialization
                 
                 if let JSON = response.result.value {
-//                    print("JSON: \(JSON)")
+                    print("JSON: \(JSON)")
                     
                     if "\(response.result)" == "SUCCESS"{
                         
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
+                            
+                            
+                            // delete old data if new data doesnot exist
+                            let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+                            let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+                            
+                            let database = FMDatabase(path: fileURL!.path)
+                            
+                            if !database.open() {
+                                print("Unable to open database")
+                            }
+                            let compId =  "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)"
+                            
+                            do {
+                                try database.executeUpdate("delete  from  UserSignedList WHERE companyId=?", values: [compId])
+                            }catch let error as NSError {
+                                print("failed: \(error.localizedDescription)")
+                            }
+                            database.close()
+                            //---
+
+                            
+                            
+                            
                             let userInfo = ["response" : "FAILURE"]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             return
@@ -1240,9 +1323,70 @@ public class ApiRequest:UIViewController {
             
            let database = databaseFile()
             
-            database.addTaskSync(imageData, videoData: videoData, ActivityId: ActivityId, TaskId: TaskId, UserId: UserId, TaskName: TaskName, TimeSpent: TimeSpent, Comments: Comments, CreatedDate: CreatedDate, ID: ID, isVideoRecorded: "\(isVideoRecorded)",uniqueno:uniqueno)
-            let userInfo = ["response" : "success"]
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+
+            
+            let arr:NSMutableArray = database.getDataFromSync()
+            if arr.count != 0{
+                for i in (0 ..< arr.count){
+//                for dictDATA in arr {
+                    let dictDATA:NSMutableDictionary = arr[i] as! NSMutableDictionary;
+                    if dictDATA.valueForKey("AddUpdateNewTask") != nil {
+                        
+                        
+                        
+                        let userArr:NSArray = (dictDATA.valueForKey("AddUpdateNewTask") as? NSArray)!
+                        
+                        let uniqueNo = "\(userArr[11])"
+                        if (uniqueNo == uniqueno){
+                          let countNo = "\(userArr[13])"
+                            database.deleteSYNCDataForID(countNo)
+                            
+                            
+                            /////------
+                            
+                            let issignedin:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)"
+                            if issignedin == "0" {
+                                
+                                let userInfo = ["response" : "Signin before adding task."]
+                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                                return
+                            }
+                            print("Internet connection FAILED")
+                            view.makeToast("Internet connection FAILED. Request saved in sync")
+                            let uniqueno:String = "\(UserId)\(currentTimeMillis())"
+                            
+                            let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+                            
+                            
+                            let array:NSMutableArray = []
+                            array.addObject(imageData)
+                            array.addObject(videoData)
+                            array.addObject(ActivityId)
+                            array.addObject(TaskId)
+                            array.addObject(UserId)
+                            array.addObject(TaskName)
+                            array.addObject(TimeSpent)
+                            array.addObject(Comments)
+                            array.addObject(CreatedDate)
+                            array.addObject(ID)
+                            array.addObject(isVideoRecorded)
+                            array.addObject(uniqueno)
+                            array.addObject(str)
+                            let database = databaseFile()
+                            database.addDataToSync("AddUpdateNewTask", data: array)
+                            NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
+                            /////-------
+                        }
+                        
+                       
+                    }
+                }
+                
+                database.addTaskSync(imageData, videoData: videoData, ActivityId: ActivityId, TaskId: TaskId, UserId: UserId, TaskName: TaskName, TimeSpent: TimeSpent, Comments: Comments, CreatedDate: CreatedDate, ID: ID, isVideoRecorded: "\(isVideoRecorded)",uniqueno:uniqueno)
+                let userInfo = ["response" : "success"]
+                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+            }
+            
             
             return
         }
@@ -1263,6 +1407,9 @@ public class ApiRequest:UIViewController {
             view.makeToast("Internet connection FAILED. Request saved in sync")
             let uniqueno:String = "\(UserId)\(currentTimeMillis())"
             
+            let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
+            
             let array:NSMutableArray = []
             array.addObject(imageData)
             array.addObject(videoData)
@@ -1276,6 +1423,7 @@ public class ApiRequest:UIViewController {
             array.addObject(ID)
             array.addObject(isVideoRecorded)
             array.addObject(uniqueno)
+            array.addObject(str)
             let database = databaseFile()
             database.addDataToSync("AddUpdateNewTask", data: array)
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey:"sync")
@@ -1291,6 +1439,8 @@ public class ApiRequest:UIViewController {
         //--
         MBProgressHUD.showHUDAddedTo(view, animated: true)
         
+        let companyKey:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
         let param = [
             "ActivityId"    :ActivityId,
             "TaskId"        :TaskId,
@@ -1299,7 +1449,8 @@ public class ApiRequest:UIViewController {
             "TimeSpent"     :TimeSpent,
             "Comments"      :Comments,
             "CreatedDate"   :CreatedDate,
-            "ID"            :ID
+            "ID"            :ID,
+            "CompanyId"     :companyKey
         ]
                 print(param)
         let url = NSURL(string: "\(apiUrl)/usertask/AddUpdateUserTaskActivityNew")
@@ -1363,9 +1514,9 @@ public class ApiRequest:UIViewController {
         
         let task = session.dataTaskWithRequest(request) {
             (
-            let data, let response, let error) in
+             data,  response, error) in
             
-            guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
+            guard let _:NSData = data, let _:NSURLResponse = response   else {
                 print("error")
                 let userInfo = ["response" : "Failed to add task. Kindly try again."]
                 NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -1447,6 +1598,10 @@ public class ApiRequest:UIViewController {
             print("Internet connection FAILED")
             view.makeToast("Internet connection FAILED. Request saved in sync")
 
+            
+            let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
+            
             let array:NSMutableArray = []
             array.addObject(imageData)
             array.addObject(UserId)
@@ -1454,6 +1609,7 @@ public class ApiRequest:UIViewController {
             array.addObject(Message)
             array.addObject(NotificationTypeId)
             array.addObject(notifyto)
+            array.addObject(str)
 //            array.addObject(view)
             
             let database = databaseFile()
@@ -1466,13 +1622,15 @@ public class ApiRequest:UIViewController {
         }
         
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
         let param = [
             "UserId"                   :UserId,
             "Subject"                   :Subject,
             "Message"                   :Message,
             "NotificationTypeId"       :NotificationTypeId,
-            "notifyto"                  :notifyto
+            "notifyto"                  :notifyto,
+            "CompanyId"                 :str
         ]
         //        print(param)
         let url = NSURL(string: "\(apiUrl)/notification/AddNotificationNew")
@@ -1521,9 +1679,9 @@ public class ApiRequest:UIViewController {
         
         let task = session.dataTaskWithRequest(request) {
             (
-            let data, let response, let error) in
+             data,  response,  error) in
             
-            guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
+            guard let _:NSData = data, let _:NSURLResponse = response   else {
                 print("error in sending notification")
                 print(response)
                   // original URL request
@@ -1713,9 +1871,10 @@ public class ApiRequest:UIViewController {
 //            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
             return
         }
-        
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignInByUserId", parameters: ["Userids":userId])
+        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignInByUserId", parameters: ["Userids":userId,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1813,11 +1972,9 @@ public class ApiRequest:UIViewController {
             return
         }
         
-        
-        
-        
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignOutByUserId", parameters: ["Userids":userId])
+        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignOutByUserId", parameters: ["Userids":userId,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1900,9 +2057,10 @@ public class ApiRequest:UIViewController {
             return
         }
         
-        
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignInByUserId", parameters: ["Userids":userId])
+        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignInByUserId", parameters: ["Userids":userId,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1987,8 +2145,9 @@ public class ApiRequest:UIViewController {
             return
         }
         
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignOutByUserId", parameters: ["Userids":userId])
+        Alamofire.request(.GET, "\(apiUrl)/UserActivity/SignOutByUserId", parameters: ["Userids":userId,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -2057,7 +2216,7 @@ public class ApiRequest:UIViewController {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -2068,7 +2227,8 @@ public class ApiRequest:UIViewController {
     func GetNotificationType() {
         let notificationKey = "com.time-em.NotificationTypeloginResponse"
         
-        Alamofire.request(.GET, "\(apiUrl)/notification/GetNotificationType", parameters: nil)
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+        Alamofire.request(.GET, "\(apiUrl)/notification/GetNotificationType", parameters: ["CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -2151,13 +2311,15 @@ public class ApiRequest:UIViewController {
     func getActiveUserList(userid:String,timeStamp:String,view:UIView) {
         let notificationKey = "com.time-em.NotificationTypeloginResponse"
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "\(apiUrl)/user/GetActiveUserList", parameters:  ["UserId":userid,"timeStamp":timeStamp])
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
+        Alamofire.request(.POST, "\(apiUrl)/user/GetActiveUserList", parameters:  ["UserId":userid,"timeStamp":"","CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
                 print(response.data)     // server data
                 print(response.result)   // result of response serialization
-                
+                //sadasdsadasdasd
                 if let JSON = response.result.value {
                     print("JSON: \(JSON)")
                     
@@ -2211,7 +2373,9 @@ public class ApiRequest:UIViewController {
     func getuserListByLoginCode(Logincode:String,view:UIView) {
         let notificationKey = "com.time-em.getuserListByLoginCode"
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.GET, "\(apiUrl)/User/GetUsersListByLoginCode", parameters:  ["Logincode":Logincode])
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
+        Alamofire.request(.GET, "\(apiUrl)/User/GetUsersListByLoginCode", parameters:  ["Logincode":Logincode,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -2277,7 +2441,7 @@ public class ApiRequest:UIViewController {
             let string = NSString(data: arrJson, encoding: NSUTF8StringEncoding)
             tempJson = string! as NSString
             print(tempJson)
-            parameter = ["data":tempJson ]
+            parameter = ["data":tempJson]
         }catch let error as NSError{
             print(error.description)
         }
@@ -2482,7 +2646,7 @@ public class ApiRequest:UIViewController {
         
         let task = session.dataTaskWithRequest(request) {
             (
-            let data, let response, let error) in
+             data,  response,  error) in
             delay(0.001){
             MBProgressHUD.hideAllHUDsForView(view, animated: true)
            var loadingNotification = MBProgressHUD()
@@ -2506,7 +2670,7 @@ public class ApiRequest:UIViewController {
                 }
             }
             }
-            guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
+            guard let _:NSData = data, let _:NSURLResponse = response   else {
                 print("\(error)")
                 let userInfo = ["response" : "Failed to upload image. Kindly try again by edit the task."]
 //                                
@@ -2625,9 +2789,9 @@ public class ApiRequest:UIViewController {
         
         let task = session.dataTaskWithRequest(request) {
             (
-            let data, let response, let error) in
+             data,  response,  error) in
             
-            guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
+            guard let _:NSData = data, let _:NSURLResponse = response   else {
                 print("error")
                 let userInfo = ["response" : "failure"]
                 NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -2674,7 +2838,7 @@ public class ApiRequest:UIViewController {
                     print("JSON: \(JSON)")
                     
                     if "\(response.result)" == "SUCCESS"{
-                        print(JSON.valueForKey("isError"))
+                        print(JSON.valueForKey("IsError"))
                         print(JSON.valueForKey("Message"))
                         
                         if "\(JSON.valueForKey("IsError")!)" == "0" {
@@ -2818,7 +2982,9 @@ public class ApiRequest:UIViewController {
     func newSendnotificationWebservice(UserId:String,Subject:String,Message:String,NotificationTypeId:String,notifyto:String,view:UIView) {
         let notificationKey = "com.time-em.sendnotification"
         MBProgressHUD.showHUDAddedTo(view, animated: true)
-        Alamofire.request(.POST, "\(apiUrl)/notification/AddNotificationNew", parameters:  ["UserId":UserId,"Subject":Subject,"Message":Message,"NotificationTypeId":NotificationTypeId,"notifyto":notifyto])
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
+        Alamofire.request(.POST, "\(apiUrl)/notification/AddNotificationNew", parameters:  ["UserId":UserId,"Subject":Subject,"Message":Message,"NotificationTypeId":NotificationTypeId,"notifyto":notifyto,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -2858,6 +3024,58 @@ public class ApiRequest:UIViewController {
         }
         
     }
+    
+    func getUserCompaniesList(userId:String,view:UIView)  {
+        let notificationKey = "com.time-em.getUserCompaniesList"
+        MBProgressHUD.showHUDAddedTo(view, animated: true);
+        Alamofire.request(.GET, "\(apiUrl)/User/GetUserCompaniesList", parameters: ["userId":userId])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        
+//                        if "\(JSON.valueForKey("isError")!.lowercaseString)".rangeOfString("0") != nil{
+                            let userInfo = ["response" : "Success"]
+                            
+                            
+                            let array:NSArray = (JSON as? NSArray)!
+                            let encodedData = NSKeyedArchiver.archivedDataWithRootObject(array)
+
+                            NSUserDefaults.standardUserDefaults().setObject(encodedData, forKey: "companyData")
+                            
+
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+//                        }else{
+//                            let userInfo = ["response" : "FAILURE"]
+//                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                        }
+                        
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+    }
+    
+    
+    
 }
 
 

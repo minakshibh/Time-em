@@ -31,6 +31,15 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(passCodeViewController.goPrevious), name: "deletePressed", object: nil)
 
 
+        
+        
+    }
+    override func viewWillAppear(animated: Bool) {
+        txtFieldone.text = ""
+        txtFieldtwo.text = ""
+        txtFieldthree.text = ""
+        txtFieldFour.text = ""
+        txtFieldone.becomeFirstResponder()
     }
     
     func goPrevious() {
@@ -154,9 +163,15 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
             if     NSUserDefaults.standardUserDefaults().valueForKey("currentUser_Pin") != nil {
                 let passCode: String =  "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_Pin")!)"
                 if passCode == password {
-                    self.performSegueWithIdentifier("passcode_dashboard", sender: self)
+                    self.performSegueWithIdentifier("companyView", sender: self)
                 }else{
-                view.makeToast("Worng passcode entered. Please try again.")
+//                view.makeToast("Worng passcode entered. Please try again.")
+                    view.makeToast("Worng passcode entered. Please try again.", duration: 2, position: .Top)
+                    txtFieldone.text = ""
+                    txtFieldtwo.text = ""
+                    txtFieldthree.text = ""
+                    txtFieldFour.text = ""
+                     txtFieldone.becomeFirstResponder()
                 }
             }else{
                 txtFieldone.text = ""
@@ -194,7 +209,7 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
             alert = UIAlertController(title: "Time'em", message: "Login Successfull", preferredStyle: UIAlertControllerStyle.Alert)
-            self.performSegueWithIdentifier("passcode_dashboard", sender: self)
+            self.performSegueWithIdentifier("companyView", sender: self)
             
         }else{
             alert = UIAlertController(title: "Time'em", message: "Login Failed", preferredStyle: UIAlertControllerStyle.Alert)
@@ -206,9 +221,9 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "passcode_dashboard"{
-            let dashBoard = (segue.destinationViewController as! dashboardViewController)
-            dashBoard.fromPassCodeView = "yes"
+        if segue.identifier == "companyView"{
+            let compView = (segue.destinationViewController as! ChooseCompanyViewController)
+            compView.fromView = "passCode"
             
             
         }else if segue.identifier == "resetPin"{
@@ -218,7 +233,8 @@ class passCodeViewController: UIViewController,UITextFieldDelegate {
     }
 
     
-    
+//    let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")
+//    self.navigationController?.pushViewController(loginVC!, animated: true)
     
 
     }

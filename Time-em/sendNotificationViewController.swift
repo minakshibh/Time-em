@@ -292,12 +292,13 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         let subject:String!
         let comments:String!
         
-        if NotificationTypeId == " " {
-            let alert = UIAlertController(title: "Time'em", message: "Select notification type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-            return
-        }
+//        if NotificationTypeId == " " {
+//            let alert = UIAlertController(title: "Time'em", message: "Select notification type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+//            return
+//        }
+        NotificationTypeId = "0"
         
         if txtSubject.text.isEmpty {
             let alert = UIAlertController(title: "Time'em", message: "Enter subject before continue.", preferredStyle: UIAlertControllerStyle.Alert)
@@ -325,7 +326,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             return
         }else{
             
-            for (var j=0; j<selectedRecipientsIdArr.count;j+=1) {
+            for j in ( 0 ..< selectedRecipientsIdArr.count) {
                 if j==0 {
                     ids = "\(selectedRecipientsIdArr[0])"
                 }else{
@@ -374,6 +375,9 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     
     
      func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if recipientsArray.count > 0 && recipientsArray.count < 4 {
+            tableView.frame = CGRectMake(tableView.frame.origin.x, tableView.frame.origin.y, tableView.frame.size.width, 30 * CGFloat(recipientsArray.count))
+        }
             return recipientsArray.count
     }
      func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -414,7 +418,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         selectedRecipientsIdArr.addObject("\(dict.valueForKey("userid")!)")
         
         var usernames:String! = ""
-        for (var j=0; j<selectedRecipientsNameArr.count;j+=1) {
+        for j in (0 ..< selectedRecipientsNameArr.count) {
             if j==0 {
                 usernames = "\(selectedRecipientsNameArr[0])"
             }else{
@@ -431,7 +435,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         selectedRecipientsNameArr.removeObject("\(dict.valueForKey("FullName")!)")
         selectedRecipientsIdArr.removeObject("\(dict.valueForKey("userid")!)")
         var usernames:String! = ""
-        for (var j=0; j<selectedRecipientsNameArr.count;j+=1) {
+        for j in (0 ..< selectedRecipientsNameArr.count) {
             if j==0 {
                 usernames = "\(selectedRecipientsNameArr[0])"
             }else{

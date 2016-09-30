@@ -31,6 +31,8 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     var count:Int = 0
     var webservicehitCount:Int = 0
     var pickerDateStr:String!
+    var falagRotation: Bool = false
+    
     
     @IBOutlet var btnSignIn: UIButton!
     
@@ -54,7 +56,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         selectedDate = pickerDateStr
         let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
         //-- setting date view
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "MM-dd-yyyy"
         print(dateFormatter.stringFromDate(datePicker.date))
         self.calendarView.redrawToDate(datePicker.date)
@@ -93,7 +95,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         tableView.reloadData()
         
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "MM-dd-yyyy"
         pickerDateStr = dateFormatter.stringFromDate(NSDate())
         
@@ -136,24 +138,57 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     }
     func rotated()
     {
+        
+        
         if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
         {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let vc:UIViewController = storyboard.instantiateViewControllerWithIdentifier("chart") as! chartViewController
+            
             NSUserDefaults.standardUserDefaults().setObject(currentUserID, forKey: "currentUSerID")
+            NSUserDefaults.standardUserDefaults().setObject(currentUserFullName, forKey: "currentUserFullName")
+        
             self.configureChildViewController(vc, onView: self.view)
+            UIApplication.sharedApplication().statusBarHidden=true;
             print("landscape")
+            if UIDevice.currentDevice().orientation == UIDeviceOrientation.LandscapeLeft{
+                print("chart LandscapeLeft")
+            }
+            else if UIDevice.currentDevice().orientation == UIDeviceOrientation.LandscapeRight{
+                print("my task view chart LandscapeRight")
+                
+                falagRotation = true
+                self.view.transform = CGAffineTransformMakeRotation(CGFloat(2*M_PI_2));
+                
+                
+            }
+
         }
         
         if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
         {
+            if falagRotation{
+                falagRotation=false
+            self.view.transform = CGAffineTransformRotate(self.view.transform, -CGFloat(2*M_PI_2));
+            }
+
+
             print("Portrait")
             if chldViewControllers != nil{
                 chldViewControllers.willMoveToParentViewController(nil)
                 chldViewControllers.view.removeFromSuperview()
                 chldViewControllers.removeFromParentViewController()
+                UIApplication.sharedApplication().statusBarHidden=false;
                 
             }
+        }
+        if UIDevice.currentDevice().orientation == UIDeviceOrientation.PortraitUpsideDown{
+                print("my task view chart PortraitUpsideDown")
+        }else{
+//            if falagRotation{
+//                falagRotation = false
+//                //            self.view.transform = CGAffineTransformMakeRotation(CGFloat(2*M_PI_2))
+//            }
         }
         
     }
@@ -167,6 +202,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         addChildViewController(chldViewControllers)
         holderView.addSubview(chldViewControllers.view)
         chldViewControllers.didMoveToParentViewController(self)
+        UIApplication.sharedApplication().statusBarHidden=true;
     }
     func refreshData() {
         let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String

@@ -74,7 +74,7 @@ class User: NSObject {
         self.Pin = Pin ?? ""
     }
     
-    convenience required init(dict: NSMutableDictionary) {
+    convenience required init(dict: NSDictionary) {
         self.init(ActivityId: dict["ActivityId"] as? Int,
                   Company: dict["Company"] as? String,
                   CompanyId: dict["CompanyId"] as? Int,

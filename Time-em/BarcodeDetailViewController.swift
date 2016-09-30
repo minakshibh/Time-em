@@ -62,13 +62,13 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
             if dataArray.count == 0 {
                 if Reachability.isConnectedToNetwork() != true {
                     view.makeToast("No user found. Try scanning some more codes.")
-                    NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "delay2Sec", userInfo: nil, repeats: false)
+                    NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(BarcodeDetailViewController.delay2Sec), userInfo: nil, repeats: false)
                 }
             }
             
             
                var ids:String!
-        for (var j=0; j<noDataObjects.count;j+=1) {
+        for j in (0 ..< noDataObjects.count) {
             if j==0 {
                 ids = "\(noDataObjects[j])"
             }else{
@@ -130,7 +130,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
     @IBAction func btnSignInAll(sender: AnyObject) {
         var userids:String!
         
-        for (var j=0; j<dataArray.count;j+=1) {
+        for j in (0 ..< dataArray.count) {
             let dict:NSDictionary  = dataArray[j] as! NSDictionary
                 if j==0 {
                     userids = "\(dict.valueForKey("Id")!)"
@@ -148,7 +148,7 @@ class BarcodeDetailViewController: UIViewController,UITableViewDataSource,UITabl
     @IBAction func btnSignOutAll(sender: AnyObject) {
         var userids:String!
         
-        for (var j=0; j<dataArray.count;j+=1) {
+        for j in (0 ..< dataArray.count) {
             let dict:NSDictionary  = dataArray[j] as! NSDictionary
             if j==0 {
                 userids = "\(dict.valueForKey("Id")!)"

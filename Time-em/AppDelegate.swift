@@ -146,60 +146,48 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
         }
         
         
-        var strlatlon:String!
-        for var i = 0; i < locations.count; i++ {
-            
-            var newLocation: CLLocation = locations[i]
-            var theLocation: CLLocationCoordinate2D = newLocation.coordinate
-            var theAccuracy: CLLocationAccuracy = newLocation.horizontalAccuracy
-            self.myLocation = theLocation
-            self.myLocationAccuracy = theAccuracy
-//            let dict:NSMutableDictionary = [:]
-//            dict["lat"] = newLocation.coordinate.latitude
-//            dict["lov"] = newLocation.coordinate.longitude
-            
-            let state = UIApplication.sharedApplication().applicationState
-            if state == .Background {
-//                print("App in Background")
-//                dict["app mode"] = "App is in Background"
-            }else if state == .Active {
-//                dict["app mode"] = "App is Active"
-//                print("App in Active")
-            }else if state == .Inactive {
-//                dict["app mode"] = "App is Inactive"
-//                print("App in Inactive")
-            }
+//        for var i = 0; i < locations.count; i++ {
+        
+//            var newLocation: CLLocation = locations[i]
+//            var theLocation: CLLocationCoordinate2D = newLocation.coordinate
+//            var theAccuracy: CLLocationAccuracy = newLocation.horizontalAccuracy
+//            self.myLocation = theLocation
+//            self.myLocationAccuracy = theAccuracy
+////            let dict:NSMutableDictionary = [:]
+////            dict["lat"] = newLocation.coordinate.latitude
+////            dict["lov"] = newLocation.coordinate.longitude
+//            
+        
             
             
+//            let formatter = NSDateFormatter()
+//            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss ZZZ"
+//            let defaultTimeZoneStr = formatter.stringFromDate(NSDate())
+//            // "2014-07-23 11:01:35 -0700" <-- same date, local, but with seconds
+//            formatter.timeZone = NSTimeZone(abbreviation: "IST")
+//            let utcTimeZoneStr = formatter.stringFromDate(NSDate())
             
-            let formatter = NSDateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss ZZZ"
-            let defaultTimeZoneStr = formatter.stringFromDate(NSDate())
-            // "2014-07-23 11:01:35 -0700" <-- same date, local, but with seconds
-            formatter.timeZone = NSTimeZone(abbreviation: "IST")
-            let utcTimeZoneStr = formatter.stringFromDate(NSDate())
-            
-//            dict["date"] = utcTimeZoneStr
-            let arr:NSMutableArray = []
-//            arr.addObject(dict)
-            
-//             strlatlon = "19.225842,72.9766845"
-
-            if NSUserDefaults.standardUserDefaults().valueForKey("data") != nil {
-                
-               let data = NSUserDefaults.standardUserDefaults().valueForKey("data")!
-                let arr1:NSMutableArray =  (NSKeyedUnarchiver.unarchiveObjectWithData(data as! NSData) as? NSMutableArray)!
-//                arr1.addObject(dict)
-                 let data1 = NSKeyedArchiver.archivedDataWithRootObject(arr1)
-                NSUserDefaults.standardUserDefaults().setObject(data1, forKey: "data")
-            }else{
-            let data = NSKeyedArchiver.archivedDataWithRootObject(arr)
-            NSUserDefaults.standardUserDefaults().setObject(data, forKey: "data")
-            }
-           // (latitude,longitude)
+////            dict["date"] = utcTimeZoneStr
+//            let arr:NSMutableArray = []
+////            arr.addObject(dict)
+//            
+////             strlatlon = "19.225842,72.9766845"
+//
+//            if NSUserDefaults.standardUserDefaults().valueForKey("data") != nil {
+//                
+//               let data = NSUserDefaults.standardUserDefaults().valueForKey("data")!
+//                let arr1:NSMutableArray =  (NSKeyedUnarchiver.unarchiveObjectWithData(data as! NSData) as? NSMutableArray)!
+////                arr1.addObject(dict)
+//                 let data1 = NSKeyedArchiver.archivedDataWithRootObject(arr1)
+//                NSUserDefaults.standardUserDefaults().setObject(data1, forKey: "data")
+//            }else{
+//            let data = NSKeyedArchiver.archivedDataWithRootObject(arr)
+//            NSUserDefaults.standardUserDefaults().setObject(data, forKey: "data")
+//            }
+//           // (latitude,longitude)
            
             
-        }
+//        }
         
         if self.timer != nil{
            return
@@ -325,15 +313,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        self.locationManager.stopUpdatingLocation()
-        self.locationManager.stopMonitoringSignificantLocationChanges()
-
-        
-        if(IS_OS_8_OR_LATER) {
-             self.locationManager.requestAlwaysAuthorization()
-        }
-        self.locationManager.startUpdatingLocation()
-        self.locationManager.startMonitoringSignificantLocationChanges()
+//        self.locationManager.stopUpdatingLocation()
+//        self.locationManager.stopMonitoringSignificantLocationChanges()
+//
+//        
+//        if(IS_OS_8_OR_LATER) {
+//             self.locationManager.requestAlwaysAuthorization()
+//        }
+//        self.locationManager.startUpdatingLocation()
+//        self.locationManager.startMonitoringSignificantLocationChanges()
 
     }
 
@@ -343,30 +331,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        
-        delay(0.001) {
-            
-        self.locationManager.stopMonitoringSignificantLocationChanges()
-        self.locationManager.delegate = self
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        self.locationManager.activityType = .OtherNavigation
-                if #available(iOS 9.0, *) {
-                    self.locationManager.allowsBackgroundLocationUpdates = true
-                } else {
-                    // Fallback on earlier versions
-                }
-        if(self.IS_OS_8_OR_LATER) {
-            self.locationManager.requestAlwaysAuthorization()
-        }
-        self.locationManager.startUpdatingLocation()
-        }
+//        
+//        delay(0.001) {
+//            
+//        self.locationManager.stopMonitoringSignificantLocationChanges()
+//        self.locationManager.delegate = self
+//        self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+//        self.locationManager.activityType = .OtherNavigation
+//                if #available(iOS 9.0, *) {
+//                    self.locationManager.allowsBackgroundLocationUpdates = true
+//                } else {
+//                    // Fallback on earlier versions
+//                }
+//        if(self.IS_OS_8_OR_LATER) {
+//            self.locationManager.requestAlwaysAuthorization()
+//        }
+//        self.locationManager.startUpdatingLocation()
+//        }
     }
     
 
     func applicationWillTerminate(application: UIApplication) {
-        self.locationManager.stopUpdatingLocation()
-        self.locationManager.startMonitoringSignificantLocationChanges()
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+//        self.locationManager.stopUpdatingLocation()
+//        self.locationManager.startMonitoringSignificantLocationChanges()
+//        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
     func createCopyOfDatabaseIfNeeded() {

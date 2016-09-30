@@ -23,6 +23,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var btnLogin: UIButton!
     @IBOutlet var btnForgotPassword: UIButton!
     
+    var statusPasswordField:Bool = false
     var webData:NSMutableData!
     var currentUser: User!
     let notificationKey = "com.time-em.loginResponse"
@@ -38,18 +39,26 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         
         
-        
-        
-        
        
         
         //--
     }
     
    
-    
+    override func viewWillDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:UIKeyboardWillShowNotification, object:nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:UIKeyboardWillHideNotification, object:nil)
+    }
     
     override func viewWillAppear(animated: Bool) {
+        if Reachability.DeviceType.IS_IPHONE_5 {
+            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
+            
+        }
+
+        
         UIApplication.sharedApplication().statusBarStyle = .LightContent
         self.navigationController?.navigationBarHidden = true
         print("\(NSUserDefaults.standardUserDefaults().valueForKey("userLoggedIn"))")
@@ -72,6 +81,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     // MARK: Buttons
     @IBAction func btnLogin(sender: AnyObject) {
         self.login()
+        txtUserID.resignFirstResponder()
+        txtPassword.resignFirstResponder()
     }
     
     @IBAction func btnForgotPassword(sender: AnyObject) {
@@ -118,13 +129,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     func textFieldShouldReturn(textField: UITextField) -> Bool {   //delegate method
-        textField.resignFirstResponder()
+        
         if textField == txtUserID{
+            statusPasswordField = true
             txtPassword.becomeFirstResponder()
         }else if textField == txtPassword{
             self.login()
         }
-        
+        textField.resignFirstResponder()
         return true
     }
     
@@ -171,10 +183,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         let userInfo:NSDictionary = notification.userInfo!
         let status: String = (userInfo["response"] as! String)
 
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:notificationKey, object:nil)
+
         var alert :UIAlertController!
         if status.lowercaseString == "success"{
          alert = UIAlertController(title: "Time'em", message: "Login Successfull", preferredStyle: UIAlertControllerStyle.Alert)
-            self.performSegueWithIdentifier("homeView", sender: self)
+            self.performSegueWithIdentifier("companyView", sender: self)
         
         }else{
          alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
@@ -188,8 +203,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "homeView"{
-        
+        if segue.identifier == "companyView"{
+            let companyView = segue.destinationViewController as! ChooseCompanyViewController
+            companyView.fromView = "fromLogin"
         }else if segue.identifier == "resetPassword"{
             let resetView = segue.destinationViewController as! resetPinAndPassword
             resetView.resetType = "Password"
@@ -199,7 +215,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -223,23 +239,54 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         database.close()
     }
 
+//    func keyboardWillShow(notification: NSNotification) {
+//        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+//        let newVerticalPosition: Float = Float(-keyboardSize.height)
+//        self.moveFrameToVerticalPosition(newVerticalPosition, forDuration: 0.3)
+//        }
+//    }
+//    func keyboardWillHide(notification: NSNotification) {
+//        //    CGFloat  kNavBarHeight =  self.navigationController.navigationBar.frame.size.height;
+//        let kNavBarHeight: CGFloat = 0
+//        self.moveFrameToVerticalPosition(Float(kNavBarHeight), forDuration: 0.3)
+//    }
+//    func moveFrameToVerticalPosition(position: Float, forDuration duration: Float) {
+//        var frame: CGRect = self.view.frame
+//        frame.origin.y = CGFloat( -50)
+//        UIView.animateWithDuration(0.3, animations: {() -> Void in
+//            self.view.frame = frame
+//        })
+//    }
+    
     func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-        let newVerticalPosition: Float = Float(-keyboardSize.height)
-        self.moveFrameToVerticalPosition(newVerticalPosition, forDuration: 0.3)
+        if statusPasswordField {
+            statusPasswordField = false
         }
-    }
-    func keyboardWillHide(notification: NSNotification) {
-        //    CGFloat  kNavBarHeight =  self.navigationController.navigationBar.frame.size.height;
-        let kNavBarHeight: CGFloat = 0
-        self.moveFrameToVerticalPosition(Float(kNavBarHeight), forDuration: 0.3)
-    }
-    func moveFrameToVerticalPosition(position: Float, forDuration duration: Float) {
-        var frame: CGRect = self.view.frame
-        frame.origin.y = CGFloat( -50)
-        UIView.animateWithDuration(0.3, animations: {() -> Void in
-            self.view.frame = frame
-        })
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+            if view.frame.origin.y == 0{
+                self.view.frame.origin.y -= keyboardSize.height/2
+            }
+            else {
+                
+            }
+        }
+        
     }
     
+    func keyboardWillHide(notification: NSNotification) {
+        
+        if statusPasswordField {
+            
+        }else{
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+            if view.frame.origin.y != 0 {
+                self.view.frame.origin.y += keyboardSize.height/2
+            }
+            else {
+                
+            }
+        }
+        }
+    }
+
 }

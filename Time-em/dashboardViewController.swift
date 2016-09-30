@@ -15,6 +15,7 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
 
     @IBOutlet var btnMyTasks: UIButton!
     @IBOutlet var widgetBackgroundHeightConstraint: NSLayoutConstraint!
+     @IBOutlet var manageButtonottomSpace: NSLayoutConstraint!
     @IBOutlet var btnNotificationSecond: UIButton!
     @IBOutlet var btnMyTeam: UIButton!
     @IBOutlet var btnNotifications: UIButton!
@@ -82,6 +83,8 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         self.view.bringSubviewToFront(btnMenu)
         
       ///-->> fetch all data on dashboard
+        self.fetchUserTaskGraphDataFromAPI()
+        self.fetchUserSignedGraphDataFromAPI()
         self.fetchNotificationList()
         NSUserDefaults.standardUserDefaults().setObject("true", forKey:"exicuteOnlyOnce")
         self.fetchTeamList()
@@ -149,11 +152,11 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         
         
         //Here the spinnier is initialized
-        var activityView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+        let activityView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
         activityView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
         activityView.startAnimating()
         
-        var textLabel = UILabel(frame: CGRect(x: 60, y: 0, width: 200, height: 50))
+        let textLabel = UILabel(frame: CGRect(x: 60, y: 0, width: 200, height: 50))
         textLabel.textColor = UIColor.grayColor()
         textLabel.text = "Loading Graph"
         
@@ -332,6 +335,19 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         lblStartWorkingOnTasks.numberOfLines = 2
         btnSignInOutPOPUP.frame = CGRectMake(btnSignInOutPOPUP.frame.origin.x, btnSignInOutPOPUP.frame.origin.y-30, btnSignInOutPOPUP.frame.size.width, btnSignInOutPOPUP.frame.size.height)
         lblpopupBackground.frame = CGRectMake(lblpopupBackground.frame.origin.x, lblpopupBackground.frame.origin.y, lblpopupBackground.frame.size.width, lblpopupBackground.frame.size.height-30)
+        
+        if Reachability.DeviceType.IS_IPHONE_4_OR_LESS {
+            imageViewLogoPopup.frame = CGRectMake(imageViewLogoPopup.frame.origin.x, imageViewLogoPopup.frame.origin.y-60, imageViewLogoPopup.frame.size.width, imageViewLogoPopup.frame.size.height)
+            lblStartWorking.frame = CGRectMake(lblStartWorking.frame.origin.x, lblStartWorking.frame.origin.y-70, lblStartWorking.frame.size.width, lblStartWorking.frame.size.height)
+            lblStartWorkingOnTasks.frame = CGRectMake(lblStartWorkingOnTasks.frame.origin.x, lblStartWorkingOnTasks.frame.origin.y-70, lblStartWorkingOnTasks.frame.size.width, lblStartWorkingOnTasks.frame.size.height+18)
+            lblStartWorkingOnTasks.numberOfLines = 2
+            btnSignInOutPOPUP.frame = CGRectMake(btnSignInOutPOPUP.frame.origin.x, btnSignInOutPOPUP.frame.origin.y-40, btnSignInOutPOPUP.frame.size.width, btnSignInOutPOPUP.frame.size.height)
+            lblpopupBackground.frame = CGRectMake(lblpopupBackground.frame.origin.x, lblpopupBackground.frame.origin.y-30, lblpopupBackground.frame.size.width, lblpopupBackground.frame.size.height-30)
+            btnCrossPOPUP.frame = CGRectMake(btnCrossPOPUP.frame.origin.x, btnCrossPOPUP.frame.origin.y-30, btnCrossPOPUP.frame.size.width, btnCrossPOPUP.frame.size.height) 
+        }
+        
+        
+        
        if Reachability.DeviceType.IS_IPHONE_6 ||  Reachability.DeviceType.IS_IPHONE_6P{
             btnSignInOutPOPUP.frame = CGRectMake(btnSignInOutPOPUP.frame.origin.x, btnSignInOutPOPUP.frame.origin.y+10, btnSignInOutPOPUP.frame.size.width, btnSignInOutPOPUP.frame.size.height)
         }
@@ -368,7 +384,7 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
     
         if val == 0 {
             val += 1
-            if Reachability.DeviceType.IS_IPHONE_5 || Reachability.DeviceType.IS_IPHONE_6 || Reachability.DeviceType.IS_IPHONE_6P {
+            if Reachability.DeviceType.IS_IPHONE_5 || Reachability.DeviceType.IS_IPHONE_6 || Reachability.DeviceType.IS_IPHONE_6P || Reachability.DeviceType.IS_IPHONE_4_OR_LESS{
                 iphone5UiAdjustments()
             }
         }
@@ -387,6 +403,13 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         if counterForWidget == 0 {
         widgetBackgroundHeightConstraint.constant = widgetBackground.frame.size.height - 40
             counterForWidget=1
+        }
+    }else if Reachability.DeviceType.IS_IPHONE_4_OR_LESS{
+        if counterForWidget == 0 {
+            widgetBackgroundHeightConstraint.constant = widgetBackground.frame.size.height - 110
+            counterForWidget=1
+            
+            manageButtonottomSpace.constant = manageButtonottomSpace.constant-10
         }
     }
     
@@ -447,8 +470,8 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
 
         let userGraph = UserGraphViewController()
         userGraph.viewWillAppear(true)
-        
     }
+    
     func displayUserSignedGraphResponse() {
         
         let userGraph = UserLoginGraphViewController()
@@ -522,6 +545,7 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
                         dict.setObject(userArr[3], forKey: "TaskId")
                         dict.setObject(userArr[2], forKey: "ActivityId")
                         dict.setObject(userArr[6], forKey: "TimeSpent")
+                        dict.setObject(userArr[12], forKey: "CompanyId")
                         
                         if "\(userArr[3])" == "0" {
                         dict.setObject(userArr[5], forKey: "TaskName")
@@ -558,7 +582,7 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
                                 localArr.addObject(imageData)
                                 uniqueDict.setObject(localArr, forKey: uniqueNo)
                             }else{
-                                dict.setObject("\(currentTimeMillis)", forKey: "UniqueNumber")
+                                dict.setObject("\(userArr[11])", forKey: "UniqueNumber")
                             }
                             
                         }
@@ -579,7 +603,7 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
                 dict.setObject(userArr[3], forKey: "Message")
                 dict.setObject(userArr[4], forKey: "NotificationTypeId")
                 dict.setObject(userArr[5], forKey: "NotifyTo")
-                
+                dict.setObject(userArr[6], forKey: "CompanyId")
                 
                 if "\(userArr[0])".characters.count != 0{
                 var uniqueNo:String = ""
@@ -733,7 +757,7 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -879,13 +903,17 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
     NSUserDefaults.standardUserDefaults().removeObjectForKey("forGraph")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("selectedWidgets")
     NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_LoginCode")
-    NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_Pin")
+        NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_Pin")
+        NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_UserType")
+        NSUserDefaults.standardUserDefaults().removeObjectForKey("companyData")
    
+        
         
 ////        self.navigationController?.popToRootViewControllerAnimated(true)
 //        self.dismissViewControllerAnimated(true, completion: nil)
         let loginVC: UIViewController? = self.storyboard?.instantiateViewControllerWithIdentifier("loginView")
-        self.presentViewController(loginVC!, animated: true, completion: nil)
+        self.navigationController?.pushViewController(loginVC!, animated: true)
+//        self.presentViewController(loginVC!, animated: true, completion: nil)
         
     }
     
@@ -935,7 +963,7 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
-        let database = FMDatabase(path: fileURL.path)
+        let database = FMDatabase(path: fileURL!.path)
         
         if !database.open() {
             print("Unable to open database")
@@ -1056,7 +1084,7 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
             timestm = ""
         }
         let api = ApiRequest()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.displayResponse), name: "com.time-em.getNotificationListByLoginCode", object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.displayResponse), name: "com.time-em.getNotificationListByLoginCode", object: nil)
         api.getNotifications(userid!, timeStamp: timestm)
     }
     func fetchTeamList() {

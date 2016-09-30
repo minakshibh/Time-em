@@ -596,7 +596,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name:notificationKey, object:nil)
         if status.lowercaseString == "success sync" {
-            NSTimer.scheduledTimerWithTimeInterval(1.5, target: self, selector: "update", userInfo: nil, repeats: true)
+            NSTimer.scheduledTimerWithTimeInterval(1.5, target: self, selector: #selector(AddNewTaskViewController.update), userInfo: nil, repeats: true)
             return
         }
         

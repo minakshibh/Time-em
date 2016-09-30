@@ -110,8 +110,10 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
     }
     
     func showNotificationsInTable() {
+        //to show particular type of notificatons
         let predicate = NSPredicate(format: "SELF contains %@", notificationType)
-        notificationsListArray = allNotificationsListArray.filter { predicate.evaluateWithObject($0) }
+//        notificationsListArray = allNotificationsListArray.filter { predicate.evaluateWithObject($0) }
+        notificationsListArray = allNotificationsListArray
         print(notificationsListArray)
         self.notificationsTableView.reloadData()
         
