@@ -498,6 +498,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     @IBAction func addUpdateTask(sender: AnyObject) {
         if Int(numberOfHoursTxt.text!) == 0 {
             self.view.makeToast("number of hours should be greater than 0", duration: 2.0, position: .Top)
+            numberOfHoursTxt.becomeFirstResponder()
             return
         }
         
@@ -520,6 +521,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             let alert = UIAlertController(title: "Time'em", message: "Enter some comments  before continue.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
+            commentsTxt.becomeFirstResponder()
             return
         }
          let comments = self.commentsTxt.text! as String
@@ -528,6 +530,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             let alert = UIAlertController(title: "Time'em", message: "Enter hours for tasks before continue", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
+            numberOfHoursTxt.becomeFirstResponder()
             return
         }
         let timespend = self.numberOfHoursTxt.text! as String

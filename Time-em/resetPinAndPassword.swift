@@ -44,13 +44,13 @@ class resetPinAndPassword: UIViewController,UITextFieldDelegate
     func send(){
         let emailStr: String = self.emailTxt.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
         if emailStr.characters.count == 0 {
-            let message = "Please enter an emailaddress."
+            let message = "Please enter an email address."
             let alert = UIAlertController(title: "Time'em", message: message, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
             return
         }else if !isValidEmail(emailStr){
-            let message = "Enter a valid emailaddress."
+            let message = "Enter a valid email address."
             let alert = UIAlertController(title: "Time'em", message: message, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
