@@ -496,6 +496,12 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     }
     
     @IBAction func addUpdateTask(sender: AnyObject) {
+        if Int(numberOfHoursTxt.text!) == 0 {
+            self.view.makeToast("number of hours should be greater than 0", duration: 2.0, position: .Top)
+            return
+        }
+        
+        
         commentsTxt.resignFirstResponder()
         numberOfHoursTxt.resignFirstResponder()
         
@@ -689,11 +695,19 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
 //                JLToast.makeText("maximum hours allowed is 24hrs", duration: JLToastDelay.ShortDelay)
 //                return false
 //            }
+            
+            if numberOfHoursTxt.text?.characters.count == 0 {
+                if Int(string) == 0 {
+                    self.view.makeToast("No. of hours should be greater than 0.", duration: 2.0, position: .Top)
+                    return false
+                }
+            }
+            
             if numberOfHoursTxt.text?.characters.count == 1 {
                 let str = "\(numberOfHoursTxt.text!)\(string)"
-                if Int(str) > 24 {
-                    self.view.makeToast("maximum hours allowed is 24hrs", duration: 2.0, position: .Top)
-                  JLToast.makeText("maximum hours allowed is 24hrs", duration: JLToastDelay.ShortDelay)
+                if Int(str) > 12 {
+                    self.view.makeToast("maximum hours allowed is 12hrs", duration: 2.0, position: .Top)
+                  JLToast.makeText("maximum hours allowed is 12hrs", duration: JLToastDelay.ShortDelay)
                     return false
                     
                 }
@@ -701,7 +715,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             
             if numberOfHoursTxt.text?.characters.count >= 2 && string != ""{
                  let textstr = "\(numberOfHoursTxt.text!)"
-                if Int(textstr) == 24 && string == "."{
+                if Int(textstr) == 12 && string == "."{
                     return false
                 }
                 
@@ -713,10 +727,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
                         return false
                     }
                 }
-                if Int(str) <= 24 {
+                if Int(str) <= 12 {
                     return true
                 }
-                self.view.makeToast("maximum hours allowed is 24hrs", duration: 2.0, position: .Top)
+                self.view.makeToast("maximum hours allowed is 12hrs", duration: 2.0, position: .Top)
                 return false
             }
         }

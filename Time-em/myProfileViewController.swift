@@ -25,8 +25,11 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
     @IBOutlet var txtPhoneNo: UITextField!
     @IBOutlet var scrollView: UIScrollView!
     
+    @IBOutlet var lblCompanyName: UILabel!
+    @IBOutlet var lbluserType: UILabel!
+    
     var isEditModeEnable:Bool = false
-    let labelColor = UIColor.lightGrayColor()
+    let labelColor = UIColor.darkGrayColor()
     let textFieldColor = UIColor.blackColor()
     
     override func viewDidLoad() {
@@ -34,7 +37,8 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
         lblName.textColor = labelColor
         lblEmail.textColor = labelColor
         lblPhoneNo.textColor = labelColor
-        
+        lblCompanyName.textColor = labelColor
+        lbluserType.textColor = labelColor
         
         txtName.textColor = textFieldColor
         txtEmail.textColor = textFieldColor
@@ -54,17 +58,27 @@ class myProfileViewController: UIViewController, UIScrollViewDelegate, UITextFie
         lblNameUnderprofileImage.text = nameStr
         
         let emailStr = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_Email")!)"
+        if emailStr.characters.count == 0{
+          lblEmail.text = emailStr
+        }else{
         lblEmail.text = emailStr
+        }
         
         let phoneNoStr = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_PhoneNumber")!)"
         if phoneNoStr == "0" {
-           lblPhoneNo.text = ""
-            btnPhoneIicon.hidden = true
-            lblpartitionPhoneNo.hidden = true
+//           lblPhoneNo.text = ""
+//            btnPhoneIicon.hidden = true
+//            lblpartitionPhoneNo.hidden = true
         }else{
             lblPhoneNo.text = phoneNoStr
         }
 
+        let UserType = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_UserType")!)"
+        lbluserType.text = UserType
+        
+        let company = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_company")!)"
+        lblCompanyName.text = company
+        
 
     }
 

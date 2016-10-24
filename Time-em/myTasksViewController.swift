@@ -327,6 +327,13 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
 //        print(taskDataArray)
         if taskDataArray.count == 0 {
             NSUserDefaults.standardUserDefaults().setObject("true", forKey: "isEditingOrAdding")
+            
+//            let alertNoTasks = UIAlertController(title: "Time'em", message: "No tasks available", preferredStyle: UIAlertControllerStyle.Alert)
+//            alertNoTasks.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alertNoTasks, animated: true, completion: nil)
+//            
+//            print(alertNoTasks.title)
+//            print(alertNoTasks.message)
         }
         tableView.reloadData()
     }

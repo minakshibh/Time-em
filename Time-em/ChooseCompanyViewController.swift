@@ -120,7 +120,9 @@ class ChooseCompanyViewController: UIViewController, UITableViewDataSource,UITab
         if (companyDataArray.count == 1){
             let key:String = "\(companyDataArray[0].valueForKey("Key")!)"
             NSUserDefaults.standardUserDefaults().setObject(key, forKey: "companyKey")
-            
+            let companyName:String = "\(companyDataArray[0].valueForKey("Value")!)"
+            NSUserDefaults.standardUserDefaults().setObject("\(companyName)", forKey: "currentUser_company")
+
             
             delay(0.001){
                 self.performSegueWithIdentifier("homeView", sender: self)
@@ -188,7 +190,7 @@ class ChooseCompanyViewController: UIViewController, UITableViewDataSource,UITab
         
         cell.selectionStyle = .None
         cell.textLabel!.font = UIFont.systemFontOfSize(20)
-        
+        cell.backgroundColor = UIColor.whiteColor()
         cell.preservesSuperviewLayoutMargins = false
         cell.separatorInset = UIEdgeInsetsZero
         cell.layoutMargins = UIEdgeInsetsZero
@@ -201,6 +203,8 @@ class ChooseCompanyViewController: UIViewController, UITableViewDataSource,UITab
         let key:String = "\(companyDataArray[indexPath.row].valueForKey("Key")!)"
         NSUserDefaults.standardUserDefaults().setObject(key, forKey: "companyKey")
         
+        let companyName:String = "\(companyDataArray[indexPath.row].valueForKey("Value")!)"
+        NSUserDefaults.standardUserDefaults().setObject("\(companyName)", forKey: "currentUser_company")
 //        var alert :UIAlertController!
 //        alert = UIAlertController(title: "Time'em", message: key, preferredStyle: UIAlertControllerStyle.Alert)
 //        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
@@ -237,10 +241,10 @@ class ChooseCompanyViewController: UIViewController, UITableViewDataSource,UITab
 }
 extension UITableView {
     func roundCorners(corners:UIRectCorner, radius: CGFloat) {
-        let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-        let mask = CAShapeLayer()
-        mask.path = path.CGPath
-        self.layer.mask = mask
+//        let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+//        let mask = CAShapeLayer()
+//        mask.path = path.CGPath
+//        self.layer.mask = mask
     }
 }
 extension UIButton {

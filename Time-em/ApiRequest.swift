@@ -85,6 +85,7 @@ public class ApiRequest:UIViewController {
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.LoginCode)", forKey: "currentUser_LoginCode")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Pin)", forKey: "currentUser_Pin")
             NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserType)", forKey: "currentUser_UserType")
+            NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Company)", forKey: "currentUser_company")
             NSUserDefaults.standardUserDefaults().setObject("yes", forKey: "forGraph")
 
             var dictionary:NSMutableDictionary = [:]
@@ -135,7 +136,7 @@ public class ApiRequest:UIViewController {
                 print("failed: \(error.localizedDescription)")
             }
             do {
-                try database.executeUpdate("create table notificationsTable(AttachmentFullPath text,Message text,NotificationId text,NotificationTypeName text,SenderFullName text,Senderid text,Subject text,createdDate text)", values: nil)
+                try database.executeUpdate("create table notificationsTable(AttachmentFullPath text,Message text,NotificationId text,NotificationTypeName text,SenderFullName text,Senderid text,Subject text,createdDate text,companyid text)", values: nil)
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
@@ -145,7 +146,7 @@ public class ApiRequest:UIViewController {
                 print("sync failed: \(error.localizedDescription)")
             }
             do {
-                try database.executeUpdate("create table assignedTaskList(TaskId text, TaskName text)", values: nil)
+                try database.executeUpdate("create table assignedTaskList(TaskId text, TaskName text, companyid text)", values: nil)
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
@@ -320,6 +321,7 @@ public class ApiRequest:UIViewController {
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.PhoneNumber)", forKey: "currentUser_PhoneNumber")
                         NSUserDefaults.standardUserDefaults().setObject("no", forKey: "forGraph")
                         NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.UserType)", forKey: "currentUser_UserType")
+                        NSUserDefaults.standardUserDefaults().setObject("\(currentUsers.Company)", forKey: "currentUser_company")
                         
                         var dictionary:NSMutableDictionary = [:]
                         dictionary = currentUsers.returnDict()
@@ -377,7 +379,7 @@ public class ApiRequest:UIViewController {
         }
         
         let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
-        Alamofire.request(.POST, "\(apiUrl)/UserTask/GetUserActivityTask", parameters: ["userId":userId,"createdDate":createdDate, "TimeStamp":TimeStamp, "CompanyId" : str])
+        Alamofire.request(.POST, "\(apiUrl)/UserTask/GetUserActivityTask", parameters: ["userId":userId,"createdDate":createdDate, "TimeStamp":"", "CompanyId" : str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -648,6 +650,286 @@ public class ApiRequest:UIViewController {
         
     }
     
+    func fetchAllTaskAtOnce(userId:String,createdDate:String){
+        
+        let notificationKey = "com.time-em.usertaskResponse"
+        
+        let status:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("isEditingOrAdding")!)"
+        if status.lowercaseString == "true" {
+            NSUserDefaults.standardUserDefaults().setObject("false", forKey:"isEditingOrAdding")
+            MBProgressHUD.showHUDAddedTo(view, animated: true)
+        }
+        
+        Alamofire.request(.POST, "\(apiUrl)/UserTask/GetAllTaskList", parameters: ["userId":userId,"createdDate":"", "TimeStamp":"", "CompanyId" : "0"])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    var message:String!
+                    if JSON.valueForKey("IsError") != nil {
+                        message = "\(JSON.valueForKey("IsError")!)"
+                    }else{
+                        let userInfo = ["response" : "Failure"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        return
+                    }
+                    
+                    
+                    if message!.lowercaseString == "0"{
+                        
+                        //                        var dictTime:NSMutableDictionary = [:]
+                        //                        let user = NSUserDefaults.standardUserDefaults()
+                        //                        if user.valueForKey("dashboardNotificationTimeStamp") != nil{
+                        //                            let data = user.objectForKey("dashboardNotificationTimeStamp") as? NSData
+                        //                            var dict:NSMutableDictionary = (NSKeyedUnarchiver.unarchiveObjectWithData(data!) as? NSMutableDictionary)!
+                        //                            dictTime = dict
+                        //                            if dict.valueForKey("")
+                        //                        }
+                        let dict:NSArray = JSON.valueForKey("UserTaskActivityViewModel") as! NSArray
+                        
+                        
+                        
+                        
+                        if dict.count > 0 {
+                            //---------
+                            var saveDateDict:NSMutableDictionary = [:]
+                            let user: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+                            if user.valueForKey("taskTimeStamp") != nil {
+                                let data: NSData = (user.valueForKey("taskTimeStamp")! as! NSData)
+                                let dictio = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableDictionary
+                                saveDateDict = dictio
+                                if (saveDateDict.valueForKey(createdDate) != nil) {
+                                    
+                                    saveDateDict.removeObjectForKey(createdDate)
+                                    
+                                    saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: createdDate)
+                                }
+                                else {
+                                    
+                                    saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: createdDate)
+                                }
+                            }
+                            else {
+                                saveDateDict.setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: createdDate)
+                            }
+                            let data1: NSData = NSKeyedArchiver.archivedDataWithRootObject(saveDateDict)
+                            user.setObject(data1,forKey:"taskTimeStamp")
+                            //-------------
+                        }
+                        
+                        
+                        let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+                        let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+                        
+                        let database = FMDatabase(path: fileURL!.path)
+                        
+                        if !database.open() {
+                            print("Unable to open database")
+                            return
+                        }
+                        
+                        // get already added tasks taskids
+                        var TaskIdsArr:NSMutableArray = []
+                        do {
+                            
+                            let rs = try database.executeQuery("select * from tasksData", values: nil)
+                            while rs.next() {
+                                let x = rs.stringForColumn("Id")
+                                TaskIdsArr.addObject(x)
+                            }
+                        } catch let error as NSError {
+                            print("failed: \(error.localizedDescription)")
+                        }
+                        
+                        
+                        
+                        
+                        for i in (0 ..< dict.count){
+                            
+                            let  ActivityId:Int!
+                            if let field = dict[i].valueForKey("ActivityId")   {
+                                ActivityId = field as! Int
+                            }else{
+                                ActivityId = 0
+                            }
+                            
+                            var CompanyId:Int!
+                            if let field = dict[i].valueForKey("CompanyId")   {
+                                CompanyId = field as! Int
+                            }else{
+                                CompanyId = 0
+                            }
+                            
+                            let  AttachmentImageFile:String!
+                            if let field = dict[i].valueForKey("AttachmentImageFile")  as? String{
+                                AttachmentImageFile = field
+                            }else{
+                                AttachmentImageFile = ""
+                            }
+                            
+                            let  AttachmentVideoFile:String
+                            if let field = dict[i].valueForKey("AttachmentVideoFile") as? String {
+                                AttachmentVideoFile = field
+                            }else{
+                                AttachmentVideoFile = ""
+                            }
+                            
+                            let  Comments:String!
+                            if let field = dict[i].valueForKey("Comments") as? String {
+                                Comments = field
+                            }else{
+                                Comments = ""
+                            }
+                            
+                            let  CreatedDate:String!
+                            if let field = dict[i].valueForKey("CreatedDate") as? String {
+                                CreatedDate = field
+                            }else{
+                                CreatedDate = ""
+                            }
+                            
+                            let  EndTime:String!
+                            if let field = dict[i].valueForKey("EndTime") as? String {
+                                EndTime = field
+                            }else{
+                                EndTime = ""
+                            }
+                            
+                            let  Id: Int!
+                            if let field = dict[i].valueForKey("Id")  {
+                                Id = field as! Int
+                            }else{
+                                Id = 0
+                            }
+                            
+                            let  SelectedDate:String!
+                            if let field = dict[i].valueForKey("SelectedDate")   as? String{
+                                SelectedDate = field
+                            }else{
+                                SelectedDate = ""
+                            }
+                            
+                            let  SignedInHours: Int!
+                            if let field = dict[i].valueForKey("SignedInHours")  {
+                                SignedInHours = field as! Int
+                            }else{
+                                SignedInHours = 0
+                            }
+                            
+                            let  StartTime:String!
+                            if let field = dict[i].valueForKey("StartTime") as? String  {
+                                StartTime = field
+                            }else{
+                                StartTime = ""
+                            }
+                            
+                            let  TaskId:Int!
+                            if let field = dict[i].valueForKey("TaskId")  {
+                                TaskId = field as! Int
+                            }else{
+                                TaskId = 0
+                            }
+                            
+                            
+                            let  TaskName :String!
+                            if let field = dict[i].valueForKey("TaskName") as? String {
+                                TaskName = field
+                            }else{
+                                TaskName = ""
+                            }
+                            
+                            let  TimeSpent:Float!
+                            if let field = dict[i].valueForKey("TimeSpent")  {
+                                TimeSpent = field as! Float
+                            }else{
+                                TimeSpent = 0
+                            }
+                            
+                            
+                            let  Token: String!
+                            if let field = dict[i].valueForKey("Token") as? String {
+                                Token = field
+                            }else{
+                                Token = ""
+                            }
+                            
+                            
+                            let  UserId: Int!
+                            if let field = dict[i].valueForKey("UserId")  {
+                                UserId = field as! Int
+                            }else{
+                                UserId = 0
+                            }
+                            
+                            let  isActive: Int!
+                            if let field = dict[i].valueForKey("isActive")  {
+                                isActive = field as! Int
+                            }else{
+                                isActive = 0
+                            }
+                            
+                            
+                            
+                            
+                            if TaskIdsArr.containsObject("\(Id!)") {
+                                if isActive == 0 {
+                                    let databse = databaseFile()
+                                    databse.deleteTaskFromDatabse("\(TaskId!)")
+                                    continue
+                                }
+                                do {
+                                    try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? ,CompanyId = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,CompanyId , Id])
+                                } catch let error as NSError {
+                                    print("failed: \(error.localizedDescription)")
+                                }
+                                
+                            }else{
+                                if isActive == 0 {
+                                    continue
+                                }
+                                
+                                do {
+                                    //                    try database.executeUpdate("delete * from  tasksData", values: nil)
+                                    try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,uniqueno ,CompanyId) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,"", "" ,CompanyId])
+                                    
+                                } catch let error as NSError {
+                                    print("failed: \(error.localizedDescription)")
+                                }
+                            }
+                            
+                        }
+                        database.close()
+//                        MBProgressHUD.hideHUDForView(view, animated: true)
+                        
+                        let userInfo = ["response" : "SUCCESS"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        
+                    }else{
+                        let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                        
+                        
+                        
+                        
+//                        MBProgressHUD.hideHUDForView(view, animated: true)
+                        
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+//                    MBProgressHUD.hideHUDForView(view, animated: true)
+                    
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+//                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+        
+    }
     
     func signOutUser(userId:String,LoginId:String,ActivityId:String,view:UIView)  {
         let notificationKey = "com.time-em.signInOutResponse"
@@ -920,6 +1202,102 @@ public class ApiRequest:UIViewController {
                     NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                 }
                 MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+    }
+    
+    func getTeamOfflineAtStart(userId:String){
+        let notificationKey = "com.time-em.getTeamResponse"
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+//        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+        
+        Alamofire.request(.POST, "\(apiUrl)/user/GetAllUsersListOffline", parameters: ["userId":userId,"TimeStamp":"","CompanyId":"0"])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
+                            
+                            // delete old data if new data doesnot exist
+                            let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+                            let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
+                            
+                            let database = FMDatabase(path: fileURL!.path)
+                            
+                            if !database.open() {
+                                print("Unable to open database")
+                            }
+                            let compId =  "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)"
+                            
+                            do {
+                                try database.executeUpdate("delete  from  teamData WHERE companyId=?", values: [compId])
+                            }catch let error as NSError {
+                                print("failed: \(error.localizedDescription)")
+                            }
+                            database.close()
+                            //---
+                            
+                            
+                            
+                            let userInfo = ["response" : "FAILURE"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                            MBProgressHUD.hideHUDForView(view, animated: true)
+                            
+                            return
+                        }
+                        
+                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
+                            
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                           
+                            let dict = JSON.valueForKey("AppUserViewModel") as! NSArray
+                            var idStr:String = ""
+                            for c in (0 ..< dict.count){
+                                if c == 0 {
+                                    idStr = "\(dict[0].valueForKey("Id")!)"
+                                }else{
+                                    idStr = "\(idStr),\(dict[c].valueForKey("Id")!)"
+                                }
+                                
+                            }
+                            
+                            if NSUserDefaults.standardUserDefaults().valueForKey("exicuteOnlyOnce") != nil {
+                                print(NSUserDefaults.standardUserDefaults().valueForKey("exicuteOnlyOnce"))
+                                if "\(NSUserDefaults.standardUserDefaults().valueForKey("exicuteOnlyOnce")!)" == "true"{
+                                    NSUserDefaults.standardUserDefaults().setObject("false", forKey:"exicuteOnlyOnce")
+                                    let assignedTasks = ApiRequest()
+                                    assignedTasks.GetUserWorksiteListActivity(idStr, view: self.view)
+                                }
+                            }
+                            
+                            print(idStr)
+                            
+                            let database = databaseFile()
+                            database.insertTeamData(dict)
+                            
+                            
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            
+                        }else{
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                }
+//                MBProgressHUD.hideHUDForView(view, animated: true)
         }
     }
     
@@ -1253,7 +1631,10 @@ public class ApiRequest:UIViewController {
         delay(0.001){
         MBProgressHUD.showHUDAddedTo(view, animated: true)
         }
-        Alamofire.request(.GET, "\(apiUrl)/Task/GetAssignedTaskIList", parameters: ["userId":userId])
+        
+        let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+        
+        Alamofire.request(.GET, "\(apiUrl)/Task/GetAssignedTaskIList", parameters: ["userId":userId,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -1302,6 +1683,60 @@ public class ApiRequest:UIViewController {
                 MBProgressHUD.hideHUDForView(view, animated: true)
         }
     }
+    
+    func getAssignedTaskListOfflineATStart (userId:String){
+        
+        Alamofire.request(.GET, "\(apiUrl)/Task/GetAllAssignedTaskIList", parameters: ["userId":userId,"CompanyId":"0"])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
+                            //                            let userInfo = ["response" : "FAILURE"]
+                            //                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                            return
+                        }
+                        
+                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
+                            
+                            //                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            
+                            let dict = JSON.valueForKey("ReturnKeyValueViewModel") as! NSArray
+                            
+                            let database = databaseFile()
+                            database.insertAssignedListData(dict)
+                            
+                            
+                            
+                            
+                        }else{
+                            //                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
+                            //                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                        
+                    }else{
+                        //                        let userInfo = ["response" : "FAILURE"]
+                        //                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    //                    let userInfo = ["response" : "FAILURE"]
+                    //                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+//                MBProgressHUD.hideHUDForView(view, animated: true)
+        }
+    }
+    
+    
     func currentTimeMillis() -> Int64{
         let nowDouble = NSDate().timeIntervalSince1970
         return Int64(nowDouble*1000)
@@ -1712,9 +2147,14 @@ public class ApiRequest:UIViewController {
             
             
             //--
+            let arr = dataString?.componentsSeparatedByString(",\"Id\":")[1]
+            
+            let sttt = arr?.componentsSeparatedByString(",")[0]
+            
             let stringArray = dataString!.componentsSeparatedByCharactersInSet(
                 NSCharacterSet.decimalDigitCharacterSet().invertedSet)
-            let newString = stringArray.joinWithSeparator("")
+//            let newString = stringArray.joinWithSeparator("")
+              let newString = sttt
             print(newString)
             
             let count1 = imageData.length / sizeof(UInt8)
@@ -1731,7 +2171,7 @@ public class ApiRequest:UIViewController {
                 self.taskORsync = "noti"
                 NSUserDefaults.standardUserDefaults().setObject("no", forKey: "forSync")
 
-                self.sendImageVideoSync(newString, FileUploadFor: "notification", data: dataobject, type: type, uniqueno: newString, view: view)
+                self.sendImageVideoSync(newString!, FileUploadFor: "notification", data: dataobject, type: type, uniqueno: newString!, view: view)
             }
             
             
@@ -2341,7 +2781,7 @@ public class ApiRequest:UIViewController {
                         let database = databaseFile()
                             
                             for i in data {
-                                 database.saveNotificationActiveUserList("\(i.valueForKey("FullName")!)", userid: "\(i.valueForKey("userid")!)")
+                                 database.saveNotificationActiveUserList("\(i.valueForKey("FullName")!)", userid: "\(i.valueForKey("userid")!)",CompanyId: "\(i.valueForKey("CompanyId")!)")
                               
                             }
                         
@@ -2369,6 +2809,70 @@ public class ApiRequest:UIViewController {
         }
         
     }
+    
+    func getUserlistingforSendingNotiOffline(userid:String){
+        let notificationKey = "com.time-em.NotificationTypeloginResponse"
+        MBProgressHUD.showHUDAddedTo(view, animated: true)
+        
+        Alamofire.request(.POST, "\(apiUrl)/user/GetActiveUserListoffline", parameters:  ["UserId":userid,"timeStamp":"","CompanyId":"0"])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                //sadasdsadasdasd
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        
+                        if "\(JSON.valueForKey("IsError")!)" == "false" {
+                            
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            
+                            if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record found!") != nil{
+                                NSUserDefaults.standardUserDefaults().setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "activeUserListTimeStamp")
+                                NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                                MBProgressHUD.hideHUDForView(view, animated: true)
+                                return
+                            }
+                            
+//                            NSUserDefaults.standardUserDefaults().setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "activeUserListTimeStamp")
+                            let data = JSON.valueForKey("activeuserlist") as! NSArray
+                            let database = databaseFile()
+                            
+                            for i in data {
+                                database.saveNotificationActiveUserList("\(i.valueForKey("FullName")!)", userid: "\(i.valueForKey("userid")!)",CompanyId: "\(i.valueForKey("CompanyId")!)")
+                                
+                            }
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                            MBProgressHUD.hideHUDForView(view, animated: true)
+                        }else{
+                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                            MBProgressHUD.hideHUDForView(view, animated: true)
+                        }
+                        //
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                        MBProgressHUD.hideHUDForView(view, animated: true)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                    MBProgressHUD.hideHUDForView(view, animated: true)
+                    
+                }
+                
+        }
+        
+    }
+    
+    
+    
     //http://timeemapi.azurewebsites.net/api/User/GetUsersListByLoginCode?Logincode=9105
     func getuserListByLoginCode(Logincode:String,view:UIView) {
         let notificationKey = "com.time-em.getuserListByLoginCode"
@@ -2695,7 +3199,7 @@ public class ApiRequest:UIViewController {
 //                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     return
                 }else if "\(dataString!.lowercaseString)".rangeOfString("error occured") != nil{
-                    let userInfo = ["response" : "uploading failed. Kindly try again."]
+                    let userInfo = ["response" : "Uploading failed. Kindly try again."]
                     
                     NSNotificationCenter.defaultCenter().postNotificationName("com.time-em.usertasksResponsefromAddTask", object: nil, userInfo: userInfo)
                     //                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -2827,7 +3331,10 @@ public class ApiRequest:UIViewController {
     func getNotifications(UserId:String,timeStamp:String) {
         let notificationKey = "com.time-em.getNotificationListByLoginCode"
         
-        Alamofire.request(.POST, "\(apiUrl)/notification/NotificationByUserId", parameters:  ["UserId":UserId,"timeStamp":timeStamp])
+         let str:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+        
+
+        Alamofire.request(.POST, "\(apiUrl)/notification/NotificationByUserId", parameters:  ["UserId":UserId,"timeStamp":timeStamp,"CompanyId":str])
             .responseJSON { response in
                 print(response.request)  // original URL request
                 print(response.response) // URL response
@@ -2863,6 +3370,7 @@ public class ApiRequest:UIViewController {
                                     }else{
                                         AttachmentFullPath = ""
                                     }
+                                   
                                     
                                     let  Message:String
                                     if let field = i.valueForKey("Message") as? String {
@@ -2876,6 +3384,8 @@ public class ApiRequest:UIViewController {
                                     }else{
                                         NotificationId = 0
                                     }
+                                   
+                                    
                                     let  NotificationTypeName:String
                                     if let field = i.valueForKey("NotificationTypeName") as? String {
                                         NotificationTypeName = field
@@ -2894,6 +3404,12 @@ public class ApiRequest:UIViewController {
                                     }else{
                                         Senderid = 0
                                     }
+                                    let  CompanyId: Int!
+                                    if let field = i.valueForKey("CompanyId")  {
+                                        CompanyId = field as! Int
+                                    }else{
+                                        CompanyId = 0
+                                    }
                                     let  Subject:String
                                     if let field = i.valueForKey("Subject") as? String {
                                         Subject = field
@@ -2907,7 +3423,7 @@ public class ApiRequest:UIViewController {
                                         createdDate = ""
                                     }
                                     
-                                    database.saveNotifications(AttachmentFullPath, Message: Message, NotificationId: "\(NotificationId!)", NotificationTypeName: NotificationTypeName, SenderFullName: SenderFullName, Senderid: "\(Senderid!)", Subject: Subject, createdDate: createdDate)
+                                    database.saveNotifications(AttachmentFullPath, Message: Message, NotificationId: "\(NotificationId!)", NotificationTypeName: NotificationTypeName, SenderFullName: SenderFullName, Senderid: "\(Senderid!)", Subject: Subject, createdDate: createdDate,CompanyId:"\( CompanyId)")
                                 }
                             }
                             
@@ -2932,6 +3448,128 @@ public class ApiRequest:UIViewController {
         
     }
     
+    func getAllNotificationsInStart(UserId:String){
+        let notificationKey = "com.time-em.getNotificationListByLoginCode"
+        
+        
+
+        Alamofire.request(.POST, "\(apiUrl)/notification/GetAllNotificationByUserId", parameters:  ["UserId":UserId,"timeStamp":"","CompanyId":"0"])
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                    
+                    if "\(response.result)" == "SUCCESS"{
+                        print(JSON.valueForKey("IsError"))
+                        print(JSON.valueForKey("Message"))
+                        if "\(JSON.valueForKey("Message")!)" == "No HTTP resource was found that matches the request URI 'http://timeem-staging.azurewebsites.net/api/notification/GetAllNotificationByUserId'." {
+                            
+                           return
+                        }
+                        if "\(JSON.valueForKey("IsError")!)" == "0" {
+                             let userInfo = ["response" : "success"]
+                            NSUserDefaults.standardUserDefaults().setObject("\(JSON.valueForKey("TimeStamp")!)", forKey: "notificationsTimeStamp")
+                            
+                           
+                            if JSON.valueForKey("notificationslist") is NSNull
+                            {
+                                return
+                            }
+                            let dataArr = JSON.valueForKey("notificationslist") as? NSArray
+                            if ( dataArr != nil)
+                            {
+                                let database = databaseFile()
+                                
+                                for i in dataArr! {
+                                    
+                                    let  AttachmentFullPath:String
+                                    if let field = i.valueForKey("AttachmentFullPath") as? String {
+                                        AttachmentFullPath = field
+                                    }else{
+                                        AttachmentFullPath = ""
+                                    }
+                                   
+                                    
+                                    let  Message:String
+                                    if let field = i.valueForKey("Message") as? String {
+                                        Message = field
+                                    }else{
+                                        Message = ""
+                                    }
+                                    let  NotificationId: Int!
+                                    if let field = i.valueForKey("NotificationId")  {
+                                        NotificationId = field as! Int
+                                    }else{
+                                        NotificationId = 0
+                                    }
+                                   
+                                    
+                                    let  NotificationTypeName:String
+                                    if let field = i.valueForKey("NotificationTypeName") as? String {
+                                        NotificationTypeName = field
+                                    }else{
+                                        NotificationTypeName = ""
+                                    }
+                                    let  SenderFullName:String
+                                    if let field = i.valueForKey("SenderFullName") as? String {
+                                        SenderFullName = field
+                                    }else{
+                                        SenderFullName = ""
+                                    }
+                                    let  Senderid: Int!
+                                    if let field = i.valueForKey("Senderid")  {
+                                        Senderid = field as! Int
+                                    }else{
+                                        Senderid = 0
+                                    }
+                                    let  CompanyId: Int!
+                                    if let field = i.valueForKey("CompanyId")  {
+                                        CompanyId = field as! Int
+                                    }else{
+                                        CompanyId = 0
+                                    }
+                                    let  Subject:String
+                                    if let field = i.valueForKey("Subject") as? String {
+                                        Subject = field
+                                    }else{
+                                        Subject = ""
+                                    }
+                                    let  createdDate:String
+                                    if let field = i.valueForKey("createdDate") as? String {
+                                        createdDate = field
+                                    }else{
+                                        createdDate = ""
+                                    }
+                                    
+                                    database.saveNotifications(AttachmentFullPath, Message: Message, NotificationId: "\(NotificationId!)", NotificationTypeName: NotificationTypeName, SenderFullName: SenderFullName, Senderid: "\(Senderid!)", Subject: Subject, createdDate: createdDate,CompanyId: "\(CompanyId)")
+                                    
+                                }
+                            }
+                            
+                            
+                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }else{
+                             let userInfo = ["response" : "failure"]
+                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                        }
+                        
+                    }else{
+                        let userInfo = ["response" : "FAILURE"]
+                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    }
+                }else if "\(response.result)" == "FAILURE"{
+                    let userInfo = ["response" : "FAILURE"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    
+                }
+                
+        }
+        
+    }
     
     
     

@@ -104,7 +104,7 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
 
     func fetchNotificationDataFromDatabase() {
         let databaseFetch = databaseFile()
-        allNotificationsListArray = databaseFetch.getNotifications()
+        allNotificationsListArray = NSMutableArray(array: databaseFetch.getNotifications().reverse())
         print(allNotificationsListArray)
         self.showNotificationsInTable()
     }

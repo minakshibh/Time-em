@@ -170,13 +170,18 @@ fileURL!.path)
         if !database.open() {
             print("Unable to open database")
         }
+        
+        let companyKey:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
         let dataArray:NSMutableArray! = []
         do {
-            let rs = try database.executeQuery("select * from assignedTaskList", values: nil)
+            let rs = try database.executeQuery("select * from assignedTaskList where companyid = ?", values: [companyKey])
             while rs.next() {
                 let dict: NSMutableDictionary = [:]
                 dict.setObject(rs.stringForColumn("TaskId"), forKey: "taskId")
                 dict.setObject(rs.stringForColumn("TaskName"), forKey: "taskName")
+                dict.setObject(rs.stringForColumn("companyid"), forKey: "CompanyId")
+
                 dataArray.addObject(dict)
                 }
         } catch let error as NSError {
@@ -200,7 +205,7 @@ fileURL!.path)
 
         let dataArray:NSMutableArray! = []
         do {
-            let rs = try database.executeQuery("select * from teamData", values: nil)
+            let rs = try database.executeQuery("select * from teamData WHERE CompanyId=?", values: [companyKey])
             while rs.next() {
                 let dict: NSMutableDictionary = [:]
                 dict.setObject(rs.stringForColumn("ActivityId"), forKey: "ActivityId")
@@ -295,10 +300,9 @@ fileURL!.path)
                 Company = ""
             }
             
-            let companyKey:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
             let  CompanyId:Int!
-            if let field = Int(companyKey)  {
-                CompanyId = field 
+            if let field = dict.valueForKey("CompanyId")  {
+                CompanyId = field as! Int
             }else{
                 CompanyId = 0
             }
@@ -717,11 +721,13 @@ fileURL!.path)
         
         
         let teamIdsArr:NSMutableArray = []
+        
         do {
             
             let rs = try database.executeQuery("select * from assignedTaskList", values: nil)
             while rs.next() {
                 let x = "\(rs.stringForColumn("TaskId")!)"
+                let y = "\(rs.stringForColumn("companyid")!)"
 //                print(x)
                 teamIdsArr.addObject(x)
             }
@@ -739,16 +745,23 @@ fileURL!.path)
                 TaskId = 0
             }
             
+            let  CompanyId:Int!
+            if let field = dict.valueForKey("CompanyId")  {
+                CompanyId = field as! Int
+            }else{
+                CompanyId = 0
+            }
+            
             let  TaskName:String!
             if let field = dict.valueForKey("TaskName") as? String{
-                TaskName = field as? String ?? ""
+                TaskName = field as String ?? ""
             }else{
                 TaskName = ""
             }
             
             if teamIdsArr.containsObject("\(TaskId!)") {
                 do {
-                    try database.executeUpdate("UPDATE assignedTaskList SET  TaskName=? where TaskId=?,", values: [  TaskName,TaskId])
+                    try database.executeUpdate("UPDATE assignedTaskList SET  TaskName=?,companyid=? WHERE TaskId=?", values: [  TaskName,CompanyId,TaskId])
                 } catch let error as NSError {
                     print("failed: \(error.localizedDescription)")
                 }
@@ -757,7 +770,7 @@ fileURL!.path)
                 
                 do {
                     //                    try database.executeUpdate("delete * from  tasksData", values: nil)
-                    try database.executeUpdate("insert into assignedTaskList (TaskId , TaskName ) values (?, ?)", values: [TaskId , TaskName])
+                    try database.executeUpdate("insert into assignedTaskList (TaskId , TaskName,companyid ) values (?, ?,?)", values: [TaskId , TaskName,CompanyId])
                     
                 } catch let error as NSError {
                     print("failed: \(error.localizedDescription)")
@@ -1171,7 +1184,7 @@ fileURL!.path)
 
     }
 
-    func saveNotificationActiveUserList(FullName:String,userid:String) {
+    func saveNotificationActiveUserList(FullName:String,userid:String,CompanyId:String) {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
@@ -1193,7 +1206,7 @@ fileURL!.path)
             print("failed: \(error.localizedDescription)")
         }
         
-        let companyKey:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+        let companyKey:String = CompanyId ;
 
         if idArr.containsObject(userid){
             
@@ -1242,7 +1255,7 @@ fileURL!.path)
     }
     
     
-    func saveNotifications(AttachmentFullPath:String,Message:String,NotificationId:String,NotificationTypeName:String,SenderFullName:String,Senderid:String,Subject:String,createdDate:String) {
+    func saveNotifications(AttachmentFullPath:String,Message:String,NotificationId:String,NotificationTypeName:String,SenderFullName:String,Senderid:String,Subject:String,createdDate:String,CompanyId:String) {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
@@ -1252,11 +1265,31 @@ fileURL!.path)
             print("Unable to open database")
             return
         }
-        
+
+        let idArr:NSMutableArray = []
         do {
-            try database.executeUpdate("insert into notificationsTable(AttachmentFullPath,Message,NotificationId,NotificationTypeName,SenderFullName,Senderid,Subject,createdDate) values (?,?,?,?,?,?,?,?)", values: [AttachmentFullPath,Message,NotificationId,NotificationTypeName,SenderFullName,Senderid,Subject,createdDate])
+            let rs = try database.executeQuery("select * from notificationsTable", values: nil)
+            
+            while rs.next() {
+                let z = rs.stringForColumn("NotificationId")
+                idArr.addObject(z)
+            }
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
+        }
+        
+        if idArr.containsObject(NotificationId){
+            do {
+                try database.executeUpdate("UPDATE notificationsTable SET AttachmentFullPath = ?,Message = ?,NotificationTypeName = ?,SenderFullName = ?,Senderid = ?,Subject = ?,createdDate = ?,companyid = ? WHERE NotificationId = ?", values: [AttachmentFullPath,Message,NotificationTypeName,SenderFullName,Senderid,Subject,createdDate,CompanyId,NotificationId])
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
+        }else{
+            do {
+                try database.executeUpdate("insert into notificationsTable(AttachmentFullPath,Message,NotificationId,NotificationTypeName,SenderFullName,Senderid,Subject,createdDate,companyid) values (?,?,?,?,?,?,?,?,?)", values: [AttachmentFullPath,Message,NotificationId,NotificationTypeName,SenderFullName,Senderid,Subject,createdDate,CompanyId])
+            } catch let error as NSError {
+                print("failed: \(error.localizedDescription)")
+            }
         }
         database.close()
     }
@@ -1271,8 +1304,10 @@ fileURL!.path)
             print("Unable to open database")
         }
         var userARR:NSMutableArray = []
+        let companyKey:String = "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)" ;
+
         do {
-            let rs = try database.executeQuery("select * from notificationsTable", values: nil)
+            let rs = try database.executeQuery("select * from notificationsTable where companyid = ?", values: [companyKey])
             
             while rs.next() {
                 let dict:NSMutableDictionary = [:]
@@ -1284,6 +1319,7 @@ fileURL!.path)
                 let Senderid = rs.stringForColumn("Senderid")
                 let Subject = rs.stringForColumn("Subject")
                 let createdDate = rs.stringForColumn("createdDate")
+                let companyKey = rs.stringForColumn("companyid")
                 
                 dict.setValue(AttachmentFullPath, forKey: "AttachmentFullPath")
                 dict.setValue(Message, forKey: "Message")
@@ -1293,6 +1329,7 @@ fileURL!.path)
                 dict.setValue(Senderid, forKey: "Senderid")
                 dict.setValue(Subject, forKey: "Subject")
                 dict.setValue(createdDate, forKey: "createdDate")
+                dict.setValue(companyKey, forKey: "companyid")
                 userARR.addObject(dict)
             }
         } catch let error as NSError {
@@ -1447,7 +1484,12 @@ fileURL!.path)
             }else{
                 ActivityId = ""
             }
-            
+
+        let  companyKey:String!
+         companyKey = NSUserDefaults.standardUserDefaults().valueForKey("companyKey") as! String
+        
+        
+        
             let  AttachmentImageFile:String!
             if let field = dict.valueForKey("AttachmentImageFile")  as? String{
                 AttachmentImageFile = field
@@ -1570,9 +1612,9 @@ fileURL!.path)
                 }else{
                     do {
                         if dict.valueForKey("AttachmentImageData") != nil {
-                            try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, AttachmentImageData = ? , isoffline = ? ,uniqueno = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, dict.valueForKey("AttachmentImageData")!,"true",uniqueno,Id])
+                            try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, AttachmentImageData = ? , isoffline = ? ,uniqueno = ? , CompanyId = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, dict.valueForKey("AttachmentImageData")!,"true",uniqueno,companyKey,Id])
                         }else{
-                            try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, isoffline = ?, Id = ? WHERE  uniqueno=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, "true",Id,uniqueno])
+                            try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, isoffline = ?, Id = ? , CompanyId = ? WHERE  uniqueno=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, "true",Id,companyKey,uniqueno])
                         }
                     } catch let error as NSError {
                         print("failed: \(error.localizedDescription)")
@@ -1585,9 +1627,9 @@ fileURL!.path)
                 
                 do {
                     if dict.valueForKey("AttachmentImageData") != nil {
-                        try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,isVideoRecorded,isoffline,uniqueno) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?,?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,dict.valueForKey("AttachmentImageData")!,isVideoRecorded ,"true",uniqueno])
+                        try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,isVideoRecorded,isoffline,uniqueno,CompanyId) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?,?,?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,dict.valueForKey("AttachmentImageData")!,isVideoRecorded ,"true",uniqueno,companyKey])
                     }else{
-                        try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,isVideoRecorded, isoffline, uniqueno) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?,?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,"",isVideoRecorded ,"true",uniqueno])
+                        try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,isVideoRecorded, isoffline, uniqueno,CompanyId) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?,?,?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,"",isVideoRecorded ,"true",uniqueno,companyKey])
                     }
                 } catch let error as NSError {
                     print("failed: \(error.localizedDescription)")
@@ -1605,9 +1647,9 @@ fileURL!.path)
                 }else{
                 do {
                     if dict.valueForKey("AttachmentImageData") != nil {
-                        try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, AttachmentImageData = ? , isoffline = ? ,uniqueno = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, dict.valueForKey("AttachmentImageData")!,"true",uniqueno,Id])
+                        try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, AttachmentImageData = ? , isoffline = ? ,uniqueno = ? , CompanyId = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, dict.valueForKey("AttachmentImageData")!,"true",uniqueno,companyKey,Id])
                     }else{
-                    try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, isoffline = ?, uniqueno = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, "true",uniqueno,Id])
+                    try database.executeUpdate("UPDATE tasksData SET ActivityId = ? , AttachmentImageFile = ? , AttachmentVideoFile = ?  ,Comments = ? , CreatedDate = ? , EndTime  = ?, SelectedDate  = ?, SignedInHours = ?,StartTime = ? , TaskId = ? , TaskName = ? ,TimeSpent = ? , Token = ? , UserId = ? , isVideoRecorded = ?, isoffline = ?, uniqueno = ? ,CompanyId = ? WHERE Id=?", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,isVideoRecorded, "true",uniqueno,companyKey,Id])
                     }
                 } catch let error as NSError {
                     print("failed: \(error.localizedDescription)")
@@ -1620,9 +1662,9 @@ fileURL!.path)
                 
                 do {
                       if dict.valueForKey("AttachmentImageData") != nil {
-                        try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,isVideoRecorded,isoffline,uniqueno ) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?,?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,dict.valueForKey("AttachmentImageData")!,isVideoRecorded ,"true",uniqueno])
+                        try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,isVideoRecorded,isoffline,uniqueno,CompanyId ) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?,?,?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,dict.valueForKey("AttachmentImageData")!,isVideoRecorded ,"true",uniqueno,companyKey])
                       }else{
-                    try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,isVideoRecorded, isoffline,uniqueno) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?,?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,"",isVideoRecorded ,"true",uniqueno])
+                    try database.executeUpdate("insert into tasksData (ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId, AttachmentImageData,isVideoRecorded, isoffline,uniqueno,CompanyId) values (?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?, ?, ?,?,?,?,?)", values: [ActivityId , AttachmentImageFile , AttachmentVideoFile  ,Comments , CreatedDate , EndTime ,Id , SelectedDate , SignedInHours ,StartTime , TaskId , TaskName ,TimeSpent , Token , UserId ,"",isVideoRecorded ,"true",uniqueno,companyKey])
                     }
                 } catch let error as NSError {
                     print("failed: \(error.localizedDescription)")
@@ -1664,7 +1706,7 @@ fileURL!.path)
         }
         for i:Int in 0 ..< data.count {
             
-            let dict:NSMutableDictionary = data[i] as! NSMutableDictionary
+            let dict:NSDictionary = data[i] as! NSDictionary
             let  CreatedDate = "\(dict.valueForKey("CreatedDate")!)"
             
             let workSiteList:NSArray = dict.valueForKey("workSiteList") as! NSArray

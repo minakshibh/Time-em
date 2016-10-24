@@ -15,7 +15,7 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
 
     @IBOutlet var btnMyTasks: UIButton!
     @IBOutlet var widgetBackgroundHeightConstraint: NSLayoutConstraint!
-     @IBOutlet var manageButtonottomSpace: NSLayoutConstraint!
+    @IBOutlet var manageButtonottomSpace: NSLayoutConstraint!
     @IBOutlet var btnNotificationSecond: UIButton!
     @IBOutlet var btnMyTeam: UIButton!
     @IBOutlet var btnNotifications: UIButton!
@@ -82,19 +82,33 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         self.view.bringSubviewToFront(self.sideView)
         self.view.bringSubviewToFront(btnMenu)
         
-      ///-->> fetch all data on dashboard
-        self.fetchUserTaskGraphDataFromAPI()
-        self.fetchUserSignedGraphDataFromAPI()
-        self.fetchNotificationList()
-        NSUserDefaults.standardUserDefaults().setObject("true", forKey:"exicuteOnlyOnce")
-        self.fetchTeamList()
+      ///////-->> fetch all data on dashboard
         let assignedTasks = ApiRequest()
         let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
-        assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
+        
+        self.fetchUserTaskGraphDataFromAPI()
+        self.fetchUserSignedGraphDataFromAPI()
+        //get notificaiton api
+            //        self.fetchNotificationList()
+        assignedTasks.getAllNotificationsInStart(currentUserId as! String)
+        
+        // get team details
+//        self.fetchTeamList()
+        NSUserDefaults.standardUserDefaults().setObject("true", forKey:"exicuteOnlyOnce")
+        assignedTasks.getTeamOfflineAtStart(currentUserId as! String)
+       
+        // gett assigned tasks
+//        assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
+        assignedTasks.getAssignedTaskListOfflineATStart(currentUserId as! String
+            )
+        
         assignedTasks.GetNotificationType()
-        self.getActiveUserList()
+//        self.getActiveUserList()
+        assignedTasks.getUserlistingforSendingNotiOffline(currentUserId as! String)
         NSUserDefaults.standardUserDefaults().setObject("false", forKey:"isEditingOrAdding")
-        assignedTasks.getUserTask(currentUserId as! String, createdDate: "",TimeStamp: "", view: self.view)
+        //get all tasks apis
+//        assignedTasks.getUserTask(currentUserId as! String, createdDate: "",TimeStamp: "", view: self.view)
+        assignedTasks.fetchAllTaskAtOnce(currentUserId as! String, createdDate: "")
 //        assignedTasks.GetUserWorksiteListActivity("2,8049,7,10", view: self.view)
         MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
 
@@ -179,11 +193,11 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         var controllerArray : [UIViewController] = []
         
         let controller1 : UserGraphViewController = UserGraphViewController(nibName: "UserGraphViewController", bundle: nil)
-        controller1.title = "UserGraph"
+        controller1.title = "User Graph"
         controllerArray.append(controller1)
         
         let controller2 : UserLoginGraphViewController = UserLoginGraphViewController(nibName: "UserLoginGraphViewController", bundle: nil)
-        controller2.title = "UserLoginGraph"
+        controller2.title = "User Login Graph"
         controllerArray.append(controller2)
         
         // Customize menu (Optional)
@@ -227,6 +241,8 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         btnNotifications.backgroundColor = UIColor.clearColor()
         btnMyTasks.backgroundColor = UIColor.clearColor()
         
+        
+        menuSlideBack()
 //        NSNotificationCenter.defaultCenter().removeObserver(self)
 //        setNotificationButton()
 
@@ -906,8 +922,8 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_Pin")
         NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_UserType")
         NSUserDefaults.standardUserDefaults().removeObjectForKey("companyData")
+        NSUserDefaults.standardUserDefaults().removeObjectForKey("currentUser_company")
    
-        
         
 ////        self.navigationController?.popToRootViewControllerAnimated(true)
 //        self.dismissViewControllerAnimated(true, completion: nil)

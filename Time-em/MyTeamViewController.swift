@@ -138,13 +138,14 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         }
         cell.selectionStyle = .None
         
-        if "\(dict["IsNightShift"]!)" == "0" {
-            let imageView: UIImageView = UIImageView(image: UIImage(named: "sun"))
-            cell.accessoryView = imageView
-        }else{
-            let imageView: UIImageView = UIImageView(image: UIImage(named: "moon"))
-            cell.accessoryView = imageView
-        }
+//        // set day night icon
+//        if "\(dict["IsNightShift"]!)" == "0" {
+//            let imageView: UIImageView = UIImageView(image: UIImage(named: "sun"))
+//            cell.accessoryView = imageView
+//        }else{
+//            let imageView: UIImageView = UIImageView(image: UIImage(named: "moon"))
+//            cell.accessoryView = imageView
+//        }
         
         var finalStrSignInAt:String!
         var finalStrSignOutAt:String!

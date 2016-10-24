@@ -419,7 +419,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
             }
             
         }else if status == "image upload successfully" {
-            let alertController = DBAlertController(title: "Time'em", message: "File upload successfully", preferredStyle: .Alert)
+            let alertController = DBAlertController(title: "Time'em", message: "Sync data uploaded successfully", preferredStyle: .Alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
             if str == "yes"{
             }else{
