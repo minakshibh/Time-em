@@ -32,7 +32,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     var webservicehitCount:Int = 0
     var pickerDateStr:String!
     var falagRotation: Bool = false
-    
+    var alertDisplay: Bool = true
     
     @IBOutlet var btnSignIn: UIButton!
     
@@ -91,7 +91,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         btnShowDatePicker.transform = CGAffineTransformMakeScale(-1.0, 1.0);
         btnShowDatePicker.titleLabel!.transform = CGAffineTransformMakeScale(-1.0, 1.0);
         btnShowDatePicker.imageView!.transform = CGAffineTransformMakeScale(-1.0, 1.0);
-        
+        alertDisplay = true
         
         tableView.reloadData()
         
@@ -106,14 +106,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         
 //        assignedTasks.GetUserWorksiteActivityGraph("10",view: self.view)
-        
-        
-        
-        
+    
 //        print(taskDataArray)
-        
-        
-        
+    
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "commentCellss")
         
         
@@ -139,7 +134,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     func rotated()
     {
         
-        
+    
         if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
         {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -273,6 +268,9 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     }
     
     func dailyCalendarViewDidSelect(date: NSDate) {
+        
+        
+          alertDisplay = true
         datepickerView.hidden = true
         print(date)
         let dateStr = "\(date)".componentsSeparatedByString(" ")[0]
@@ -307,34 +305,32 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     
     
     func getDataFromDatabase (id:String) {
-        
+       
         if         NSUserDefaults.standardUserDefaults().valueForKey("btnShowDatePickertitle") != nil{
             if "\(NSUserDefaults.standardUserDefaults().valueForKey("btnShowDatePickertitle")!)" == "yes"{
             
             }else{
                 btnShowDatePicker.setTitle(" ", forState: .Normal)
             }
-            
-
         }
-
-        
-        
-        
-        
-        let databaseFetch = databaseFile()
+       let databaseFetch = databaseFile()
         taskDataArray = databaseFetch.getTasksForUserID(id,Date:selectedDate)
 //        print(taskDataArray)
         if taskDataArray.count == 0 {
+            
+            if alertDisplay == true
+            {
             NSUserDefaults.standardUserDefaults().setObject("true", forKey: "isEditingOrAdding")
             
-//            let alertNoTasks = UIAlertController(title: "Time'em", message: "No tasks available", preferredStyle: UIAlertControllerStyle.Alert)
-//            alertNoTasks.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-//            self.presentViewController(alertNoTasks, animated: true, completion: nil)
-//            
-//            print(alertNoTasks.title)
-//            print(alertNoTasks.message)
-        }
+            let alertNoTasks = UIAlertController(title: "Time'em", message: "No tasks available", preferredStyle: UIAlertControllerStyle.Alert)
+            alertNoTasks.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alertNoTasks, animated: true, completion: nil)
+            
+            print(alertNoTasks.title)
+            print(alertNoTasks.message)
+                alertDisplay = false
+            }
+    }
         tableView.reloadData()
     }
     
@@ -391,10 +387,13 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         if currentUserID != nil{
 //            NSUserDefaults.standardUserDefaults().setObject("no", forKey: "btnShowDatePickertitle")
+          //  alertDisplay = false
             self.getDataFromDatabase(currentUserID)
+            
         }else{
             let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
 //            NSUserDefaults.standardUserDefaults().setObject("no", forKey: "btnShowDatePickertitle")
+           //  alertDisplay = false
             self.getDataFromDatabase(logedInUserId!)
         }
     }

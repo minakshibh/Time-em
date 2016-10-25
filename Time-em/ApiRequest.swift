@@ -202,6 +202,7 @@ public class ApiRequest:UIViewController {
         if isoffline == "true"{
             let database = databaseFile()
             database.deleteTask(Id, TimeSpent: TimeSpent, CreatedDate: CreatedDate, isoffline: isoffline, TaskId:TaskId)
+            
             view.makeToast("task deleted successfully")
             let userInfo = ["response" : "success"]
             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
@@ -2653,6 +2654,10 @@ public class ApiRequest:UIViewController {
     }
     
     func openDatabase()  {
+        
+        
+        
+        
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         

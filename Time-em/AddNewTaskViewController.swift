@@ -416,6 +416,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     @IBAction func selectTaskFromDropDown(sender: AnyObject) {
         if dropDown.hidden {
             dropDown.show()
+        taskDropDown.layer.borderColor = UIColor.clearColor().CGColor
         } else {
             dropDown.hide()
         }
@@ -511,26 +512,42 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             self.lblbackground.frame.origin.y += 150
         }
         if self.taskId == "" {
-            let alert = UIAlertController(title: "Time'em", message: "Select notification type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-            return
+//            let alert = UIAlertController(title: "Time'em", message: "Select notification type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+            
+            
+            taskDropDown.layer.cornerRadius = 5
+            taskDropDown.layer.borderWidth = 1
+            taskDropDown.layer.borderColor = UIColor.redColor().CGColor
+            
+                    return
         }
         let taskIds:NSString = self.taskId
         if commentsTxt.text.characters.count == 0 {
-            let alert = UIAlertController(title: "Time'em", message: "Enter some comments  before continue.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-            commentsTxt.becomeFirstResponder()
+//            let alert = UIAlertController(title: "Time'em", message: "Enter some comments  before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+//            commentsTxt.becomeFirstResponder()
+            
+            commentsTxt.layer.borderColor = UIColor.redColor().CGColor
+            commentsTxt.layer.borderWidth = 1
+            commentsTxt.layer.cornerRadius = 5
+
             return
         }
+        
          let comments = self.commentsTxt.text! as String
         
         if numberOfHoursTxt.text?.characters.count == 0 {
-            let alert = UIAlertController(title: "Time'em", message: "Enter hours for tasks before continue", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-            numberOfHoursTxt.becomeFirstResponder()
+//            let alert = UIAlertController(title: "Time'em", message: "Enter hours for tasks before continue", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+//            numberOfHoursTxt.becomeFirstResponder()
+            
+            numberOfHoursTxt.layer.borderColor = UIColor.redColor().CGColor
+            numberOfHoursTxt.layer.borderWidth = 1
+            numberOfHoursTxt.layer.cornerRadius = 5
             return
         }
         let timespend = self.numberOfHoursTxt.text! as String
@@ -636,6 +653,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     //~~ TextView Delegates
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         
+        
+        
+        
+        
         let sizeThatFitsTextView: CGSize = self.commentsTxt.sizeThatFits(CGSizeMake(self.commentsTxt.frame.size.width, CGFloat(MAXFLOAT)))
         print(sizeThatFitsTextView.height)
         if sizeThatFitsTextView.height > 62 {
@@ -656,10 +677,15 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     }
     
     func textViewDidBeginEditing(textView: UITextView) {
+        
+        commentsTxt.layer.borderColor = UIColor.clearColor().CGColor
+      
+
         commentPlaceholder.hidden = true
         scrollView.scrollEnabled = true
          scrollView.contentSize = CGSizeMake(320, 700)
-        
+        numberOfHoursTxt.layer.borderColor = UIColor.clearColor().CGColor
+
 //            scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
         if scrollView.contentOffset.y != 200.0 {
             scrollView.setContentOffset(CGPointMake(0, 200), animated: true)
@@ -669,6 +695,9 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
 
         scrollView.scrollEnabled = true
         scrollView.contentSize = CGSizeMake(320, 700)
+        numberOfHoursTxt.layer.borderColor = UIColor.clearColor().CGColor
+
+         //commentsTxt.layer.borderColor = UIColor.clearColor().CGColor
         
 //            scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
         if scrollView.contentOffset.y != 200.0 {

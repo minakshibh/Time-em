@@ -191,6 +191,10 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
 
     //~ TextView Delegates
     func textViewDidBeginEditing(textView: UITextView) {
+        
+        txtComment.layer.borderColor = UIColor.clearColor().CGColor
+        txtSubject.layer.borderColor = UIColor.clearColor().CGColor
+        
         tableView.hidden = true
         if textView == txtComment {
             lblPlaceholderComments.hidden = true
@@ -212,7 +216,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         }
     }
     func textFieldDidBeginEditing(textField: UITextField) {
-        
+       
     }
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         
@@ -273,6 +277,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         txtSubject.resignFirstResponder()
         if tableView.hidden {
             tableView.hidden = false
+            btnSelectRecipients.layer.borderColor = UIColor.clearColor().CGColor
+
         } else {
             tableView.hidden = true
         }
@@ -301,18 +307,26 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         NotificationTypeId = "0"
         
         if txtSubject.text.isEmpty {
-            let alert = UIAlertController(title: "Time'em", message: "Enter subject before continue.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+//            let alert = UIAlertController(title: "Time'em", message: "Enter subject before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+            
+            txtSubject.layer.borderColor = UIColor.redColor().CGColor
+            txtSubject.layer.borderWidth = 1
+            txtSubject.layer.cornerRadius = 5
             return
         }else{
             subject = txtSubject.text
         }
         
         if txtComment.text.isEmpty {
-            let alert = UIAlertController(title: "Time'em", message: "Enter comments before continue.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+//            let alert = UIAlertController(title: "Time'em", message: "Enter comments before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+            
+            txtComment.layer.borderColor = UIColor.redColor().CGColor
+            txtComment.layer.borderWidth = 1
+            txtComment.layer.cornerRadius = 5
             return
         }else{
             comments = txtComment.text
@@ -320,9 +334,13 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         
         var ids:String!
         if selectedRecipientsIdArr.count == 0 {
-            let alert = UIAlertController(title: "Time'em", message: "Select recipients before continue.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+//            let alert = UIAlertController(title: "Time'em", message: "Select recipients before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+            
+            btnSelectRecipients.layer.cornerRadius = 5
+            btnSelectRecipients.layer.borderWidth = 1
+            btnSelectRecipients.layer.borderColor = UIColor.redColor().CGColor
             return
         }else{
             

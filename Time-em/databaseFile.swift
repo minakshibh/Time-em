@@ -707,8 +707,6 @@ fileURL!.path)
         return array
     }
     
-    
-    
     func insertAssignedListData(dataArr:NSArray)  {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")

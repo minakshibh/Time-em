@@ -160,7 +160,7 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
             let hours :CGFloat = CGFloat(((dateArray.objectAtIndex(i).valueForKey("timespent")!) as? NSNumber)!)
             let barheight : CGFloat = CGFloat(hours * (maxHeightGraph/maxHours))
             
-            let barView  = UIView.init(frame: CGRectMake(DateView.frame.size.width/2-5, DateView.frame.size.height - barheight, 10, barheight))
+            let barView  = UIView.init(frame: CGRectMake(DateView.frame.size.width/2, DateView.frame.size.height - barheight, 10, barheight))
 //            barView.layer.cornerRadius = 3
             //80 176 202
             let path = UIBezierPath(roundedRect:barView.bounds, byRoundingCorners:[.TopRight, .TopLeft], cornerRadii: CGSizeMake(20, 20))
@@ -214,8 +214,29 @@ class UserGraphViewController: UIViewController, UIGestureRecognizerDelegate
             let lineNumberLbl = UILabel.init(frame: CGRectZero)
             lineLbl.backgroundColor = UIColor.blackColor()
             
-            lineLbl.frame = CGRectMake(0,Yaxis, 10, 0.5)
-            lineNumberLbl.frame = CGRectMake(10,Yaxis-5, 20, 10)
+            let label = UILabel(frame: CGRectMake(-76,60
+                ,170,40))
+            label.textAlignment = NSTextAlignment.Left
+            label.font = label.font.fontWithSize(11)
+            label.text = "No. of Hours"
+            label.alignTop()
+           label.transform = CGAffineTransformMakeRotation(CGFloat(-M_PI_2))
+            label.textColor = UIColor.lightGrayColor()
+            self.view.addSubview(label)
+            
+            let lblForShowDate = UILabel(frame: CGRectMake(190,200
+                ,40,40))
+            lblForShowDate.textAlignment = NSTextAlignment.Left
+            lblForShowDate.font = label.font.fontWithSize(11)
+            lblForShowDate.text = "Date"
+            lblForShowDate.alignTop()
+            //lblForShowDate.transform = CGAffineTransformMakeRotation(CGFloat(-M_PI_2))
+            lblForShowDate.textColor = UIColor.lightGrayColor()
+            self.view.addSubview(lblForShowDate)
+
+            
+            lineLbl.frame = CGRectMake(20,Yaxis, 10, 0.5)
+            lineNumberLbl.frame = CGRectMake(35,Yaxis-5, 20, 10)
             lineNumberLbl .text = "\(k * Int(YaxixRatio))"
             lineNumberLbl.font = UIFont.systemFontOfSize(7.0)
             lineNumberLbl.minimumScaleFactor = 0.2
