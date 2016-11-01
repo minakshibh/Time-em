@@ -590,12 +590,12 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         
        let currentUSerSIGNIN =  "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)"
         
-        if currentUSerSIGNIN == "0"{
-            let alert = UIAlertController(title: "Time'em", message: "Please SignIn before adding task.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-            return
-        }
+//        if currentUSerSIGNIN == "0"{
+//            let alert = UIAlertController(title: "Time'em", message: "Please SignIn before adding task.", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+//            return
+//        }
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AddNewTaskViewController.displayResponse), name: notificationKey, object: nil)
         assignedTasks.AddUpdateNewTask(imageData,videoData: videoRecordedData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: editId as String, view: self.view, isVideoRecorded:isVideoRecorded,isoffline:self.isoffline,uniqueno: self.uniqueno)
@@ -624,7 +624,12 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         if status.lowercaseString == "success sync" {
             NSTimer.scheduledTimerWithTimeInterval(1.5, target: self, selector: #selector(AddNewTaskViewController.update), userInfo: nil, repeats: true)
             return
+        } else if status.lowercaseString == "failure in adding task."{
+            let alert = UIAlertController(title: "Failed to add task.", message: "Either you are not singin or trying to add future date task.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
         }
+        
         
         
         if status.lowercaseString == "success"{

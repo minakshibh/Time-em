@@ -117,6 +117,7 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
         print(notificationsListArray)
         self.notificationsTableView.reloadData()
         
+        
     }
 
     @IBAction func btnBack(sender: AnyObject) {
@@ -199,6 +200,7 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
         }
         for object: AnyObject in cell.contentView.subviews {
             object.removeFromSuperview()
+            
         }
         
         cell.backgroundColor = UIColor.clearColor()
@@ -304,6 +306,13 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
                 let databse = databaseFile()
                 databse.deleteNotification("\(dict.valueForKey("NotificationId")!)")
                 self.fetchNotificationDataFromDatabase()
+            
+//            var alert :UIAlertController!
+//            alert = UIAlertController(title: "Time'em", message:"Notification deleted successfully", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+            self.view.makeToast("Notification deleted successfully", duration: 2, position: .Center)
+            
             
                 return true
             })]

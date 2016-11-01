@@ -78,10 +78,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
         
         
         /// setup for notifications
-        let notificationTypes = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
-        UIApplication.sharedApplication().registerUserNotificationSettings(notificationTypes)
-        UIApplication.sharedApplication().registerForRemoteNotifications()
+        var types: UIUserNotificationType = [.Alert, .Badge, .Sound]
         
+        var settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
+        
+        application.registerUserNotificationSettings(settings)
+        application.registerForRemoteNotifications()
         
         if NSUserDefaults.standardUserDefaults().valueForKey("data") != nil {
             
@@ -419,12 +421,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate,CLLocationManagerDelegate 
             }
             
         }else if status == "image upload successfully" {
-            let alertController = DBAlertController(title: "Time'em", message: "Sync data uploaded successfully", preferredStyle: .Alert)
-            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            if str == "yes"{
-            }else{
-                alertController.show()
-            }
+//            let alertController = DBAlertController(title: "Time'em", message: "Sync data uploaded successfully", preferredStyle: .Alert)
+//            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+//            if str == "yes"{
+//            }else{
+//                alertController.show()
+//            }
         }else{
             let alertController = DBAlertController(title: "Time'em", message: status, preferredStyle: .Alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))

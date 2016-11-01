@@ -1011,8 +1011,9 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.signInOutResponse", object:nil)
 
 //            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
-        self.view.makeToast("\(status)")
-        
+     //   self.view.makeToast("\(status)")
+       // self.view.makeToast("\(status)", duration:2, position:.center)
+         self.view.makeToast("\(status)", duration: 2, position: .Center)
 //        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
 //        self.presentViewController(alert, animated: true, completion: nil)
         

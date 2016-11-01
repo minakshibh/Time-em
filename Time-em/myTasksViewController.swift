@@ -83,8 +83,14 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
 //        NSNotificationCenter.defaultCenter().removeObserver(self)
         
     }
+ 
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.Portrait
+    }
     
     override func viewDidLoad() {
+    
+        
         super.viewDidLoad()
         NSUserDefaults.standardUserDefaults().setObject("false", forKey: "isEditingOrAdding")
         btnShowDatePicker.setTitle(" ", forState: .Normal)
@@ -128,6 +134,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
 //            getuserTask(logedInUserId!, createdDate: selectedDate)
             let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
             assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
+           
         }
 
     }

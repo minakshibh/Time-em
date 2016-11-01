@@ -1965,9 +1965,14 @@ public class ApiRequest:UIViewController {
             let dataString = String(data: data!, encoding: NSUTF8StringEncoding)
             print(dataString)
             
-            let stringArray = dataString!.componentsSeparatedByCharactersInSet(
-                NSCharacterSet.decimalDigitCharacterSet().invertedSet)
-            let newString = stringArray.joinWithSeparator("")
+            let str = dataString?.componentsSeparatedByString("\"Id\":")[1]
+          let str1 =  str!.componentsSeparatedByString(",")[0]
+            
+            
+//            let stringArray = dataString!.componentsSeparatedByCharactersInSet(
+//                NSCharacterSet.decimalDigitCharacterSet().invertedSet)
+//            let newString = stringArray.joinWithSeparator("")
+            let newString = str1
              print(newString)
             
             let count1 = imageData.length / sizeof(UInt8)
@@ -2000,6 +2005,11 @@ public class ApiRequest:UIViewController {
                 MBProgressHUD.hideHUDForView(view, animated: true)
                 if "\(dataString!.lowercaseString)".rangeOfString("activity id does not exist") != nil{
                     let userInfo = ["response" : "please signin before adding task"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    return
+                }
+                if "\(dataString!.lowercaseString)".rangeOfString("Failure in adding task") != nil{
+                    let userInfo = ["response" : "Failure in adding task."]
                     NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     return
                 }

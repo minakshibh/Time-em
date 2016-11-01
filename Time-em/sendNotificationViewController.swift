@@ -82,7 +82,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         let sizeThatFitsTextView: CGSize = self.txtComment.sizeThatFits(CGSizeMake(self.txtComment.frame.size.width, CGFloat(MAXFLOAT)))
         print(sizeThatFitsTextView.height)
         self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
-    self.TextPlaceHolderViewHeightConstraint.constant = sizeThatFitsTextView.height-10
+//    self.TextPlaceHolderViewHeightConstraint.constant = sizeThatFitsTextView.height-10
     
     }
     
@@ -154,9 +154,9 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             self.NotificationTypeId = "\(idArr[index])"
         }
         
-        dropDown.anchorView = txtSelectMessage
-        dropDown.bottomOffset = CGPoint(x: 0, y:txtSelectMessage.bounds.height)
-        
+//        dropDown.anchorView = txtSelectMessage
+//        dropDown.bottomOffset = CGPoint(x: 0, y:txtSelectMessage.bounds.height)
+//        
     }
     
     func getDataFromDatabase () {
@@ -227,7 +227,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
                 
             }else{
                 self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
-                self.TextPlaceHolderViewHeightConstraint.constant = sizeThatFitsTextView.height
+//                self.TextPlaceHolderViewHeightConstraint.constant = sizeThatFitsTextView.height
                 
             }
         }
@@ -299,7 +299,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         let comments:String!
         
 //        if NotificationTypeId == " " {
-//            let alert = UIAlertController(title: "Time'em", message: "Select notification type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+//            let alert = UIAlertController(title: "Time'em", message: "Select Task type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
 //            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
 //            self.presentViewController(alert, animated: true, completion: nil)
 //            return
@@ -368,7 +368,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
 
         if status.lowercaseString.rangeOfString("successfully") != nil {
             var alert :UIAlertController!
-            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+            alert = UIAlertController(title: "Time'em", message:"Notification sent successfylly", preferredStyle: UIAlertControllerStyle.Alert)
 //            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
                 main {
@@ -383,7 +383,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
 //            }
         }else{
             var alert :UIAlertController!
-            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+            alert = UIAlertController(title: "Time'em", message:"Error sending notification", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         }
