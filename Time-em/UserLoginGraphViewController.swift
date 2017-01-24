@@ -268,44 +268,50 @@ class UserLoginGraphViewController: UIViewController, UIGestureRecognizerDelegat
             
         }
         
+        bottomLineY = bottomLine.frame.origin.y
+        var Yaxis : CGFloat = bottomLineY
+        
+        
+        let label = UILabel(frame: CGRectMake(-76,90
+            ,170,40))
+        label.textAlignment = NSTextAlignment.Left
+        label.font = label.font.fontWithSize(11)
+        label.text = "No. of Signin/Signout"
+        label.alignTop()
+        label.transform = CGAffineTransformMakeRotation(CGFloat(-M_PI_2))
+        label.textColor = UIColor.lightGrayColor()
+        self.view.addSubview(label)
+        
+        let lblForShowDate = UILabel(frame: CGRectMake(0,Yaxis
+            ,self.view.frame.size.width,40))
+        lblForShowDate.textAlignment = NSTextAlignment.Center
+        lblForShowDate.font = label.font.fontWithSize(11)
+        lblForShowDate.text = "Date"
+        lblForShowDate.alignTop()
+        //lblForShowDate.transform = CGAffineTransformMakeRotation(CGFloat(-M_PI_2))
+        lblForShowDate.textColor = UIColor.lightGrayColor()
+        self.view.addSubview(lblForShowDate)
+        
+        
        //// Measurement divider lines ////
         
         linesBackView = UIView.init(frame: CGRectMake(0, 0, 25, scrollView.frame.size.height))
         linesBackView.backgroundColor = UIColor.clearColor()
         
-        bottomLineY = bottomLine.frame.origin.y
-        var Yaxis : CGFloat = bottomLineY
+        
         
         for k in 0 ... Int(partsOfYaxix) {
             let lineLbl = UILabel.init(frame: CGRectZero)
             let lineNumberLbl = UILabel.init(frame: CGRectZero)
             lineLbl.backgroundColor = UIColor.blackColor()
             
-            let label = UILabel(frame: CGRectMake(-76,90
-                ,170,40))
-            label.textAlignment = NSTextAlignment.Left
-            label.font = label.font.fontWithSize(11)
-            label.text = "No. of Signin/Signout"
-            label.alignTop()
-            label.transform = CGAffineTransformMakeRotation(CGFloat(-M_PI_2))
-            label.textColor = UIColor.lightGrayColor()
-            self.view.addSubview(label)
             
-            let lblForShowDate = UILabel(frame: CGRectMake(190,200
-                ,40,40))
-            lblForShowDate.textAlignment = NSTextAlignment.Left
-            lblForShowDate.font = label.font.fontWithSize(11)
-            lblForShowDate.text = "Date"
-            lblForShowDate.alignTop()
-            //lblForShowDate.transform = CGAffineTransformMakeRotation(CGFloat(-M_PI_2))
-            lblForShowDate.textColor = UIColor.lightGrayColor()
-            self.view.addSubview(lblForShowDate)
             
 
             
             
-            lineLbl.frame = CGRectMake(20,Yaxis, 10, 0.5)
-            lineNumberLbl.frame = CGRectMake(35,Yaxis-5, 20, 10)
+            lineLbl.frame = CGRectMake(20,Yaxis, 5, 0.5)
+            lineNumberLbl.frame = CGRectMake(28,Yaxis-5,10, 10)
             lineNumberLbl .text = "\(k * Int(YaxixRatio))"
             lineNumberLbl.font = UIFont.systemFontOfSize(7.0)
             lineNumberLbl.minimumScaleFactor = 0.2

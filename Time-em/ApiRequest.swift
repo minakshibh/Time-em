@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreLocation
 import Alamofire
 import MBProgressHUD
 import FMDB
@@ -19,6 +20,9 @@ public class ApiRequest:UIViewController {
 //    let apiUrl: String = "http://112.196.24.202:8080/api" // for location testing
 //    let apiUrl: String = "http://112.196.24.205:804/api"
     var taskORsync:String = ""
+    var compId :String = ""
+    var locationManager = CLLocationManager()
+
     
     func loginApi(loginId:String,password:String,view:UIView) {
         let notificationKey = "com.time-em.loginResponse"
@@ -120,9 +124,14 @@ public class ApiRequest:UIViewController {
             } catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
+//            do {
+//                try database.executeUpdate("create table geofensingGraph(CreatedDate text, workSiteList text, userId text)", values: nil)
+//            }
+            
             do {
-                try database.executeUpdate("create table geofensingGraph(CreatedDate text, workSiteList text, userId text)", values: nil)
-            } catch let error as NSError {
+                try database.executeUpdate("create table geofensingGraphList(CreatedDate text, SiteName text, userId text,WorkSiteId text, WorkSiteName text, WorkingHour text,TimeIn text,TimeOut text)", values: nil)
+            }
+            catch let error as NSError {
                 print("failed: \(error.localizedDescription)")
             }
             do {
@@ -1138,10 +1147,10 @@ public class ApiRequest:UIViewController {
                             if !database.open() {
                                 print("Unable to open database")
                             }
-                            let compId =  "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)"
+                            self.compId =  "\(NSUserDefaults.standardUserDefaults().valueForKey("companyKey")!)"
                             
                             do {
-                                try database.executeUpdate("delete  from  teamData WHERE companyId=?", values: [compId])
+                                try database.executeUpdate("delete  from  teamData WHERE companyId=?", values: [self.compId])
                             }catch let error as NSError {
                                 print("failed: \(error.localizedDescription)")
                             }
@@ -1184,7 +1193,7 @@ public class ApiRequest:UIViewController {
                             print(idStr)
                             
                             let database = databaseFile()
-                            database.insertTeamData(dict)
+                            database.insertTeamData(dict,getCompanyId:str)
                             
                             
                             
@@ -1280,7 +1289,7 @@ public class ApiRequest:UIViewController {
                             print(idStr)
                             
                             let database = databaseFile()
-                            database.insertTeamData(dict)
+                            database.insertTeamData(dict,getCompanyId:"0")
                             
                             
                             
@@ -1389,10 +1398,18 @@ public class ApiRequest:UIViewController {
                 if let JSON = response.result.value {
                         print("JSON: \(JSON)")
                     
+                    
+               
+                    
                     if "\(response.result)" == "SUCCESS"{
                         
                         
+                        
+                        
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
+                            
+                 
+
                             
                             let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
                             
@@ -1517,41 +1534,51 @@ public class ApiRequest:UIViewController {
 //                        }
                         print(JSON.count)
                         
-                        let dataArr:NSArray = JSON as! NSArray
                         
-                        let database = databaseFile()
-                        database.saveUserWorksiteActivityGraph(dataArr,userId:userId)
-                        
-                        
-                       
+                   // let dataArr:NSArray = JSON as! NSArray
+                    
+              //------------------>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            let userDetailDict:NSDictionary = JSON as! NSDictionary
                         
                         
+            let dataArr = [userDetailDict]
+          //  print("dataArr:",dataArr)
+                
+                if !(userDetailDict.valueForKey("ListSites") is NSNull)
+                {
+                    
+            let ListSitesArr = userDetailDict.valueForKey("ListSites") as! NSArray
+                   
+            if  (ListSitesArr.count > 0)
+                {
+                    
+           let SiteNameStr=ListSitesArr.valueForKey("SiteName") as! NSArray
+            print("SiteNameStr:",SiteNameStr)
                         
+            let WerksiteDatesArray = ListSitesArr.valueForKey("WerksiteDates") as! NSArray
                         
+            let CreatedDateStr = WerksiteDatesArray.valueForKey("CreatedDate") as! NSArray
+            print("CreatedDateStr:",CreatedDateStr)
                         
+        let workSiteListArray:NSArray = WerksiteDatesArray.valueForKey("workSiteList")as! NSArray
+
+
+            print("workSiteListArray:",workSiteListArray)
                         
-                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
-                            
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
-                            
-                            
-                            
-                            
-                            
+          //   let dataArr:NSArray = []
                         
-                            
-                            
-                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
-                            
-                        }else{
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
-                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+           
+            
+            //------------------>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+            let database = databaseFile()
+        database.saveUserWorksiteActivityGraph(dataArr,userId:userId)
                         }
-                        
-                        
-                    }else{
-                        let userInfo = ["response" : "FAILURE"]
-                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                }
+       }
+                else{
+            let userInfo = ["response" : "FAILURE"]
+        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     }
                 }else if "\(response.result)" == "FAILURE"{
                     let userInfo = ["response" : "FAILURE"]
@@ -1576,44 +1603,29 @@ public class ApiRequest:UIViewController {
                     
                     if "\(response.result)" == "SUCCESS"{
                         
-                                                if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("error has occurred") != nil{
-                                                    let userInfo = ["response" : "FAILURE"]
-                                                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
-                                                    return
-                                                }
+
                         print(JSON.count)
                         
-                        let dataArr:NSArray = JSON as! NSArray
+                        let data:NSDictionary = JSON as! NSDictionary
+                        
+                        let dataArray =  NSMutableArray()
+                      dataArray.addObject(data)
+                        let dataArr = dataArray as NSArray
                         
                         let database = databaseFile()
                         database.saveUserWorksiteActivityGraphAllUsers(dataArr,userId:userId)
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
-                            
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
-                            
-                        }else{
-                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
-                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
-                        }
-                        
+                      
+//                        if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
+//                            
+//                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+//                            
+//                        NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                            
+//                        }else{
+//                            let userInfo = ["response" : "\(JSON.valueForKey("Message")!)"]
+//                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+//                        }
+//                        
                         
                     }else{
                         let userInfo = ["response" : "FAILURE"]
@@ -1648,15 +1660,13 @@ public class ApiRequest:UIViewController {
                     if "\(response.result)" == "SUCCESS"{
                         
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("no record") != nil{
-//                            let userInfo = ["response" : "FAILURE"]
-//                            NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+
                             return
                         }
                         
                         if "\(JSON.valueForKey("Message")!.lowercaseString)".rangeOfString("success") != nil{
                             
-//                            let userInfo = ["response" : "\(JSON.valueForKey("Message"))"]
-                            
+
                             let dict = JSON.valueForKey("ReturnKeyValueViewModel") as! NSArray
                             
                             let database = databaseFile()
@@ -1965,9 +1975,14 @@ public class ApiRequest:UIViewController {
             let dataString = String(data: data!, encoding: NSUTF8StringEncoding)
             print(dataString)
             
-            let stringArray = dataString!.componentsSeparatedByCharactersInSet(
-                NSCharacterSet.decimalDigitCharacterSet().invertedSet)
-            let newString = stringArray.joinWithSeparator("")
+            let str = dataString?.componentsSeparatedByString("\"Id\":")[1]
+          let str1 =  str!.componentsSeparatedByString(",")[0]
+            
+            
+//            let stringArray = dataString!.componentsSeparatedByCharactersInSet(
+//                NSCharacterSet.decimalDigitCharacterSet().invertedSet)
+//            let newString = stringArray.joinWithSeparator("")
+            let newString = str1
              print(newString)
             
             let count1 = imageData.length / sizeof(UInt8)
@@ -2000,6 +2015,11 @@ public class ApiRequest:UIViewController {
                 MBProgressHUD.hideHUDForView(view, animated: true)
                 if "\(dataString!.lowercaseString)".rangeOfString("activity id does not exist") != nil{
                     let userInfo = ["response" : "please signin before adding task"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
+                    return
+                }
+                if "\(dataString!.lowercaseString)".rangeOfString("Failure in adding task") != nil{
+                    let userInfo = ["response" : "Failure in adding task."]
                     NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                     return
                 }
@@ -2217,7 +2237,7 @@ public class ApiRequest:UIViewController {
                         return
                         }
                         if "\(JSON)".lowercaseString == "no user exists with this email" {
-                            let userInfo = ["response" : "no user exists with this email"]
+                            let userInfo = ["response" : "No user exist with this email."]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             MBProgressHUD.hideHUDForView(view, animated: true)
                             return
@@ -2266,7 +2286,7 @@ public class ApiRequest:UIViewController {
                             return
                         }
                         if "\(JSON)".lowercaseString == "no user exists with this email" {
-                            let userInfo = ["response" : "no user exists with this email"]
+                            let userInfo = ["response" : "No user exist with this email."]
                             NSNotificationCenter.defaultCenter().postNotificationName(notificationKey, object: nil, userInfo: userInfo)
                             MBProgressHUD.hideHUDForView(view, animated: true)
                             return

@@ -16,7 +16,7 @@ class chartViewController: UIViewController,UIScrollViewDelegate {
     var scrollView:UIScrollView!
     var scrollView2:UIScrollView!
     
-    var graphleftSpace:CGFloat = 60.0
+    var graphleftSpace:CGFloat = 20.0
     var leftSpace:CGFloat = 0.0
     var boundryLinesWidth:CGFloat = 2.0
     var barWidth:CGFloat = 35
@@ -24,24 +24,24 @@ class chartViewController: UIViewController,UIScrollViewDelegate {
     var WorkSiteNamewithColorDict:NSMutableDictionary = [:]
     var name:String! = nil
     var dataArr:NSMutableArray = []
+    var WorksiteListArr:NSArray = []
+     var CreatedDateStr:NSString = ""
+         var SiteNameString:NSString = ""
+   var  SiteNameStr:NSArray=[]
+      var graphDict:NSMutableDictionary = [:]
     
      // MARK: Default functions
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        
-        
-        
-/*
-         dataDict.setObject(dataARR, forKey: "workSiteList")
-         dataDict.setObject(z, forKey: "userId")
-         dataDict.setObject(x, forKey: "CreatedDate")
- */
+//         dataDict.setObject(dataARR, forKey: "workSiteList")
+//         dataDict.setObject(z, forKey: "userId")
+//         dataDict.setObject(x, forKey: "CreatedDate")
+//
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(chartViewController.rotated1), name: UIDeviceOrientationDidChangeNotification, object: nil)
        
         
-        scrollView2 = UIScrollView(frame: CGRectMake(0, 0, 35, self.view.frame.size.height))
+        scrollView2 = UIScrollView(frame: CGRectMake (0, 0, 35, self.view.frame.size.height))
 //        scrollView2.backgroundColor = UIColor.blackColor()
         scrollView2.scrollEnabled = true
         scrollView2.delegate = self
@@ -62,6 +62,12 @@ class chartViewController: UIViewController,UIScrollViewDelegate {
     override func viewDidAppear(animated: Bool) {
         
     }
+    
+    override func shouldAutorotate() -> Bool {
+        return true
+    }
+    
+    
 
     func getRandomColor() -> UIColor{
         
@@ -75,45 +81,69 @@ class chartViewController: UIViewController,UIScrollViewDelegate {
     func graph(){
         //-->
         let database = databaseFile()
-        var graphArr:NSMutableArray = []
+      //  var graphDict:NSMutableDictionary = [:]
         let WorkSiteNameArr:NSMutableArray = []
         let userId = "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUSerID")!)"
-
-        graphArr = database.getUserWorksiteActivityGraph(userId)
+        graphDict = database.getUserWorksiteActivityGraph(userId)
         
-
-        print(graphArr)
-        for i:Int in 0 ..< graphArr.count {
-            let dict:NSMutableDictionary = graphArr[i] as! NSMutableDictionary
+        let total = graphDict.allKeys.count
+        
+        if total > 0 {
+        }
             
-            let locArr = (dict.valueForKey("workSiteList") as! NSArray)
-            for j:Int in 0 ..< locArr.count{
-                let locdict:NSDictionary = locArr[j] as! NSDictionary
-                if WorkSiteNameArr.containsObject("\(locdict.valueForKey("WorkSiteName")!)") {
-                }else{
-                    WorkSiteNameArr.addObject("\(locdict.valueForKey("WorkSiteName")!)")
-                }
+        else {
+            
+            let alert = UIAlertController(title: "Time'em", message: "Tracking plot not available for this user.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler:{ (UIAlertAction)in
                 
-            }
+                self.dismissViewControllerAnimated(true, completion: {});
+                self.navigationController?.popViewControllerAnimated(true)
+                
+                
+            }))
+            
+            alert.shouldAutorotate()
+            self.presentViewController(alert, animated: true, completion: {() -> Void in
+//               
+//            if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
+//                {
+//                    
+//                    print("chart landscape")
+//                    if UIDevice.currentDevice().orientation == UIDeviceOrientation.LandscapeLeft{
+//                        print("chart LandscapeLeft")
+//                        
+//                        UIView.animateWithDuration(0.3, delay: 0, options: .CurveLinear, animations: { () -> Void in
+//                            alert.view.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
+//                        }) { (finished) -> Void in
+//                            // do something if you need
+//                        }
+//                        
+//                    }
+//                }
+//            else if UIDevice.currentDevice().orientation == UIDeviceOrientation.LandscapeRight{
+//                
+//                        print("chart LandscapeRight")
+//                       
+//                        UIView.animateWithDuration(1.0, delay: 0, options: .CurveLinear, animations: { () -> Void in
+//                            alert.view.transform = CGAffineTransformMakeRotation(CGFloat(3 * M_PI_2))
+//                        }) { (finished) -> Void in
+//                            // do something if you need
+//                        }
+//
+//                }
+//            
+//           
+               })
+            return;
+ 
         }
-        for a:Int in 0 ..< WorkSiteNameArr.count {
-            WorkSiteNamewithColorDict.setObject(getRandomColor(), forKey: "\(WorkSiteNameArr[a])")
-        }
-        scrollView2.contentSize = CGSizeMake(0, CGFloat(WorkSiteNameArr.count) * 200)
+        
+        
+        
         
         var y:CGFloat = 0
         
-        for a in (0 ..< WorkSiteNameArr.count){
-            let lbl = UILabel(frame: CGRectMake(-scrollView2.frame.size.width*2-12, y + 100, 200, scrollView2.frame.size.width))
-            lbl.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
-            lbl.text = "\(WorkSiteNameArr[a] as! String)"
-            lbl.textAlignment = .Center
-            lbl.backgroundColor = WorkSiteNamewithColorDict.valueForKey(WorkSiteNameArr[a] as! String) as? UIColor
-            scrollView2.addSubview(lbl)
-            y = y + 200
-        }
-        
-//-->
+
         let label = UILabel(frame: CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.height, 35))
         //label.center = CGPointMake(160, 284)
         label.textAlignment = NSTextAlignment.Center
@@ -134,10 +164,9 @@ class chartViewController: UIViewController,UIScrollViewDelegate {
         
         label.transform = CGAffineTransformConcat(label.transform, transform)
         
-        
-        
          scrollView = UIScrollView(frame: CGRectMake(graphleftSpace, leftSpace, self.view.frame.size.width-graphleftSpace-label.frame.size.width, self.view.frame.size.height-leftSpace-20))
-        scrollView.backgroundColor = UIColor(red: 21/256, green: 25/256, blue: 35/256, alpha: 1)
+       // scrollView.backgroundColor = UIColor(red: 21/256, green: 25/256, blue: 35/256, alpha: 1)
+        scrollView.backgroundColor = UIColor .blackColor()
         self.view.addSubview(scrollView)
         
         
@@ -153,133 +182,304 @@ class chartViewController: UIViewController,UIScrollViewDelegate {
         backLabel.text = ""
         //        label.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
         backLabel.backgroundColor = UIColor(red: 32/256, green: 44/256, blue: 66/256, alpha: 1)
+       //  backLabel.backgroundColor = UIColor .blackColor()
         self.view.addSubview(backLabel)
         self.view.bringSubviewToFront(label)
+
+        let dateARR:NSMutableArray = []
+        print(graphDict)
+        let keyArray = graphDict.allKeys as NSArray
+        var noOfArraysInAKey:NSMutableArray = []
+        
+if keyArray.count > 0 {
+    for (var g = 0; g < keyArray.count ; g++ ){
+            
+         noOfArraysInAKey = graphDict.valueForKey("\(keyArray[g])") as! NSMutableArray
+        
+        for i:Int in 0 ..< noOfArraysInAKey.count {
+            let dict:NSMutableDictionary = noOfArraysInAKey[i] as! NSMutableDictionary
+            print("dict" ,dict)
+            
+            SiteNameStr = keyArray as NSArray
+//            let SiteNameString:NSString = SiteNameStr.firstObject as! NSString
+            
+            let WorksiteDatesDictionary:NSMutableDictionary = dict.valueForKey("WorksiteDates") as! NSMutableDictionary
+//            WorksiteListArr = WorksiteDatesDictionary .valueForKey("workSiteList") as! NSArray
+            CreatedDateStr = WorksiteDatesDictionary .valueForKey("CreatedDate") as! NSString
+            if !dateARR.containsObject(CreatedDateStr){
+               dateARR.addObject(CreatedDateStr)
+            }
+        }
+    }
+}
+//        for a:Int in 0 ..< SiteNameStr.count {
+//            WorkSiteNamewithColorDict.setObject(getRandomColor(), forKey: "\(WorksiteListArr[a])")
+//        }
+//        scrollView2.contentSize = CGSizeMake(0, CGFloat(SiteNameStr.count) * 200)
         
         
         
-        graphBoundryLeft = UILabel(frame: CGRectMake(0, topGrphStartBoundry, boundryLinesWidth, scrollView.frame.size.height-topGrphStartBoundry))
+        
+        
+        graphBoundryLeft = UILabel(frame: CGRectMake(0, topGrphStartBoundry, 100, scrollView.frame.size.height-topGrphStartBoundry + 20))
         graphBoundryLeft.backgroundColor = UIColor.blackColor()
         self.scrollView.addSubview(graphBoundryLeft)
         
         // display hours labels on the left divide in four parts 0 6 12 18 24
-        let height = graphBoundryLeft.frame.size.height/4
+        let height = (graphBoundryLeft.frame.size.height - 10)/5
         var val:CGFloat = 0.0
-        var hourtxt:Int = 0
-        for x in (0 ..< 5){
-        let hourslbl = UILabel(frame: CGRectMake(25 , scrollView.frame.origin.y + topGrphStartBoundry + val - 5, scrollView.frame.origin.x-10, 20))
+        var hourtxt:NSString = ""
+        
+        for x:Int in 0 ..< dateARR.count {
+        let hourslbl = UILabel(frame: CGRectMake(-30, scrollView.frame.origin.y + topGrphStartBoundry + val + 40, scrollView.frame.origin.x+60, 20))
             hourslbl.textAlignment = .Center
-            hourslbl.text = "\(hourtxt)hr."
+            
+            let setdateFormat:String = "\(dateARR[x])" as String
+    
+
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "MM-dd-yyyy"
+            let datestr = dateFormatter.dateFromString(setdateFormat)
+            
+           //  let dateFormatt = NSDateFormatter()
+            dateFormatter.dateFormat = "dd-MM-yyyy"
+            let goodDate = dateFormatter.stringFromDate(datestr!)
+            hourslbl.text = goodDate
+
+           // hourslbl.text = "\(dateARR[x])" as String
             hourslbl.textColor = UIColor.whiteColor()
-            hourslbl.font = hourslbl.font.fontWithSize(10)
+            
+            hourslbl.font = hourslbl.font.fontWithSize(13)
             hourslbl.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
             self.view.addSubview(hourslbl)
             val = val + height
-            hourtxt = hourtxt + 6
+          //  hourtxt = hourtxt + 6
             
-        let partitionLinelbl = UILabel(frame: CGRectMake(0 , scrollView.frame.origin.y + topGrphStartBoundry + val - 1, scrollView.frame.size.width, 1))
-//            partitionLinelbl.backgroundColor = UIColor.whiteColor()
+        let partitionLinelbl = UILabel(frame: CGRectMake(0 , scrollView.frame.origin.y + topGrphStartBoundry + val , scrollView.frame.size.width, 1))
+           // partitionLinelbl.backgroundColor = UIColor.whiteColor()
             partitionLinelbl.addDashedLine(UIColor(red: 32/256, green: 44/256, blue: 66/256, alpha: 1))
             self.scrollView.addSubview(partitionLinelbl)
-          
-        if (x == 0 || x == 2) {
-            let lblbackgroundColor = UILabel(frame: CGRectMake(boundryLinesWidth , scrollView.frame.origin.y + topGrphStartBoundry + val - 1, scrollView.frame.size.width, height))
-             lblbackgroundColor.backgroundColor = UIColor(red: 16/256, green: 19/256, blue: 26/256, alpha: 1)
-//            lblbackgroundColor.addDashedLine(UIColor(red: 32/256, green: 44/256, blue: 66/256, alpha: 1))
-            self.scrollView.addSubview(lblbackgroundColor)
-            }
-            
+
+            print("partitionLinelbl --- \(scrollView.frame.origin.y + topGrphStartBoundry + val - 1)")
         }
        
-        var xViewValue:CGFloat = 0.0
-        let dataaaArr:NSMutableArray = []
-        let differentValues:NSArray = [2,6,1,8,4,0]
-        let differentValues1:NSArray = [3,4,8,1,6,2]
-        let differentValues2:NSArray = [5,0,5,2,0,0]
-        let differentValues3:NSArray = [8,0,6,1,1,1]
-         dataaaArr.addObject(differentValues)
-         dataaaArr.addObject(differentValues1)
-         dataaaArr.addObject(differentValues2)
-         dataaaArr.addObject(differentValues3)
+        var xViewValue:CGFloat = 5.0
         
-        for x in (0 ..< graphArr.count){
-             let dict:NSMutableDictionary = graphArr[x] as! NSMutableDictionary
-            var  CreatedDate:String = "\(dict.valueForKey("CreatedDate")!)"
-            let workSiteListArr = (dict.valueForKey("workSiteList") as! NSArray)
-            CreatedDate = "\(CreatedDate.componentsSeparatedByString("-")[2])-\(CreatedDate.componentsSeparatedByString("-")[0])-\(CreatedDate.componentsSeparatedByString("-")[1])T00:00:00"
-            CreatedDate = convertDate(CreatedDate)
+        //var WorksiteListArr:NSArray = []
+        var flag:NSString = " "
+        let newArray:NSMutableArray = []
+//        for x in (0 ..< graphArr.count){
+        
+        
+    for x:Int in 0 ..< keyArray.count {
+
+        let siteDataArr:NSMutableArray = graphDict.valueForKey("\(keyArray[x])") as! NSMutableArray
+        
+        //>>creating the view for background of labels
+        let graphView = UIView(frame: CGRectMake(20*CGFloat(x) + xViewValue , topGrphStartBoundry + 2, barWidth + 18, scrollView.frame.size.height-topGrphStartBoundry))//+ 18  for dotted line
+        graphView.addDashedBorderToView()
+        self.scrollView.addSubview(graphView)
+        
+        
+//        graphView.backgroundColor = UIColor.purpleColor()
+        
+        
+        
+        
+        
+        let upperDottedLine = UILabel(frame: CGRectMake(graphView.frame.origin.x , 0, 1, self.scrollView.frame.size.height))
+        upperDottedLine.addDashedLine(UIColor(red: 32/256, green: 44/256, blue: 66/256, alpha: 1))
+         self.scrollView.addSubview(upperDottedLine)
+    //    upperDottedLine.backgroundColor = UIColor.grayColor()
+       
+     
+        let lowerDottedLine = UILabel(frame: CGRectMake(graphView.frame.origin.x + graphView.frame.size.width, 0, 1,self.scrollView.frame.size.height))
+       lowerDottedLine.addDashedLine(UIColor(red: 32/256, green: 44/256, blue: 66/256, alpha: 1))
+           self.scrollView.addSubview(lowerDottedLine)
+          self.scrollView.bringSubviewToFront(lowerDottedLine)
+        
+
+         xViewValue = xViewValue + barWidth
+        
+//        let topBorder: CALayer = CALayer()
+//        topBorder.frame = CGRectMake(0.0, 0.0, graphView.frame.size.width, 3.0)
+//        topBorder.backgroundColor = UIColor.redColor().CGColor
+//        graphView.layer.addSublayer(topBorder)
+        
+        //>> display labels to divide screen horizontally
+        let height = graphBoundryTop.frame.size.width
+//        var val:CGFloat = 0.0
+//        let dateslbl:NSString = " "
+        
+        
+             let dict:NSMutableDictionary = siteDataArr[x] as! NSMutableDictionary
+        
             
+            //------------------------------->>>>>>>>>>>>>>>>>>>>>
+            //New Changes
+            
+            let SiteNameStr:NSArray = keyArray as! NSArray
+              let SiteNameString:NSString = "\(keyArray[x])"
+            
+             if newArray.containsObject(SiteNameString)
+             {
+                 flag = "1"
+            }
+            else
+             {
+                 newArray.addObject(SiteNameString)
+                flag = "0"
+            }
+           
+             let WorksiteDatesDictionary:NSMutableDictionary = dict.valueForKey("WorksiteDates") as! NSMutableDictionary
+//               WorksiteListArr = WorksiteDatesDictionary .valueForKey("workSiteList") as! NSArray
+                var CreatedDateStr:NSString = WorksiteDatesDictionary .valueForKey("CreatedDate") as! NSString
+            
+            
+         //   var  CreatedDate:String = "\(dict.valueForKey("CreatedDate")!)"
+            
+            print("printCreatedDateStr",CreatedDateStr)
+            
+          //  let workSiteListArr = (dict.valueForKey("workSiteList") as! NSArray)
+            CreatedDateStr = "\(CreatedDateStr.componentsSeparatedByString("-")[2])-\(CreatedDateStr.componentsSeparatedByString("-")[0])-\(CreatedDateStr.componentsSeparatedByString("-")[1])T00:00:00"
+                print("print data:",CreatedDateStr)
+            
+            CreatedDateStr = convertDate(CreatedDateStr as String)
             "yyyy-MM-dd'T'HH:mm:ss"
-           //creating the view for background of labels
-            let graphView = UIView(frame: CGRectMake(10*CGFloat(x) + xViewValue - 5, topGrphStartBoundry + 2, barWidth, scrollView.frame.size.height-topGrphStartBoundry))
-//            graphView.backgroundColor = UIColor.darkGrayColor()
-            self.scrollView.addSubview(graphView)
-            xViewValue = xViewValue + barWidth
+
+            if flag == "0"
+            {
+                    flag = "1"
+                    let dateslbl = UILabel(frame: CGRectMake(graphView.frame.origin.x + scrollView.frame.origin.x ,-10,graphBoundryLeft.frame.origin.y - 5, graphView.frame.size.width + 30 ))//graphBoundryLeft.frame.origin.y
+                    dateslbl.textAlignment = .Left
+                    dateslbl.text = "\(keyArray[x])"
+                    dateslbl.textColor = UIColor.whiteColor()
+                    dateslbl.font = dateslbl.font.fontWithSize(12)
+                    dateslbl.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
+                    dateslbl.numberOfLines = 2
+                dateslbl.lineBreakMode = NSLineBreakMode.ByWordWrapping
+
+                    self.view.addSubview(dateslbl)
+                    self.view.bringSubviewToFront(dateslbl)
+                
+//                let upperDottedLine = UILabel(frame: CGRectMake(graphView.frame.origin.x , 0, 1, scrollView.frame.size.height))
+//                upperDottedLine.addDashedLine(UIColor.whiteColor())
+//                upperDottedLine.backgroundColor = UIColor.blueColor()
+//                self.scrollView.addSubview(upperDottedLine)
+              //  self.scrollView.bringSubviewToFront(upperDottedLine)
             
-            // adding dates
-            let dateslbl = UILabel(frame: CGRectMake(graphView.frame.origin.x + scrollView.frame.origin.x, 0 , graphView.frame.size.width + 30, topGrphStartBoundry))
-            dateslbl.textAlignment = .Center
-            dateslbl.text = CreatedDate
-            dateslbl.textColor = UIColor.whiteColor()
-            dateslbl.font = dateslbl.font.fontWithSize(12)
-            dateslbl.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
-            self.view.addSubview(dateslbl)
-            self.view.bringSubviewToFront(dateslbl)
-//            let datesDottedlbl = UILabel(frame: CGRectMake(graphView.frame.origin.x, topGrphStartBoundry, graphView.frame.size.width, topGrphStartBoundry))
-//            datesDottedlbl.backgroundColor = UIColor.whiteColor()
-//            self.scrollView.addSubview(datesDottedlbl)
-            
+        }
+        
             // loop for creating inner labels
             var xValue:CGFloat = 0.0
+              let ShowLabel = graphView.frame.size.height/5
             let area24 = graphView.frame.size.height/(24*60)
+            let width = (graphView.frame.size.height)/5
+          let  showDateData = width/(24*60)
+
+//                if !(SiteNameStr.count == 0)
+//                {
+        
+            var widthPerDate:CGFloat = 0
+//              (graphBoundryLeft.frame.size.height)/5
+        
+        var color:UIColor = getRandomColor()
+        
+    for y in (0 ..< siteDataArr.count){
+                let locDict1 = siteDataArr[y] as! NSDictionary
+               let locDict2 = locDict1.valueForKey("WorksiteDates") as! NSDictionary
+                let locDict3 = locDict2.valueForKey("workSiteList") as! NSArray
+            for y in (0 ..< locDict3.count){
+                
+                let locDict = locDict3[y] as! NSDictionary
             
-            
-            
-            
-            for y in (0 ..< workSiteListArr.count){
-                let locDict = workSiteListArr[y] as! NSDictionary
-                let height = "\(locDict.valueForKey("WorkingHour")!)"
-                let WorkSiteName = "\(locDict.valueForKey("WorkSiteName")!)"
-                print(Float(height))
-               let heightCGFloat:CGFloat = CGFloat(Float(height)!)
+                if locDict.count == 0 {
+                    continue
+                }
                 
-                var  TimeInStr = "\(locDict.valueForKey("TimeIn")!)"
-                let hr = Int(TimeInStr.componentsSeparatedByString(":")[0])! * 60
-                let min = Int(TimeInStr.componentsSeparatedByString(":")[1])!
-                let total = hr + min
-                TimeInStr = "\(total)"
+                let dateStr:String = locDict2.valueForKey("CreatedDate") as! String
+                var increment:NSInteger!
+                if dateARR.containsObject(dateStr){
+                    increment = dateARR.indexOfObject(dateStr)
+                }
                 
                 
-                let TimeInStrCGfloat:CGFloat = CGFloat(Float(TimeInStr)!)
+                
+                print(dateARR)
                 
                 
-                //(0 26.4333; 60 3.49056)
-             let label = UILabel(frame: CGRectMake(0, area24 * TimeInStrCGfloat , graphView.frame.size.width, area24 * heightCGFloat * 60 ))
+                if locDict.count == 0 {
+                    continue
+                }
                 
-//                label.layer.borderColor = UIColor.blackColor().CGColor;
+//                   if (locDict.valueForKey("WorkingHour") != nil)
+//                   {
+//                
+//                let height = "\(locDict.valueForKey("WorkingHour")!)"
+//                    
+//                }
+//                let WorkSiteName = "\(locDict.valueForKey("WorkSiteName")!)"
+//                print(Float(height))
+//               let heightCGFloat:CGFloat = CGFloat(Float(height))
+                let  TimeInStr = "\(locDict.valueForKey("TimeIn")!)"
+                    var textArr = TimeInStr.componentsSeparatedByString(":")
+                    let hr = textArr[0]
+                    let min = textArr[1]
+                     let TimeInTotal = (Int(hr)! * 60) + Int(min)!
+                   let TimeInTotalFloat =  CGFloat(TimeInTotal)
+                  
+                   //  let TimeInStrCGfloat:CGFloat = CGFloat(Float(TimeInStr)!)
+                var TimeOutStr = "\(locDict.valueForKey("TimeOut")!)"
+                if TimeOutStr == "" {
+                   TimeOutStr = "00:00"
+                }
+                    var OuttextArr = TimeOutStr.componentsSeparatedByString(":")
+                    let hr1 = OuttextArr[0]
+                    let min1 = OuttextArr[1]
+                    let TimeOutTotal = (Int(hr1)! * 60) + Int(min1)!
+                    //let TimeOutTotalFloat = Float(TimeOutTotal)
+                    let TimeOutTotalFloat =  CGFloat(TimeOutTotal)
+                
+                print("TimeInTotalFloat  ",TimeInTotalFloat)
+                print("TimeOutTotalFloat  ",TimeOutTotalFloat)
+                print("showDate::",showDateData * TimeOutTotalFloat - showDateData * TimeInTotalFloat)
+                print("Date::",showDateData * TimeInTotalFloat)
+                print("showDate::",showDateData)
+                
+                var calculatedheight:CGFloat = showDateData * TimeOutTotalFloat - showDateData * TimeInTotalFloat
+                
+                if TimeOutTotalFloat == 0{
+                    calculatedheight = 0
+                }
+                
+             let label = UIView(frame: CGRectMake(0, width * CGFloat(increment) + showDateData * TimeInTotalFloat ,graphView.frame.size.width,calculatedheight))
+                print(label.frame)
+                
+//                label.layer.borderColor = UIColor.whiteColor().CGColor;
 //                label.layer.borderWidth = 1.0;
-//                label.text = WorkSiteName
-//                label.font = dateslbl.font.fontWithSize(10)
-                label.backgroundColor = WorkSiteNamewithColorDict.valueForKey(WorkSiteName) as! UIColor
-                
+                    
+            label.backgroundColor = color
                 
              graphView.addSubview(label)
              xValue = xValue + label.frame.size.height
-            
-            }
-
-            
+//                widthPerDate = widthPerDate + width;
         }
-        
+        }
+                
+//        }
     }
-
+}
+    
     func convertDate(dateStr:String)-> String{
         let dateFormatter: NSDateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
+         let date: NSDate = dateFormatter.dateFromString(dateStr)!
         
-        let date: NSDate = dateFormatter.dateFromString(dateStr)!
-                    // create date from string
+        
+       // let date: NSDate = dateFormatter.dateFromString(dateStr)!
+        
+        // create date from string
                     // change to a readable time format and change to local time zone
 //        dateFormatter.dateFormat = "EEE, MMM d, yyyy - h:mm a"
         dateFormatter.dateFormat = "MMM d"
@@ -292,6 +492,11 @@ class chartViewController: UIViewController,UIScrollViewDelegate {
     {
         if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
         {
+            
+            
+            //  if graphDict.count < 0
+          //  let dic = NSDictionary()
+       
             
             print("chart landscape")
             if UIDevice.currentDevice().orientation == UIDeviceOrientation.LandscapeLeft{
@@ -314,30 +519,6 @@ class chartViewController: UIViewController,UIScrollViewDelegate {
         }
         
     }
-//    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-//        
-//        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
-//        {
-//            print("chart landscape")
-//            if UIDevice.currentDevice().orientation == UIDeviceOrientation.LandscapeLeft{
-//                print("chart LandscapeLeft")
-//                return UIInterfaceOrientationMask.AllButUpsideDown
-//            }
-//            else if UIDevice.currentDevice().orientation == UIDeviceOrientation.LandscapeRight{
-//                print("chart LandscapeRight")
-//              return UIInterfaceOrientationMask.AllButUpsideDown
-//            }
-//            
-//        }
-//        return UIInterfaceOrientationMask.Portrait
-//    }
-//    func orientation(){
-//        delay(0.001){
-//        UIView.animateWithDuration(2.0, animations: {
-//            self.view.transform = CGAffineTransformMakeRotation((180.0 * CGFloat(M_PI)) / 180.0)
-//        })
-//        }
-//    }
 }
 extension UILabel {
     func addDashedLine(color: UIColor = UIColor.lightGrayColor()) {
@@ -356,7 +537,7 @@ extension UILabel {
         shapeLayer.strokeColor = cgColor
         shapeLayer.lineWidth = 1
         shapeLayer.lineJoin = kCALineJoinRound
-        shapeLayer.lineDashPattern = [4, 4]
+        shapeLayer.lineDashPattern = [2, 2]
         
         let path: CGMutablePathRef = CGPathCreateMutable()
         CGPathMoveToPoint(path, nil, 0, 0)
@@ -366,3 +547,26 @@ extension UILabel {
         self.layer.addSublayer(shapeLayer)
     }
 }
+extension UIView {
+    func addDashedBorderToView() {
+        let color = (UIColor(red: 32/256, green: 44/256, blue: 66/256, alpha: 1)).CGColor
+
+        
+        let shapeLayer:CAShapeLayer = CAShapeLayer()
+        let frameSize = self.frame.size
+        let shapeRect = CGRect(x: 0, y: 0, width: frameSize.width, height: frameSize.height)
+        
+        shapeLayer.bounds = shapeRect
+        shapeLayer.position = CGPoint(x: frameSize.width/2, y: frameSize.height/2)
+        shapeLayer.fillColor = UIColor.clearColor().CGColor
+        shapeLayer.strokeColor = color
+        shapeLayer.lineWidth = 1
+        shapeLayer.lineJoin = kCALineJoinRound
+        shapeLayer.lineDashPattern = [2,2]
+        shapeLayer.path = UIBezierPath(roundedRect: shapeRect, cornerRadius: 5).CGPath
+        
+        self.layer.addSublayer(shapeLayer)
+    }
+}
+
+

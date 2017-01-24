@@ -33,9 +33,11 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
     var pickerDateStr:String!
     var falagRotation: Bool = false
     var alertDisplay: Bool = true
-    
+     @IBOutlet var preArrowImage: UIImageView!
+    @IBOutlet var label: UILabel!
+    var cell:UITableViewCell!
     @IBOutlet var btnSignIn: UIButton!
-    
+    @IBOutlet var NoTasklbl:UILabel!
     
     @IBOutlet var datepickerView: UIView!
     @IBOutlet var btnShowDatePicker: UIButton!
@@ -83,9 +85,20 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
 //        NSNotificationCenter.defaultCenter().removeObserver(self)
         
     }
+ 
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.Portrait
+    }
     
     override func viewDidLoad() {
+    
+        
         super.viewDidLoad()
+       // NoTasklbl.hidden = true
+        
+//       var date = NSDate()
+//        if date
+
         NSUserDefaults.standardUserDefaults().setObject("false", forKey: "isEditingOrAdding")
         btnShowDatePicker.setTitle(" ", forState: .Normal)
         btnShowDatePicker.transform = CGAffineTransformMakeScale(-1.0, 1.0);
@@ -116,11 +129,22 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
 
         if currentUserID != nil{
-            btnAddTask.hidden = true
-            btnShowDatePicker.hidden = true
-            lblMyTasksHeader.text = currentUserFullName!
-            assignedTasks.GetUserWorksiteActivityGraph(currentUserID,view: self.view)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
+            
+//            let alert = UIAlertController(title: "Time'em", message: "To rotate the device to view tracking plot should be displayed.", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
+//                main {
+//                    
+//                }
+//            }))
+//            self.presentViewController(alert, animated: true, completion: nil)
+            
+            
+            self.btnAddTask.hidden = true
+            self.btnShowDatePicker.hidden = true
+            self.lblMyTasksHeader.text = self.currentUserFullName!
+            assignedTasks.GetUserWorksiteActivityGraph(self.currentUserID,view: self.view)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
+            
 //            self.getDataFromDatabase(currentUserID)
 //            getuserTask(currentUserID, createdDate: selectedDate)
         }else{
@@ -128,14 +152,12 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
 //            getuserTask(logedInUserId!, createdDate: selectedDate)
             let currentUserId = NSUserDefaults.standardUserDefaults() .objectForKey("currentUser_id")
             assignedTasks.GetAssignedTaskIList(currentUserId as! String, view: self.view)
-        }
-
+           }
     }
+    
     func rotated()
     {
-        
-    
-        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
+    if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
         {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let vc:UIViewController = storyboard.instantiateViewControllerWithIdentifier("chart") as! chartViewController
@@ -154,10 +176,7 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
                 
                 falagRotation = true
                 self.view.transform = CGAffineTransformMakeRotation(CGFloat(2*M_PI_2));
-                
-                
             }
-
         }
         
         if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
@@ -166,15 +185,12 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
                 falagRotation=false
             self.view.transform = CGAffineTransformRotate(self.view.transform, -CGFloat(2*M_PI_2));
             }
-
-
             print("Portrait")
             if chldViewControllers != nil{
                 chldViewControllers.willMoveToParentViewController(nil)
                 chldViewControllers.view.removeFromSuperview()
                 chldViewControllers.removeFromParentViewController()
                 UIApplication.sharedApplication().statusBarHidden=false;
-                
             }
         }
         if UIDevice.currentDevice().orientation == UIDeviceOrientation.PortraitUpsideDown{
@@ -185,7 +201,6 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
 //                //            self.view.transform = CGAffineTransformMakeRotation(CGFloat(2*M_PI_2))
 //            }
         }
-        
     }
     var chldViewControllers:UIViewController!
     func configureChildViewController(childController: UIViewController, onView: UIView?) {
@@ -233,7 +248,50 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         }
     }
     
+    //Action
+    func tapDetected() {
+        print("Imageview Clicked")
+         preArrowImage.hidden = true
+        label.hidden = true
+    }
+
+    
     override func viewWillAppear(animated: Bool) {
+        
+        
+        if currentUserID != nil{
+        
+//        let alert = UIAlertController(title: "Time'em", message: "To rotate the device to view tracking plot should be displayed.", preferredStyle: UIAlertControllerStyle.Alert)
+//        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+//        self.presentViewController(alert, animated: true, completion: nil)
+            
+            
+            // also give it frame
+           // var imageView : UIImageView
+            label  =  UILabel(frame:self.view.frame)
+            label.backgroundColor = UIColor.blackColor()
+            label.alpha = 0.7
+            self.view.addSubview(label)
+            
+            preArrowImage  = UIImageView(frame:CGRectMake(0, 0, 200, 200));
+            
+            if Reachability.DeviceType.IS_IPHONE_6 ||  Reachability.DeviceType.IS_IPHONE_6P{
+                    
+                preArrowImage  = UIImageView(frame:CGRectMake(0, 0, 250, 250));
+            }
+            
+            
+            preArrowImage.image = UIImage(named:"imgpsh_fullsize.png")
+            let singleTap = UITapGestureRecognizer(target: self, action: #selector(self.tapDetected))
+            singleTap.numberOfTapsRequired = 1 // you can change this value
+            preArrowImage.userInteractionEnabled = true
+            preArrowImage.center = self.view.center
+           // self.showImageView.center=self.view.center;
+            self.view.addGestureRecognizer(singleTap)
+
+            self.view.addSubview(preArrowImage)
+            
+        }
         
         if webservicehitCount != 0 {
             refreshData()
@@ -288,6 +346,24 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             self.getDataFromDatabase(logedInUserId!)
         }
         
+        let date = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy"
+        let string = dateFormatter.stringFromDate(date) as NSString
+        
+         if selectedDate > string as String {
+            
+           self.btnAddTask.hidden = true
+            
+        }
+        else
+        
+         {
+            self.btnAddTask.hidden = false
+        }
+    
+    
+        
 //        let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
 //        self.getDataFromDatabase(logedInUserId!)
 
@@ -320,14 +396,24 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             
             if alertDisplay == true
             {
-            NSUserDefaults.standardUserDefaults().setObject("true", forKey: "isEditingOrAdding")
+                
+                
+                
+               // taskDataArray .addObject("No task available")
+                
+              // cell.textLabel?.text="No task available"
+                NSUserDefaults.standardUserDefaults().setObject("true", forKey: "isEditingOrAdding")
+                //
+              //  NoTasklbl.hidden = false
+             // NoTasklbl.text="No task available"
+
             
-            let alertNoTasks = UIAlertController(title: "Time'em", message: "No tasks available", preferredStyle: UIAlertControllerStyle.Alert)
-            alertNoTasks.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alertNoTasks, animated: true, completion: nil)
+//            let alertNoTasks = UIAlertController(title: "Time'em", message: "No tasks available", preferredStyle: UIAlertControllerStyle.Alert)
+//            alertNoTasks.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alertNoTasks, animated: true, completion: nil)
             
-            print(alertNoTasks.title)
-            print(alertNoTasks.message)
+          //  print(alertNoTasks.title)
+          //  print(alertNoTasks.message)
                 alertDisplay = false
             }
     }
@@ -417,6 +503,27 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         //        changeSignINButton()
         
     }
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        
+        var numOfSection: NSInteger = 0
+        
+        if taskDataArray.count > 0 {
+            
+            self.tableView.backgroundView = nil
+            numOfSection = 1
+            
+            
+        } else {
+            
+            var noDataLabel: UILabel = UILabel(frame: CGRectMake(0, 0, self.tableView.bounds.size.width, self.tableView.bounds.size.height))
+            noDataLabel.text = "No task available."
+            noDataLabel.textColor = UIColor.blackColor()
+            noDataLabel.textAlignment = NSTextAlignment.Center
+            self.tableView.backgroundView = noDataLabel
+            
+        }
+        return numOfSection
+    }
     
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
@@ -466,8 +573,14 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         var cell = self.tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as! MGSwipeTableCell!
         if cell == nil
         {
+            
             cell = MGSwipeTableCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: reuseIdentifier)
+            cell.textLabel?.numberOfLines = 0
+            cell.textLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
+           
         }
+        
+
         
         for view: UIView in cell.contentView.subviews {
             if (view is UILabel) {
@@ -478,12 +591,12 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
         
         let dataDic:NSMutableDictionary = taskDataArray.objectAtIndex(indexPath.row) as! NSMutableDictionary
         
+        
         let notificationImage: UIImageView = UIImageView(frame: CGRectMake(0, 10, 0, 18))
         //        notificationImage.image = UIImage(named: "cross-popup")
         //        notificationImage.backgroundColor = UIColor.yellowColor()
         cell.contentView.addSubview(notificationImage)
-        
-        
+                
         let TitleLabel: UILabel = UILabel(frame: CGRectMake(notificationImage.frame.origin.x + notificationImage.frame.size.width + 15, 5, 250 + 85 , 30))
          TitleLabel.font  = UIFont(name: "HelveticaNeue", size: 15  )
         if Reachability.DeviceType.IS_IPHONE_5 {
@@ -566,11 +679,29 @@ class myTasksViewController: UIViewController,CLWeeklyCalendarViewDelegate,UITab
             print("delete: \(indexPath.row)")
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(myTasksViewController.deleteTaskResponse), name: "com.time-em.deleteResponse", object: nil)
+            
+            
+            var alert :UIAlertController!
+            alert = UIAlertController(title: "Time'em", message:"Are you really want to delete this task.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default,handler:  { action -> Void in
+                
+                //Delete query
+                let api = ApiRequest()
+                api.deleteTasks("\(dataDic.valueForKey("Id")!)", TimeSpent: "\(dataDic.valueForKey("TimeSpent")!)", CreatedDate: "\(dataDic.valueForKey("CreatedDate")!)", isoffline: "\(dataDic.valueForKey("isoffline")!)", TaskId:"\(dataDic.valueForKey("TaskId")!)", view: self.view)
+               // return true
+                //
+                
+               // self.view.makeToast("Notification deleted successfully", duration: 2, position: .Center)
+            }))
+            alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            
+            
+            return true
+
 
 //            print(dataDic)
-            let api = ApiRequest()
-            api.deleteTasks("\(dataDic.valueForKey("Id")!)", TimeSpent: "\(dataDic.valueForKey("TimeSpent")!)", CreatedDate: "\(dataDic.valueForKey("CreatedDate")!)", isoffline: "\(dataDic.valueForKey("isoffline")!)", TaskId:"\(dataDic.valueForKey("TaskId")!)", view: self.view)
-            return true
+           
         }),MGSwipeButton(title: "", icon:UIImage(named: "edit"),backgroundColor: UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1), callback: {
             (sender: MGSwipeTableCell!) -> Bool in
             print("edit: \(indexPath.row)")

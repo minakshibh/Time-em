@@ -62,12 +62,30 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
     }
     func fetchTeamDataFromDatabase() {
         let logedInUserId =   NSUserDefaults.standardUserDefaults().valueForKey("currentUser_id") as? String
+      
 
         let databaseFetch = databaseFile()
         teamDataArray = databaseFetch.getTeamForUserID(logedInUserId!)
-//        print(teamDataArray)
+
+      //  let newArray:NSMutableArray = []
+//     //   newArray.addObject(teamDataArray[0])
+//            
+//        for i in 1..<teamDataArray.count {
+//            let dict:NSMutableDictionary  = teamDataArray[i] as! NSMutableDictionary
+//            let dictPrevious:NSMutableDictionary  = teamDataArray[i-1] as! NSMutableDictionary
+//            
+//            if !("\(dict.valueForKey("FullName")!)" == "\(dictPrevious.valueForKey("FullName")!)") {
+//                newArray.addObject(teamDataArray[i])
+//            }
+//        }
+//        
+//        teamDataArray.removeAllObjects()
+//        teamDataArray = newArray
+        
+
         tableView.reloadData()
     }
+        
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
@@ -121,7 +139,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         cell.textLabel?.textColor = UIColor(red: 23/256, green: 166/256, blue: 199/256, alpha: 1)
 
         if Reachability.DeviceType.IS_IPHONE_5 {
-        let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 14.0)!
+        let myFont: UIFont = UIFont.init(name: "HelveticaNeue", size: 14.0)!
         cell.textLabel?.font = myFont
             
         }
@@ -185,7 +203,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
 //            cell.detailTextLabel?.text = "In:- \(timestamp)"
              cell.detailTextLabel?.text =  "In:- \(dict["SignInAt"]!)"
               if  Reachability.DeviceType.IS_IPHONE_5 {
-                let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
+                let myFont: UIFont = UIFont.init(name: "HelveticaNeue", size: 10.0)!
                 cell.detailTextLabel?.font = myFont
                 
               }else if Reachability.DeviceType.IS_IPHONE_6 {
@@ -260,16 +278,16 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             if finalStrSignInAt != nil && finalStrSignOutAt != nil {
             cell.detailTextLabel?.text = "\(finalStrSignInAt)"+"\n"+"\(finalStrSignOutAt)"
             if  Reachability.DeviceType.IS_IPHONE_5 {
-            let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
+            let myFont: UIFont = UIFont.init(name: "HelveticaNeue", size: 10.0)!
                 cell.detailTextLabel?.font = myFont
             }else if Reachability.DeviceType.IS_IPHONE_6 {
                 cell.detailTextLabel?.frame = CGRectMake((cell.detailTextLabel?.frame.origin.x)!, (cell.detailTextLabel?.frame.origin.y)!, (cell.detailTextLabel?.frame.size.width)!+150, (cell.detailTextLabel?.frame.size.height)!+25)
-                let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
+                let myFont: UIFont = UIFont.init(name: "HelveticaNeue", size: 10.0)!
                 cell.detailTextLabel?.font = myFont
 
             } else if Reachability.DeviceType.IS_IPHONE_6P{
                 cell.detailTextLabel?.frame = CGRectMake((cell.detailTextLabel?.frame.origin.x)!, (cell.detailTextLabel?.frame.origin.y)!, (cell.detailTextLabel?.frame.size.width)!+150, (cell.detailTextLabel?.frame.size.height)!+40)
-                let myFont: UIFont = UIFont(name: "HelveticaNeue", size: 10.0)!
+                let myFont: UIFont = UIFont.init(name: "HelveticaNeue", size: 10.0)!
                 cell.detailTextLabel?.font = myFont
                 }
             cell.detailTextLabel?.numberOfLines = 2
@@ -279,7 +297,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
         
         
         if "\(dict["IsSignedIn"]!)"  == "0" {
-        cell.rightButtons = [MGSwipeButton(title: "  Signin  ",icon:nil,backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
+        cell.rightButtons = [MGSwipeButton(title: "  Sign In  ",icon:nil,backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
             (sender: MGSwipeTableCell!) -> Bool in
             print("delete: \(indexPath.row)")
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.signInOutResponse), name: "com.time-teamUserSignInOutResponse", object: nil)
@@ -290,7 +308,7 @@ class MyTeamViewController: UIViewController,UITableViewDataSource,UITableViewDe
             return true
         })]
         }else{
-        cell.rightButtons = [MGSwipeButton(title: "  Signout  ",icon:nil,backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
+        cell.rightButtons = [MGSwipeButton(title: "  Sign Out  ",icon:nil,backgroundColor: UIColor(red: 23/255, green: 166/255, blue: 199/255, alpha: 1), callback: {
                 (sender: MGSwipeTableCell!) -> Bool in
                 print("delete: \(indexPath.row)")
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyTeamViewController.signInOutResponse), name: "com.time-teamUserSignInOutResponse", object: nil)

@@ -46,11 +46,6 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-
-        
-        
-        
         btnSend.layer.cornerRadius = 4
         btnUploadImage.layer.cornerRadius = 4
         
@@ -81,8 +76,8 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
    override func viewWillAppear(animated: Bool) {
         let sizeThatFitsTextView: CGSize = self.txtComment.sizeThatFits(CGSizeMake(self.txtComment.frame.size.width, CGFloat(MAXFLOAT)))
         print(sizeThatFitsTextView.height)
-        self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
-    self.TextPlaceHolderViewHeightConstraint.constant = sizeThatFitsTextView.height-10
+//        self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
+//    self.TextPlaceHolderViewHeightConstraint.constant = sizeThatFitsTextView.height-10
     
     }
     
@@ -154,9 +149,9 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             self.NotificationTypeId = "\(idArr[index])"
         }
         
-        dropDown.anchorView = txtSelectMessage
-        dropDown.bottomOffset = CGPoint(x: 0, y:txtSelectMessage.bounds.height)
-        
+//        dropDown.anchorView = txtSelectMessage
+//        dropDown.bottomOffset = CGPoint(x: 0, y:txtSelectMessage.bounds.height)
+//        
     }
     
     func getDataFromDatabase () {
@@ -227,7 +222,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
                 
             }else{
                 self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
-                self.TextPlaceHolderViewHeightConstraint.constant = sizeThatFitsTextView.height
+//                self.TextPlaceHolderViewHeightConstraint.constant = sizeThatFitsTextView.height
                 
             }
         }
@@ -285,6 +280,15 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     }
     @IBAction func btnSend(sender: AnyObject) {
 
+        
+        
+//        if (txtSubject.text.characters.count < 0 || txtComment.text.characters.count < 0) {
+//            
+//            
+//            
+//            
+//        }
+        
         tableView.hidden = true
         txtComment.resignFirstResponder()
         txtSubject.resignFirstResponder()
@@ -299,7 +303,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
         let comments:String!
         
 //        if NotificationTypeId == " " {
-//            let alert = UIAlertController(title: "Time'em", message: "Select notification type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+//            let alert = UIAlertController(title: "Time'em", message: "Select Task type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
 //            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
 //            self.presentViewController(alert, animated: true, completion: nil)
 //            return
@@ -314,7 +318,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             txtSubject.layer.borderColor = UIColor.redColor().CGColor
             txtSubject.layer.borderWidth = 1
             txtSubject.layer.cornerRadius = 5
-            return
+            subject = ""
         }else{
             subject = txtSubject.text
         }
@@ -327,7 +331,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             txtComment.layer.borderColor = UIColor.redColor().CGColor
             txtComment.layer.borderWidth = 1
             txtComment.layer.cornerRadius = 5
-            return
+            comments = ""
         }else{
             comments = txtComment.text
         }
@@ -341,7 +345,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             btnSelectRecipients.layer.cornerRadius = 5
             btnSelectRecipients.layer.borderWidth = 1
             btnSelectRecipients.layer.borderColor = UIColor.redColor().CGColor
-            return
+            
         }else{
             
             for j in ( 0 ..< selectedRecipientsIdArr.count) {
@@ -353,12 +357,15 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
             }
         }
         
-        
+        if !txtComment.text.isEmpty && !txtSubject.text.isEmpty &&
+         selectedRecipientsIdArr.count > 0
+        {
         let sendNotification = ApiRequest()
         sendNotification.sendNotification(imageData, UserId: UserId!, Subject: subject, Message: comments, NotificationTypeId: NotificationTypeId, notifyto: ids, view: self.view)
         
 //    sendNotification.newSendnotificationWebservice(UserId!, Subject: subject, Message: comments, NotificationTypeId: NotificationTypeId, notifyto: ids, view: self.view)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(sendNotificationViewController.sendnotificationResponse), name: "com.time-em.sendnotification", object: nil)
+        }
     }
     func sendnotificationResponse(notification:NSNotification) {
         let userInfo:NSDictionary = notification.userInfo!
@@ -368,7 +375,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
 
         if status.lowercaseString.rangeOfString("successfully") != nil {
             var alert :UIAlertController!
-            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+            alert = UIAlertController(title: "Time'em", message:"Notification sent successfully", preferredStyle: UIAlertControllerStyle.Alert)
 //            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
                 main {
@@ -383,7 +390,7 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
 //            }
         }else{
             var alert :UIAlertController!
-            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
+            alert = UIAlertController(title: "Time'em", message:"Error sending notification", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         }
@@ -432,6 +439,24 @@ class sendNotificationViewController: UIViewController,UITableViewDelegate,UITab
     }
      func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let dict:NSDictionary = (recipientsArray[indexPath.row] as? NSDictionary)!
+        if selectedRecipientsIdArr.containsObject("\(dict.valueForKey("userid")!)"){
+            selectedRecipientsIdArr.removeObject("\(dict.valueForKey("userid")!)")
+            selectedRecipientsNameArr.removeObject("\(dict.valueForKey("FullName")!)")
+            tableView.reloadData()
+            
+            var usernames:String! = ""
+            for j in (0 ..< selectedRecipientsNameArr.count) {
+                if j==0 {
+                    usernames = "\(selectedRecipientsNameArr[0])"
+                }else{
+                    usernames = "\(usernames),\(selectedRecipientsNameArr[j])"
+                }
+            }
+            lblPlaceholderSelectrecipients.hidden = true
+            btnSelectRecipients.setTitle(usernames, forState: .Normal)
+            
+            return
+        }
         selectedRecipientsNameArr.addObject("\(dict.valueForKey("FullName")!)")
         selectedRecipientsIdArr.addObject("\(dict.valueForKey("userid")!)")
         

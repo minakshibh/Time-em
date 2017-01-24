@@ -63,7 +63,10 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         lblStartWorking.text = "Hello \(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_FullName")!)"
         if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)" == "0" {
             lblStartWorkingOnTasks.text = "You are currently Signed Out. Please click Sign In to go Online."
+          
         }else{
+            
+          
             lblStartWorkingOnTasks.text = "You are currently Signed In. Please click Sign Out to go offline."
         }
 
@@ -346,12 +349,17 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
     func iphone5UiAdjustments() {
 //        imageWorkunderConst.frame = CGRectMake(imageWorkunderConst.frame.origin.x, imageWorkunderConst.frame.origin.y, imageWorkunderConst.frame.size.width, imageWorkunderConst.frame.size.height+10)
         imageViewLogoPopup.frame = CGRectMake(imageViewLogoPopup.frame.origin.x, imageViewLogoPopup.frame.origin.y-30, imageViewLogoPopup.frame.size.width, imageViewLogoPopup.frame.size.height)
-        lblStartWorking.frame = CGRectMake(lblStartWorking.frame.origin.x, lblStartWorking.frame.origin.y-40, lblStartWorking.frame.size.width, lblStartWorking.frame.size.height)
-        lblStartWorkingOnTasks.frame = CGRectMake(lblStartWorkingOnTasks.frame.origin.x, lblStartWorkingOnTasks.frame.origin.y-40, lblStartWorkingOnTasks.frame.size.width, lblStartWorkingOnTasks.frame.size.height+18)
+        lblStartWorking.frame = CGRectMake(self.lblpopupBackground.frame.origin.x, lblpopupBackground.frame.origin.y + imageViewLogoPopup.frame.height+20,self.lblpopupBackground.frame.size.width,30)
+         lblStartWorking.font = UIFont(name: lblStartWorking.font.fontName, size: 14)
+//        lblStartWorking.font = lblStartWorking.font.fontWithSize(14)
+        lblStartWorkingOnTasks.lineBreakMode = NSLineBreakMode.ByWordWrapping
         lblStartWorkingOnTasks.numberOfLines = 2
-        btnSignInOutPOPUP.frame = CGRectMake(btnSignInOutPOPUP.frame.origin.x, btnSignInOutPOPUP.frame.origin.y-30, btnSignInOutPOPUP.frame.size.width, btnSignInOutPOPUP.frame.size.height)
-        lblpopupBackground.frame = CGRectMake(lblpopupBackground.frame.origin.x, lblpopupBackground.frame.origin.y, lblpopupBackground.frame.size.width, lblpopupBackground.frame.size.height-30)
-        
+        lblStartWorkingOnTasks.font = UIFont(name: lblStartWorkingOnTasks.font.fontName, size: 14)
+        lblStartWorkingOnTasks.frame = CGRectMake(self.lblpopupBackground.frame.origin.x+3, lblStartWorking.frame.origin.y + lblStartWorking.frame.height - 12, lblpopupBackground.frame.size.width - 6,60)
+        lblStartWorkingOnTasks.numberOfLines = 2
+        btnSignInOutPOPUP.frame = CGRectMake(btnSignInOutPOPUP.frame.origin.x, btnSignInOutPOPUP.frame.origin.y, btnSignInOutPOPUP.frame.size.width, btnSignInOutPOPUP.frame.size.height)
+        lblpopupBackground.frame = CGRectMake(lblpopupBackground.frame.origin.x, lblpopupBackground.frame.origin.y, lblpopupBackground.frame.size.width, lblpopupBackground.frame.size.height-20)
+    
         if Reachability.DeviceType.IS_IPHONE_4_OR_LESS {
             imageViewLogoPopup.frame = CGRectMake(imageViewLogoPopup.frame.origin.x, imageViewLogoPopup.frame.origin.y-60, imageViewLogoPopup.frame.size.width, imageViewLogoPopup.frame.size.height)
             lblStartWorking.frame = CGRectMake(lblStartWorking.frame.origin.x, lblStartWorking.frame.origin.y-70, lblStartWorking.frame.size.width, lblStartWorking.frame.size.height)
@@ -365,7 +373,21 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         
         
        if Reachability.DeviceType.IS_IPHONE_6 ||  Reachability.DeviceType.IS_IPHONE_6P{
-            btnSignInOutPOPUP.frame = CGRectMake(btnSignInOutPOPUP.frame.origin.x, btnSignInOutPOPUP.frame.origin.y+10, btnSignInOutPOPUP.frame.size.width, btnSignInOutPOPUP.frame.size.height)
+        
+           // btnSignInOutPOPUP.frame = CGRectMake(btnSignInOutPOPUP.frame.origin.x, btnSignInOutPOPUP.frame.origin.y+10, btnSignInOutPOPUP.frame.size.width, btnSignInOutPOPUP.frame.size.height)
+        
+             btnSignInOutPOPUP.frame = CGRectMake(btnSignInOutPOPUP.frame.origin.x, lblStartWorkingOnTasks.frame.origin.y+lblStartWorkingOnTasks.frame.size.height+50, btnSignInOutPOPUP.frame.size.width, btnSignInOutPOPUP.frame.size.height)
+        
+        lblStartWorking.frame = CGRectMake(self.lblpopupBackground.frame.origin.x, lblpopupBackground.frame.origin.y + imageViewLogoPopup.frame.height+50,self.lblpopupBackground.frame.size.width,30)
+        lblStartWorking.font = UIFont(name: lblStartWorking.font.fontName, size: 16)
+        //        lblStartWorking.font = lblStartWorking.font.fontWithSize(14)
+        lblStartWorkingOnTasks.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        lblStartWorkingOnTasks.numberOfLines = 2
+        lblStartWorkingOnTasks.font = UIFont(name: lblStartWorkingOnTasks.font.fontName, size: 16)
+        lblStartWorkingOnTasks.frame = CGRectMake(self.lblpopupBackground.frame.origin.x + 5, lblStartWorking.frame.origin.y + lblStartWorking.frame.height , lblpopupBackground.frame.size.width - 10,60)
+        lblStartWorkingOnTasks.numberOfLines = 2
+        
+        
         }
     }
      func layoutSubviews() {
@@ -824,7 +846,7 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
             return
         }
         do {
-            try database.executeUpdate("DELETE FROM geofensingGraph", values: nil )
+            try database.executeUpdate("DELETE FROM geofensingGraphList", values: nil )
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
@@ -1011,8 +1033,9 @@ class dashboardViewController: UIViewController,UICollectionViewDelegate,UIColle
         NSNotificationCenter.defaultCenter().removeObserver(self, name:"com.time-em.signInOutResponse", object:nil)
 
 //            alert = UIAlertController(title: "Time'em", message: status, preferredStyle: UIAlertControllerStyle.Alert)
-        self.view.makeToast("\(status)")
-        
+     //   self.view.makeToast("\(status)")
+       // self.view.makeToast("\(status)", duration:2, position:.center)
+         self.view.makeToast("\(status)", duration: 2, position: .Center)
 //        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
 //        self.presentViewController(alert, animated: true, completion: nil)
         

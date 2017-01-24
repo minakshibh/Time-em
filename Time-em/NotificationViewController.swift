@@ -117,6 +117,7 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
         print(notificationsListArray)
         self.notificationsTableView.reloadData()
         
+        
     }
 
     @IBAction func btnBack(sender: AnyObject) {
@@ -199,6 +200,7 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
         }
         for object: AnyObject in cell.contentView.subviews {
             object.removeFromSuperview()
+            
         }
         
         cell.backgroundColor = UIColor.clearColor()
@@ -255,6 +257,9 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
         }
         else{
             dateStr = "\(dict.valueForKey("createdDate")!)"
+            
+            dateStr = dateConversionLocal(dateStr) as String
+            
             let dateFormatter: NSDateFormatter = NSDateFormatter()
             dateFormatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
             dateFormatter.timeZone = NSTimeZone.localTimeZone()
@@ -300,15 +305,65 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
         cell.rightButtons = [MGSwipeButton(title: "",icon:UIImage(named: "delete"),backgroundColor: UIColor(red: 209/255, green: 25/255, blue: 16/255, alpha: 1), callback: {
                 (sender: MGSwipeTableCell!) -> Bool in
                 print("delete: \(indexPath.row)")
+            
+            var alert :UIAlertController!
+            alert = UIAlertController(title: "Are you sure?", message:"Local copy of this notification will be deleted.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default,handler:  { action -> Void in
+                
                 //Delete query
                 let databse = databaseFile()
                 databse.deleteNotification("\(dict.valueForKey("NotificationId")!)")
                 self.fetchNotificationDataFromDatabase()
+                
+              //
+                
+                self.view.makeToast("Notification deleted successfully", duration: 2, position: .Center)
+            }))
+            alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
             
-                return true
+            
+             return true
+
             })]
         return cell
     }
+    
+    func dateConversionLocal(dateStr:String)-> String{
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
+        dateFormatter.timeZone = NSTimeZone(name:"UTC")
+        let date = dateFormatter.dateFromString(dateStr)// create   date from string
+        
+        // change to a readable time format and change to local time zone
+        dateFormatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
+        dateFormatter.timeZone = NSTimeZone.localTimeZone()
+        var timeStamp = dateFormatter.stringFromDate(date!)
+        return timeStamp
+//        let dateFormatter = NSDateFormatter()
+//        let timeZone = NSTimeZone(name: "UTC")
+//        dateFormatter.timeZone = timeZone
+//        
+//        dateFormatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
+//        let dateString = dateFormatter.dateFromString(dateStr)
+//
+//        print(dateString)
+//        let serverFormatter = NSDateFormatter()
+//        serverFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
+//        serverFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//
+//        let theDate = serverFormatter.stringFromDate(dateString!)
+//
+//        let userFormatter = NSDateFormatter()
+//        userFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//        userFormatter.timeZone = NSTimeZone.localTimeZone()
+//        
+//        let dateConverted = userFormatter.dateFromString(theDate)
+//
+//        print(dateConverted)
+    }
+    
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
             delay(0.001){
                 let dict:NSMutableDictionary  = self.notificationsListArray[indexPath.row] as! NSMutableDictionary
@@ -330,6 +385,7 @@ class NotificationViewController: UIViewController, SKProductsRequestDelegate, S
     }
 
     func dateConversion(date : NSDate) -> NSString {
+        
         let dateFormatter: NSDateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "EEE d MMM,yyyy"
         dateFormatter.timeZone = NSTimeZone.localTimeZone()

@@ -236,11 +236,11 @@ fileURL!.path)
                 
 //                print(rs.stringForColumn("SupervisorId"))
                 
-                if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_UserType")!)" == "Admin" && rs.stringForColumn("CompanyId") == companyKey {
+                if "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_UserType")!)" == "Admin" {
                     dataArray.addObject(dict)
                 }else{
                 
-                    if rs.stringForColumn("SupervisorId") == ID && rs.stringForColumn("CompanyId") == "companyKey"{
+                    if rs.stringForColumn("SupervisorId") == ID {
                         dataArray.addObject(dict)
                     }
                 }
@@ -254,7 +254,7 @@ fileURL!.path)
     }
     
     
-    func insertTeamData(dataArr:NSArray)  {
+    func insertTeamData(dataArr:NSArray,getCompanyId:String)  {
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
@@ -265,14 +265,27 @@ fileURL!.path)
         }
         
         
+       
+        
         let teamIdsArr:NSMutableArray = []
         do {
-            
-            let rs = try database.executeQuery("select * from teamData", values: nil)
-            while rs.next() {
-                let x = rs.stringForColumn("Id")
-                teamIdsArr.addObject(x)
+                if getCompanyId == "0"
+            {
+               let  rs = try database.executeQuery("select * from teamData", values: nil)
+                while rs.next() {
+                    let x = rs.stringForColumn("Id")
+                    teamIdsArr.addObject(x)
+                }
             }
+            else
+            {
+              let   rs = try database.executeQuery("select * from teamData WHERE companyId =?", values: [getCompanyId])
+                while rs.next() {
+                    let x = rs.stringForColumn("Id")
+                    teamIdsArr.addObject(x)
+                }
+            }
+            
         } catch let error as NSError {
             print("failed: \(error.localizedDescription)")
         }
@@ -461,7 +474,22 @@ fileURL!.path)
             
             if teamIdsArr.containsObject("\(Id!)") {
                 do {
-                    try database.executeUpdate("UPDATE teamData SET ActivityId=?, Company=?, CompanyId=? ,Department=?, DepartmentId=?, FirstName=?,FullName=?, SupervisorId=?, IsNightShift=?,IsSecurityPin=?, IsSignedIn=?, LastName=?,LoginCode=?, LoginId=?, NFCTagId=?, Project=? ,ProjectId=?, SignInAt=?, SignOutAt=?,SignedInHours=?,  TaskActivityId=?,UserTypeId=?, Worksite=?, WorksiteId=? WHERE Id=?", values: [ActivityId , Company , CompanyId ,Department , DepartmentId , FirstName ,FullName , SupervisorId , IsNightShift ,IsSecurityPin , IsSignedIn , LastName ,LoginCode , LoginId , NFCTagId , Project  ,ProjectId , SignInAt , SignOutAt ,SignedInHours ,  TaskActivityId ,UserTypeId , Worksite , WorksiteId,Id])
+                  //  try database.executeUpdate("delete * from  teamData WHERE Id=?", values:[Id])
+                    
+                    if getCompanyId == "0"
+                    {
+                        
+                        try database.executeUpdate("UPDATE teamData SET ActivityId=?, Company=?, CompanyId=? ,Department=?, DepartmentId=?, FirstName=?,FullName=?, SupervisorId=?, IsNightShift=?,IsSecurityPin=?, IsSignedIn=?, LastName=?,LoginCode=?, LoginId=?, NFCTagId=?, Project=? ,ProjectId=?, SignInAt=?, SignOutAt=?,SignedInHours=?,  TaskActivityId=?,UserTypeId=?, Worksite=?, WorksiteId=? WHERE Id=?", values: [ActivityId , Company , CompanyId ,Department , DepartmentId , FirstName ,FullName , SupervisorId , IsNightShift ,IsSecurityPin , IsSignedIn , LastName ,LoginCode , LoginId , NFCTagId , Project  ,ProjectId , SignInAt , SignOutAt ,SignedInHours ,  TaskActivityId ,UserTypeId , Worksite , WorksiteId,Id])
+                    }
+                    
+                    else
+                    {
+                        
+                        try database.executeUpdate("UPDATE teamData SET ActivityId=?, Company=?, CompanyId=? ,Department=?, DepartmentId=?, FirstName=?,FullName=?, SupervisorId=?, IsNightShift=?,IsSecurityPin=?, IsSignedIn=?, LastName=?,LoginCode=?, LoginId=?, NFCTagId=?, Project=? ,ProjectId=?, SignInAt=?, SignOutAt=?,SignedInHours=?,  TaskActivityId=?,UserTypeId=?, Worksite=?, WorksiteId=? WHERE Id=? and companyId =?", values: [ActivityId , Company , CompanyId ,Department , DepartmentId , FirstName ,FullName , SupervisorId , IsNightShift ,IsSecurityPin , IsSignedIn , LastName ,LoginCode , LoginId , NFCTagId , Project  ,ProjectId , SignInAt , SignOutAt ,SignedInHours ,  TaskActivityId ,UserTypeId , Worksite , WorksiteId,Id,getCompanyId])
+                    }
+                    
+                    
+               
                 } catch let error as NSError {
                     print("failed: \(error.localizedDescription)")
                 }
@@ -1687,7 +1715,7 @@ fileURL!.path)
         }
         let idArr:NSMutableArray = []
         do {
-            let rs = try database.executeQuery("select * from geofensingGraph", values: nil)
+            let rs = try database.executeQuery("select * from geofensingGraphList", values: nil)
             while rs.next() {
                 let x = rs.stringForColumn("userId")
                 if !idArr.containsObject("\(x)"){
@@ -1698,28 +1726,68 @@ fileURL!.path)
             print("geofensingGraph failed: \(error.localizedDescription)")
         }
         do {
-            try database.executeUpdate("delete  from  geofensingGraph WHERE userId=?", values: [userId])
+            try database.executeUpdate("delete  from  geofensingGraphList WHERE userId=?", values: [userId])
         } catch let error as NSError {
             print("geofensingGraph failed: \(error.localizedDescription)")
         }
         for i:Int in 0 ..< data.count {
             
             let dict:NSDictionary = data[i] as! NSDictionary
-            let  CreatedDate = "\(dict.valueForKey("CreatedDate")!)"
             
-            let workSiteList:NSArray = dict.valueForKey("workSiteList") as! NSArray
-//            if workSiteList.count == 0 {
-//         ee       continue
-//            }
-            let workSiteListData = NSKeyedArchiver.archivedDataWithRootObject(workSiteList)
-//            try database.executeUpdate("create table geofensingGraph(CreatedDate text, workSiteList text, userId tex)", values: nil)
+            //New changes
+            //-------------------------------->>>>>>>>>>>>>>>>>>>>>>>
+            
+            let ListSitesArr=dict.valueForKey("ListSites") as! NSArray
+            
+              for i:Int in 0 ..< ListSitesArr.count {
+                let ListSitesDict:NSDictionary = ListSitesArr[i] as! NSDictionary
+                print("ListSitesDict:",ListSitesDict)
 
-            do {
-                try database.executeUpdate("insert into geofensingGraph (CreatedDate,workSiteList,userId) values (?,?,?)", values: [CreatedDate,workSiteListData,userId])
-            } catch let error as NSError {
-                print("geofensingGraph 2 failed: \(error.localizedDescription)")
+                let WerksiteDatesArray = ListSitesDict.objectForKey("WerksiteDates") as! NSArray
+                
+                let SiteNameStr=ListSitesDict.objectForKey("SiteName") as! NSString
+                
+                for k: Int in 0 ..< WerksiteDatesArray.count {
+                    do {
+                        
+                        let WerksiteDatesDict:NSDictionary = WerksiteDatesArray[k] as! NSDictionary
+
+                        let CreatedDateStr=WerksiteDatesDict.objectForKey("CreatedDate") as! NSString
+                        let workSiteListArray=WerksiteDatesDict.objectForKey("workSiteList") as! NSArray
+
+                        
+                        if workSiteListArray.count > 0 {
+                            
+                            for workSiteListCount: Int in 0 ..< workSiteListArray.count {
+                                
+                                let workSiteListDict:NSDictionary = workSiteListArray[workSiteListCount] as! NSDictionary
+                                
+                                let WorkSiteId=workSiteListDict.objectForKey("WorkSiteId") as! Int
+                                let WorkSiteName=workSiteListDict.objectForKey("WorkSiteName") as! NSString
+                                let WorkingHour=workSiteListDict.objectForKey("WorkingHour") as! Double
+                                
+                                let TimeIn=workSiteListDict.objectForKey("TimeIn") as! NSString
+                                let TimeOut=workSiteListDict.objectForKey("TimeOut") as! NSString
+//                                let TimeOut = "10:34"
+                                try database.executeUpdate("insert into geofensingGraphList (CreatedDate,SiteName,userId,WorkSiteId,WorkSiteName,WorkingHour,TimeIn,TimeOut) values (?,?,?,?,?,?,?,?)", values: [CreatedDateStr,SiteNameStr,userId,WorkSiteId,WorkSiteName,WorkingHour,TimeIn,TimeOut])
+                                
+                            }
+                        }
+                        else
+                        {
+                            try database.executeUpdate("insert into geofensingGraphList (CreatedDate,SiteName,userId) values (?,?,?)", values: [CreatedDateStr,SiteNameStr,userId])
+                        }
+
+                       
+                    } catch let error as NSError {
+                        print("geofensingGraph 2 failed: \(error.localizedDescription)")
+                    }
+                }
+
+                
             }
-        }
+            
+    }
         database.close()
     }
     func saveUserWorksiteActivityGraphAllUsers(data:NSArray,userId:String) {
@@ -1743,34 +1811,40 @@ fileURL!.path)
         //            print("geofensingGraph failed: \(error.localizedDescription)")
         //        }
         do {
-            try database.executeUpdate("DELETE FROM geofensingGraph", values: nil )
+            try database.executeUpdate("DELETE FROM geofensingGraphList", values: nil )
         } catch let error as NSError {
             print("geofensingGraph failed: \(error.localizedDescription)")
         }
         for i:Int in 0 ..< data.count {
             
             let dict:NSDictionary = data[i] as! NSDictionary
-            let  UserId = "\(dict.valueForKey("UserId")!)"
-            let mutiUserworkSiteList = dict.valueForKey("mutiUserworkSiteList")! as! NSArray
-            var  CreatedDate = ""
-            for j:Int in 0 ..< mutiUserworkSiteList.count {
-                CreatedDate = "\(mutiUserworkSiteList[j].valueForKey("CreatedDate")!)"
-                let workSiteList:NSArray = mutiUserworkSiteList[j].valueForKey("workSiteList") as! NSArray
-                if workSiteList.count == 0 {
-                    continue
+           // let  UserId = "\(dict.valueForKey("UserId")!)"
+             if (dict.valueForKey("mutiUserworkSiteList") != nil) {
+                
+                let mutiUserworkSiteList = dict.valueForKey("mutiUserworkSiteList")! as! NSArray
+                
+                var  CreatedDate = ""
+                for j:Int in 0 ..< mutiUserworkSiteList.count {
+                    CreatedDate = "\(mutiUserworkSiteList[j].valueForKey("CreatedDate")!)"
+                    let workSiteList:NSArray = mutiUserworkSiteList[j].valueForKey("workSiteList") as! NSArray
+                    if workSiteList.count == 0 {
+                        continue
+                    }
+                    let workSiteListData = NSKeyedArchiver.archivedDataWithRootObject(workSiteList)
+                    do {
+                        try database.executeUpdate("insert into geofensingGraphList (CreatedDate,workSiteList,userId) values (?,?,?)", values: [CreatedDate,workSiteListData,userId])
+                    } catch let error as NSError {
+                        print("geofensingGraph 2 failed: \(error.localizedDescription)")
+                    }
                 }
-                let workSiteListData = NSKeyedArchiver.archivedDataWithRootObject(workSiteList)
-                do {
-                    try database.executeUpdate("insert into geofensingGraph (CreatedDate,workSiteList,userId) values (?,?,?)", values: [CreatedDate,workSiteListData,UserId])
-                } catch let error as NSError {
-                    print("geofensingGraph 2 failed: \(error.localizedDescription)")
-                }
+
             }
+            
         }
             database.close()
     }
 
-    func getUserWorksiteActivityGraph(userid:String) -> NSMutableArray{
+    func getUserWorksiteActivityGraph(userid:String) -> NSMutableDictionary{
         let documents = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
         let fileURL = documents.URLByAppendingPathComponent("Time-em.sqlite")
         
@@ -1779,29 +1853,120 @@ fileURL!.path)
         if !database.open() {
             print("Unable to open database")
         }
-        var dataARR:NSMutableArray = []
         
+        NSUserDefaults.standardUserDefaults().removeObjectForKey("dataARR")
+        var dataARR:NSMutableArray = []
+        let TempSiteName: NSMutableArray = NSMutableArray();
+        let dictWithSiteName:NSMutableDictionary = [:]
         do {
-            let rs = try database.executeQuery("select * from geofensingGraph where userId = ?", values: [userid])
-//            try database.executeUpdate("create table geofensingGraph(CreatedDate text, workSiteList text, userId tex)", values: nil)
+            let rs = try database.executeQuery("select * from geofensingGraphList where userId = ?", values: [userid])
+            
+             // let rs = try database.executeQuery("select * from geofensingGraphList where userId = ?", values: [userid])
+            var getUserId = ""
 
             while rs.next() {
-                let x = rs.stringForColumn("CreatedDate")
-                let y = rs.dataForColumn("workSiteList")
-                let z = rs.stringForColumn("userId")
-               let arr = NSKeyedUnarchiver.unarchiveObjectWithData(y) as! NSArray
-                let dataDict:NSMutableDictionary = [:]
-                dataDict.setObject(arr, forKey: "workSiteList")
-                dataDict.setObject(z, forKey: "userId")
-                dataDict.setObject(x, forKey: "CreatedDate")
-                dataARR.addObject(dataDict)
+                getUserId = rs.stringForColumn("userId")
+                let getSiteName = rs.stringForColumn("SiteName")
+                
+                if !(TempSiteName.containsObject(getSiteName))
+                {
+                    TempSiteName.addObject("\(getSiteName)")
+//                    print("TempSiteName:",TempSiteName)
+                }
             }
-        } catch let error as NSError {
+            
+            
+            
+           // var count = 0
+            for i:Int in 0 ..< TempSiteName.count {
+               
+                // print("getSiteName:",getSiteName)
+                let getCreatedDate = try database.executeQuery("select * from geofensingGraphList where SiteName = ?", values: [TempSiteName[i]])
+                NSUserDefaults.standardUserDefaults().removeObjectForKey("dataARR")
+                 let WorksiteDatesDict:NSMutableDictionary = [:]
+                while getCreatedDate.next() {
+                    
+                    let getDate = getCreatedDate.stringForColumn("CreatedDate")
+                    
+                    let getDateData = try database.executeQuery("select * from geofensingGraphList where CreatedDate = ? and SiteName = ?", values: [getDate,TempSiteName[i]])
+                    
+                    let workSiteListArray:NSMutableArray=[]
+                    
+                    while getDateData.next() {
+                        
+                        let getWorkSiteId = getDateData.stringForColumn("WorkSiteId")
+                        let getWorkSiteName = getDateData.stringForColumn("WorkSiteName")
+                        let getWorkingHour = getDateData.stringForColumn("WorkingHour")
+                        let getTimeIn = getDateData.stringForColumn("TimeIn")
+                        let getTimeOut = getDateData.stringForColumn("TimeOut")
+                        
+                        //save into dict
+                        let dataDict:NSMutableDictionary = [:]
+//                        dataDict.setObject([TempSiteName[i]], forKey: "SiteName")
+//                        dataDict.setObject(getUserId, forKey: "userId")
+//                        dataDict.setObject(getDate, forKey: "CreatedDate")
+                        if ((getWorkSiteId) != nil)
+                        {
+                            dataDict.setObject(getWorkSiteId, forKey: "WorkSiteId")
+                        }
+                        if ((getWorkSiteName) != nil)
+                        {
+                            dataDict.setObject(getWorkSiteName, forKey: "WorkSiteName")
+                        }
+                        if ((getWorkingHour) != nil)
+                        {
+                            dataDict.setObject(getWorkingHour, forKey: "WorkingHour")
+                        }
+                        if ((getWorkingHour) != nil)
+                        {
+                            dataDict.setObject(getTimeIn, forKey: "TimeIn")
+                        }
+                        if ((getWorkingHour) != nil)
+                        {
+                            dataDict.setObject(getTimeOut, forKey: "TimeOut")
+                        }
+                  
+                        workSiteListArray.addObject(dataDict)
+//                        dataARR.addObject(dataDict)
+                }
+//                var i:Int = 1
+//                i = i + 1
+//                var ste = String(i)
+                     let WerksiteDatesDataDict:NSMutableDictionary = [:]
+                       WerksiteDatesDataDict.setValue(workSiteListArray, forKey: "workSiteList")
+                    WerksiteDatesDataDict.setValue(getDate, forKey:"CreatedDate")
+
+                    WorksiteDatesDict.setValue([TempSiteName[i]], forKey: "SiteName")
+                    WorksiteDatesDict.setValue(WerksiteDatesDataDict, forKey: "WorksiteDates")
+                        dataARR.addObject(WorksiteDatesDict)
+                     print("All data of dataARR:",dataARR)
+                    
+                    if  NSUserDefaults.standardUserDefaults().valueForKey("dataARR") != nil {
+                        let data:NSData = NSUserDefaults.standardUserDefaults().valueForKey("dataARR") as! NSData
+                        let dataArr:NSMutableArray = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableArray
+                        dataArr.addObject(WorksiteDatesDict)
+                        let encodedData = NSKeyedArchiver.archivedDataWithRootObject(dataArr)
+                        NSUserDefaults.standardUserDefaults().setObject(encodedData, forKey: "dataARR")
+                    }else{
+                        let dataArr:NSMutableArray = []
+                        dataArr.addObject(WorksiteDatesDict)
+                        let encodedData = NSKeyedArchiver.archivedDataWithRootObject(dataArr)
+                        NSUserDefaults.standardUserDefaults().setObject(encodedData, forKey: "dataARR")
+                    }
+                }
+                let data:NSData = NSUserDefaults.standardUserDefaults().valueForKey("dataARR") as! NSData
+                let dataArr:NSMutableArray = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! NSMutableArray
+                dictWithSiteName.setObject(dataArr, forKey: "\(TempSiteName[i])")
+            }
+        }catch let error as NSError {
             print("failed: \(error.localizedDescription)")
             dataARR = []
+            NSUserDefaults.standardUserDefaults().removeObjectForKey("dataARR")
         }
         database.close()
-        return dataARR
+        
+         print("Alldata",dictWithSiteName)
+        return dictWithSiteName
         
     }
     

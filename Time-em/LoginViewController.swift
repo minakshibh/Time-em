@@ -10,7 +10,7 @@ import UIKit
 import FMDB
 
 
-class LoginViewController: UIViewController, UITextFieldDelegate {
+class LoginViewController: UIViewController, UITextFieldDelegate,UIScrollViewDelegate {
 
     // MARK: Outlets
     @IBOutlet var imageLogo: UIImageView!
@@ -27,6 +27,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     var webData:NSMutableData!
     var currentUser: User!
     let notificationKey = "com.time-em.loginResponse"
+    var scrollView: UIScrollView!
+    
+    
     
     // MARK: defaults methods
     override func viewDidLoad() {
@@ -36,10 +39,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         self.navigationController?.navigationBarHidden = true
         btnLogin.layer.cornerRadius = 4
         
-        
-        
-        
-       
+
         
         //--
     }
@@ -153,7 +153,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         var message:String = ""
         if userIDStr.isEmpty {
-            message = "Please enter userID"
+            message = "Please enter Username"
             let alert = UIAlertController(title: "Time'em", message: message, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
@@ -264,7 +264,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
             if view.frame.origin.y == 0{
-                self.view.frame.origin.y -= keyboardSize.height/2
+        
+              self.view.frame.origin.y -= (keyboardSize.height/2)-20
             }
             else {
                 
@@ -280,7 +281,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }else{
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
             if view.frame.origin.y != 0 {
-                self.view.frame.origin.y += keyboardSize.height/2
+                self.view.frame.origin.y += (keyboardSize.height/2) - 20
             }
             else {
                 

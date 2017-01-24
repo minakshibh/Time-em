@@ -30,6 +30,9 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     @IBOutlet var scrollView: UIScrollView!
     @IBOutlet var titleLbl: UILabel!
      @IBOutlet var lblDate: UILabel!
+    @IBOutlet var videoFileName:UILabel!
+     @IBOutlet var btncancel: UIButton!
+    
     @IBOutlet var video_play: UIImageView!
     let dropDown = DropDown()
     let imagePicker = UIImagePickerController()
@@ -58,6 +61,12 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name: UIKeyboardWillShowNotification, object: nil)
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name: UIKeyboardWillHideNotification, object: nil)
 
+         btncancel.hidden = true
+        
+        videoFileName.layer.borderWidth = 0.5
+        videoFileName.layer.borderColor = UIColor.blackColor().CGColor
+         videoFileName.hidden = true
+
         
         uploadBtn.layer.cornerRadius = 5
         uploadedImage.layer.cornerRadius = 5
@@ -72,6 +81,8 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         }
         
         if isEditting == "true" {
+            
+     addBtn.setTitle("Update", forState: UIControlState.Normal)
             lblDate.hidden = true
             self.titleLbl.text = "Edit Task"
             self.selectTaskTxt.text = "\(editTaskDict.valueForKey("TaskName")!)"
@@ -164,7 +175,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
                     
                     
                     
-                    //                downloadVideo  and save to databse
+                    // downloadVideo  and save to databse
                     
                     let url = NSURL(string: "\(self.editTaskDict.valueForKey("AttachmentVideoFile")!)")
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
@@ -248,6 +259,10 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
                     print("Done !!")
                     print("Item : \(tField.text)")
                     self.selectTaskTxt.text = tField.text
+                   // [self.selectTaskTxt sizeToFit];
+                   // self.selectTaskTxt.sizeToFit()
+
+                    
                 }))
                 self.presentViewController(alert, animated: true, completion: {
                     print("completion block")
@@ -330,10 +345,22 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     }
 
     override func viewWillAppear(animated: Bool) {
+        
+        
+        
         let sizeThatFitsTextView: CGSize = self.commentsTxt.sizeThatFits(CGSizeMake(self.commentsTxt.frame.size.width, CGFloat(MAXFLOAT)))
-        self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
+         if isEditting == "true" {
+            self.TextViewHeightConstraint.constant = sizeThatFitsTextView.height
+        }
     }
-    
+    override func viewDidAppear(animated: Bool) {
+        if Reachability.DeviceType.IS_IPHONE_6 ||  Reachability.DeviceType.IS_IPHONE_6P{
+            
+            //  selectTaskTxt.frame
+            selectTaskTxt.frame = (frame: CGRectMake(self.selectTaskTxt.frame.origin.x, self.selectTaskTxt.frame.origin.y,self.selectTaskTxt.frame.size.width + 45 ,self.selectTaskTxt.frame.size.height))
+            
+        }
+    }
     func cancelNumberPad() {
         numberOfHoursTxt.resignFirstResponder()
         scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
@@ -471,6 +498,8 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         uploadedImage.image = nil
     }
     
+  
+    
    @IBAction func btnplayVideo(sender: AnyObject) {
     var count:Int = 0
     count = videoData.length / sizeof(UInt8)
@@ -497,10 +526,40 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     }
     
     @IBAction func addUpdateTask(sender: AnyObject) {
-        if Int(numberOfHoursTxt.text!) == 0 {
-            self.view.makeToast("number of hours should be greater than 0", duration: 2.0, position: .Top)
+        
+//        if numberOfHoursTxt.text?.characters.count == 0 && string == "."
+//        {
+//            return false
+//        }
+        
+        if (numberOfHoursTxt.text!) == "." {
+            self.view.makeToast("Please enter valid hours", duration: 2.0, position: .Center)
             numberOfHoursTxt.becomeFirstResponder()
             return
+        }
+
+        
+        
+        if Int(numberOfHoursTxt.text!) == 0 {
+            self.view.makeToast("number of hours should be greater than 0", duration: 2.0, position: .Center)
+            numberOfHoursTxt.becomeFirstResponder()
+            return
+        }
+        
+        if self.taskId == "" && commentsTxt.text.characters.count == 0 && commentsTxt.text.characters.count == 0 {
+            
+            taskDropDown.layer.cornerRadius = 5
+            taskDropDown.layer.borderWidth = 1
+            taskDropDown.layer.borderColor = UIColor.redColor().CGColor
+            
+            commentsTxt.layer.borderColor = UIColor.redColor().CGColor
+            commentsTxt.layer.borderWidth = 1
+            commentsTxt.layer.cornerRadius = 5
+            
+            numberOfHoursTxt.layer.borderColor = UIColor.redColor().CGColor
+            numberOfHoursTxt.layer.borderWidth = 1
+            numberOfHoursTxt.layer.cornerRadius = 5
+
         }
         
         
@@ -512,16 +571,15 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             self.lblbackground.frame.origin.y += 150
         }
         if self.taskId == "" {
-//            let alert = UIAlertController(title: "Time'em", message: "Select notification type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
-//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-//            self.presentViewController(alert, animated: true, completion: nil)
+            let alert = UIAlertController(title: "Time'em", message: "Select Task type before continue.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
             
             
             taskDropDown.layer.cornerRadius = 5
             taskDropDown.layer.borderWidth = 1
             taskDropDown.layer.borderColor = UIColor.redColor().CGColor
             
-                    return
         }
         let taskIds:NSString = self.taskId
         if commentsTxt.text.characters.count == 0 {
@@ -534,7 +592,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             commentsTxt.layer.borderWidth = 1
             commentsTxt.layer.cornerRadius = 5
 
-            return
+            
         }
         
          let comments = self.commentsTxt.text! as String
@@ -548,7 +606,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             numberOfHoursTxt.layer.borderColor = UIColor.redColor().CGColor
             numberOfHoursTxt.layer.borderWidth = 1
             numberOfHoursTxt.layer.cornerRadius = 5
-            return
+            
         }
         let timespend = self.numberOfHoursTxt.text! as String
 
@@ -566,6 +624,8 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
                 userId = ""
             }
         }
+        
+        
         
         let  taskName = self.selectTaskTxt.text! as String
        
@@ -590,17 +650,21 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         
        let currentUSerSIGNIN =  "\(NSUserDefaults.standardUserDefaults().valueForKey("currentUser_IsSignIn")!)"
         
-        if currentUSerSIGNIN == "0"{
-            let alert = UIAlertController(title: "Time'em", message: "Please SignIn before adding task.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-            return
-        }
+//        if currentUSerSIGNIN == "0"{
+//            let alert = UIAlertController(title: "Time'em", message: "Please SignIn before adding task.", preferredStyle: UIAlertControllerStyle.Alert)
+//            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+//            self.presentViewController(alert, animated: true, completion: nil)
+//            return
+//        }
+        
+        if numberOfHoursTxt.text?.characters.count > 0 &&  commentsTxt.text.characters.count > 0 &&
+        !self.taskId.isEmpty
+        {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AddNewTaskViewController.displayResponse), name: notificationKey, object: nil)
         assignedTasks.AddUpdateNewTask(imageData,videoData: videoRecordedData, ActivityId:activityId, TaskId: taskIds as String, UserId:userId, TaskName:taskName, TimeSpent:timespend , Comments:comments , CreatedDate:createdDates , ID: editId as String, view: self.view, isVideoRecorded:isVideoRecorded,isoffline:self.isoffline,uniqueno: self.uniqueno)
         
-        
+        }
 //        assignedTasks.newAddTaskwebservice(activityId, TaskId: taskIds as String, UserId: userId, TaskName: taskName, TimeSpent: timespend, Comments: comments, CreatedDate: createdDates, ID: editId, view: self.view)
         
     }
@@ -624,7 +688,12 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         if status.lowercaseString == "success sync" {
             NSTimer.scheduledTimerWithTimeInterval(1.5, target: self, selector: #selector(AddNewTaskViewController.update), userInfo: nil, repeats: true)
             return
+        } else if status.lowercaseString == "failure in adding task."{
+            let alert = UIAlertController(title: "Failed to add task.", message: "Either you are not singin or trying to add future date task.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
         }
+        
         
         
         if status.lowercaseString == "success"{
@@ -721,6 +790,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
 
         
+        
 //        limit for not data entered more than 24
         if textField == numberOfHoursTxt {
 //            if Int(string) > 2 && numberOfHoursTxt.text?.characters.count == 0{
@@ -728,9 +798,26 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
 //                return false
 //            }
             
+            //let str1 = ""
+          
+
+          
+     
+      
+            if string == "."{
+             let str = "\(numberOfHoursTxt.text!)"
+                 if str.rangeOfString(".") != nil{
+                    return false
+                }
+               
+            }
+            
+            
+            
+         
             if numberOfHoursTxt.text?.characters.count == 0 {
                 if Int(string) == 0 {
-                    self.view.makeToast("No. of hours should be greater than 0.", duration: 2.0, position: .Top)
+                    self.view.makeToast("No. of hours should be greater than 0.", duration: 2.0, position: .Center)
                     return false
                 }
             }
@@ -738,7 +825,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             if numberOfHoursTxt.text?.characters.count == 1 {
                 let str = "\(numberOfHoursTxt.text!)\(string)"
                 if Int(str) > 12 {
-                    self.view.makeToast("maximum hours allowed is 12hrs", duration: 2.0, position: .Top)
+                    self.view.makeToast("maximum hours allowed is 12hrs", duration: 2.0, position: .Center)
                   JLToast.makeText("maximum hours allowed is 12hrs", duration: JLToastDelay.ShortDelay)
                     return false
                     
@@ -762,7 +849,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
                 if Int(str) <= 12 {
                     return true
                 }
-                self.view.makeToast("maximum hours allowed is 12hrs", duration: 2.0, position: .Top)
+                self.view.makeToast("maximum hours allowed is 12hrs", duration: 2.0, position: .Center)
                 return false
             }
         }
@@ -788,7 +875,7 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             video_play.hidden = true
-            uploadImageView.hidden = false
+           uploadImageView.hidden = false
             uploadedImage.hidden = false
             uploadedImage.contentMode = .ScaleToFill
             uploadedImage.image = pickedImage
@@ -804,18 +891,32 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
             let documentsDirectory: AnyObject = paths[0]
             let dataPath = documentsDirectory.stringByAppendingPathComponent("Test.mp4")
             videoData.writeToFile(dataPath, atomically: false)
-            btnplayVideo.hidden = false
+           // btnplayVideo.hidden = false
             
-            self.uploadImageView.hidden = false
-            self.uploadedImage.backgroundColor = UIColor.grayColor()
-            uploadedImage.hidden = false
-            video_play.hidden = false
+           // self.uploadImageView.hidden = false
+           // self.uploadedImage.backgroundColor = UIColor.grayColor()
+           // uploadedImage.hidden = false
+            //video_play.hidden = false
+              videoFileName.hidden = false
+            btncancel.hidden = false
+            btncancel!.addTarget(self, action: "sampleButtonClicked", forControlEvents: .TouchUpInside)
+           
             
         }
         
         dismissViewControllerAnimated(true, completion: nil)
     }
+    @IBAction func clearText(sender: AnyObject) {
+       videoFileName.text=""
+    }
     
+    func sampleButtonClicked(){
+        
+        videoFileName.text=""
+        videoFileName.hidden = true
+        btncancel.hidden = true
+  
+    }
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         dismissViewControllerAnimated(true, completion: nil)
     }
@@ -875,5 +976,8 @@ class AddNewTaskViewController: UIViewController, UITextViewDelegate, UIImagePic
         return round(value * divisor) / divisor
     }
     
+    
+    
 }
+
 

@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1</string>
+	<string>1.9</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -27,14 +27,16 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Time'em wants to use device camera.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>app wants to get your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>get location app wants to get your location</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Time'em wants to use your microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Time&apos;em want to access gallery images.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Time&apos;em wants to use device camera.</string>
+	<string>Time'em want to access gallery images.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lato-Bold.ttf</string>
