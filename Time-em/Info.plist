@@ -42,6 +42,8 @@
 		<string>Lato-Bold.ttf</string>
 		<string>Lato-Regular.ttf</string>
 	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Time&apos;em wants to use your microphone.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
